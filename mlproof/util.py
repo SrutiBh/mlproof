@@ -1,5 +1,6 @@
 import glob
 import mahotas as mh
+import numpy as np
 import os
 
 class Util(object):
@@ -8,11 +9,13 @@ class Util(object):
   def read_section(path, z):
     '''
     '''
-    image = glob.glob(os.path.join(path, 'image', '*'+str(z)+'.png'))    
-    mask = glob.glob(os.path.join(path, 'mask', '*'+str(z)+'.png'))    
-    gold = glob.glob(os.path.join(path, 'gold', '*'+str(z)+'.png'))    
-    rhoana = glob.glob(os.path.join(path, 'rhoana', '*'+str(z)+'.png'))    
-    prob = glob.glob(os.path.join(path, 'prob', '*'+str(z)+'.png'))    
+    image = sorted(glob.glob(os.path.join(path, 'image', '*'+str(z)+'.png')))
+    mask = sorted(glob.glob(os.path.join(path, 'mask', '*'+str(z)+'.png')))   
+    gold = sorted(glob.glob(os.path.join(path, 'gold', '*'+str(z)+'.png')))
+    rhoana = sorted(glob.glob(os.path.join(path, 'rhoana', '*'+str(z)+'.png')))
+    prob = sorted(glob.glob(os.path.join(path, 'prob', '*'+str(z)+'.png')))
+
+    print 'Loading', image[0]
 
     image = mh.imread(image[0])
     mask = mh.imread(mask[0])
@@ -20,9 +23,9 @@ class Util(object):
     rhoana = mh.imread(rhoana[0])
 
     #convert ids from rgb to single channel
-    rhoana_single = np.zeros(rhoana.shape, dtype=np.uint64)
+    rhoana_single = np.zeros((rhoana.shape[0], rhoana.shape[1]), dtype=np.uint64)
     rhoana_single[:, :] = rhoana[:,:,0]*256*256 + rhoana[:,:,1]*256 + rhoana[:,:,2]
-    gold_single = np.zeros(gold.shape, dtype=np.uint64)
+    gold_single = np.zeros((gold.shape[0], gold.shape[1]), dtype=np.uint64)
     gold_single[:, :] = gold[:,:,0]*256*256 + gold[:,:,1]*256 + gold[:,:,2]
 
 
