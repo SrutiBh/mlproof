@@ -172,4 +172,30 @@ class Util(object):
 
       return out
 
+  @staticmethod
+  def grab_neighbors(array, label):
 
+      thresholded_array = Util.threshold(array, label)
+      thresholded_array_dilated = mh.dilate(thresholded_array.astype(np.uint64))
+
+      copy = np.array(array)
+      copy[thresholded_array_dilated != thresholded_array_dilated.max()] = 0
+      copy[thresholded_array == 1] = 0
+
+      copy_hist = Util.get_histogram(copy.astype(np.uint64))
+
+      copy_hist[0] = 0 # ignore zeros
+      # copy_hist[label] = 0 # ignore ourselves
+      return np.where(copy_hist>0)[0]
+
+
+  @staticmethod
+  def threshold(array, value):
+    '''
+    '''
+    output_array = np.zeros(array.shape)
+
+    output_array[array == value] = 1
+
+    return output_array
+    

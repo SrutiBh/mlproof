@@ -38,23 +38,29 @@ class Patch(object):
 
   @staticmethod
   def patchify_maxoverlap(image, prob, mask, segmentation, gold, sample_rate=3, min_pixels=10, oversampling=True,
-                      ignore_zero_neighbor=True, patch_size=(31,31)):
+                      ignore_zero_neighbor=True, patch_size=(75,75)):
     '''
     '''
-
+    # grab the mask border
+    mask_borders = mh.labeled.borders(mask)
+    
     # fill segmentation using max overlap and relabel it
     fixed = Util.propagate_max_overlap(segmentation, gold)
     fixed = Util.relabel(fixed)
 
-    # grab the mask border
-    mask_border = mh.labeled.borders(mask)
-
+    # now remove parts which are not in the fixed segmentation
+    segmentation[fixed==0] = 0
+    
     # grab borders of segmentation and fixed
     segmentation_borders = mh.labeled.borders(segmentation)
-    # fixed_borders = mh.labeled.borders(fixed)
-    fixed_borders = np.logical_xor(fixed_borders, mask_border)    
-    # bad_borders = segmentation_borders-fixed_borders
-    bad_borders = np.logical_xor(segmentation_borders, fixed_borders)
+    fixed_borders = mh.labeled.borders(fixed)
+    fixed_borders[mask_borders == 1] = 0
+    
+    
+    bad_borders = np.array(segmentation_borders)
+    bad_borders[fixed_borders == 1] = 0
+    bad_borders[mask_borders == 1] = 0
+
 
 
 
