@@ -5,7 +5,7 @@ from nolearn.lasagne import BatchIterator
 class MyBatchIterator(BatchIterator):
 
     def transform(self, Xb, yb):
-        Xb, yb = super(FlipBatchIterator, self).transform(Xb, yb)
+        Xb, yb = super(MyBatchIterator, self).transform(Xb, yb)
 
 
 

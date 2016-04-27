@@ -17,7 +17,7 @@ class CNN(object):
         # # update_learning_rate=theano.shared(float32(0.03)),
         # # update_momentum=theano.shared(float32(0.9)),
 
-        kwargs['regression'] = True
+        kwargs['regression'] = False
         kwargs['batch_iterator_train'] = MyBatchIterator(batch_size=100)
         kwargs['batch_iterator_test'] = MyBatchIterator(batch_size=100)
         kwargs['max_epochs'] = 500
@@ -30,6 +30,7 @@ class CNN(object):
         
         kwargs['verbose'] = True
 
+        print 'CNN configuration:', self.__doc__
 
         cnn = NeuralNet(*args, **kwargs)
         self.__class__ = cnn.__class__

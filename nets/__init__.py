@@ -1,1 +1,0 @@
-from simple_image_net import simple_image_net
