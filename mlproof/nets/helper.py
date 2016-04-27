@@ -23,6 +23,10 @@ class MyBatchIterator(BatchIterator):
         #         yb[indices, a], yb[indices, b] = (
         #             yb[indices, b], yb[indices, a])
 
+
+        # regularize the batch (which is already in the range 0..1)
+        Xb = Xb - .5
+
         return Xb, yb
 
 class EarlyStopping(object):
