@@ -7,25 +7,33 @@ class MyBatchIterator(BatchIterator):
     def transform(self, Xb, yb):
         Xb, yb = super(MyBatchIterator, self).transform(Xb, yb)
 
-
-
-        # # Flip half of the images in this batch at random:
-        # bs = Xb.shape[0]
-        # indices = np.random.choice(bs, bs / 2, replace=False)
-        # Xb[indices] = Xb[indices, :, :, ::-1]
-
-        # if yb is not None:
-        #     # Horizontal flip of all x coordinates:
-        #     yb[indices, ::2] = yb[indices, ::2] * -1
-
-        #     # Swap places, e.g. left_eye_center_x -> right_eye_center_x
-        #     for a, b in self.flip_indices:
-        #         yb[indices, a], yb[indices, b] = (
-        #             yb[indices, b], yb[indices, a])
-
-
         # regularize the batch (which is already in the range 0..1)
-        Xb = Xb - .5
+        if isinstance(Xb, dict):
+            # this is for our multi-leg CNN
+
+            for k in Xb:
+                Xb[k] = (Xb[k] - .5).astype(np.float32)
+
+        else:
+
+            Xb = Xb - .5
+ 
+        # # rotate each patch randomly
+        # k_s = np.array([0,1,2,3],dtype=np.uint8)
+        # if isinstance(Xb, dict):
+        #     # this is for our multi-leg CNN
+
+        #     for i in range(len(Xb['image'])):
+        #         k = np.random.choice(k_s)
+        #         for key in Xb:
+        #             Xb[key][i][0] = np.rot90(Xb[key][i][0], k)
+
+        # else:
+
+        #     for i in range(len(Xb)):
+        #         k = np.random.choice(k_s)
+        #         for j in range(Xb.shape[1]):
+        #             Xb[j][0] = np.rot90(Xb[j][0], k)
 
         return Xb, yb
 

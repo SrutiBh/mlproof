@@ -1,3 +1,5 @@
+import cPickle as pickle
+
 from nolearn.lasagne import NeuralNet
 from nolearn.lasagne import TrainSplit
 from nolearn.lasagne import objective
@@ -35,3 +37,23 @@ class CNN(object):
         cnn = NeuralNet(*args, **kwargs)
         self.__class__ = cnn.__class__
         self.__dict__ = cnn.__dict__        
+
+    def store_values(self, filename):
+        '''
+        '''
+        v = self.get_all_params_values()
+        with open(filename, 'wb') as f:
+            pickle.dump(v, f)
+
+        print 'Stored everything.'
+
+    def load_values(self, filename):
+        '''
+        '''
+        with open(filename, 'rb') as f:
+            v = pickle.load(f)
+
+        self.load_params_from(v)
+
+        print 'Loaded everything.'
+
