@@ -18,22 +18,22 @@ class MyBatchIterator(BatchIterator):
 
             Xb = Xb - .5
  
-        # # rotate each patch randomly
-        # k_s = np.array([0,1,2,3],dtype=np.uint8)
-        # if isinstance(Xb, dict):
-        #     # this is for our multi-leg CNN
+        # rotate each patch randomly
+        k_s = np.array([0,1,2,3],dtype=np.uint8)
+        if isinstance(Xb, dict):
+            # this is for our multi-leg CNN
 
-        #     for i in range(len(Xb['image'])):
-        #         k = np.random.choice(k_s)
-        #         for key in Xb:
-        #             Xb[key][i][0] = np.rot90(Xb[key][i][0], k)
+            for i in range(len(Xb['image_input'])):
+                k = np.random.choice(k_s)
+                for key in Xb:
+                    Xb[key][i][0] = np.rot90(Xb[key][i][0], k)
 
-        # else:
+        else:
 
-        #     for i in range(len(Xb)):
-        #         k = np.random.choice(k_s)
-        #         for j in range(Xb.shape[1]):
-        #             Xb[j][0] = np.rot90(Xb[j][0], k)
+            for i in range(len(Xb)):
+                k = np.random.choice(k_s)
+                for j in range(Xb.shape[1]):
+                    Xb[j][0] = np.rot90(Xb[j][0], k)
 
         return Xb, yb
 
