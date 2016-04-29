@@ -15,8 +15,8 @@ class CNN(object):
         '''
 
         kwargs['update'] = nesterov_momentum
-        kwargs['update_learning_rate'] = theano.shared(helper.float32(0.03))#0.001
-        kwargs['update_momentum'] = theano.shared(helper.float32(0.9))#0.9
+        kwargs['update_learning_rate'] = theano.shared(float32(0.03))#0.001
+        kwargs['update_momentum'] = theano.shared(float32(0.9))#0.9
         # update_learning_rate=theano.shared(float32(0.03)),
         # update_momentum=theano.shared(float32(0.9)),
 
