@@ -94,7 +94,7 @@ class Util(object):
   def colorize(segmentation):
     '''
     '''
-    cm_path = '/home/d/data/colorMap.hdf5'
+    cm_path = os.path.expanduser('~/data/colorMap.hdf5')
 
     cm = Util.load_colormap(cm_path)
     segmentation = cm[segmentation % len(cm)]

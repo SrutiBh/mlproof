@@ -414,7 +414,7 @@ class Patch(object):
   @staticmethod
   def load(PATCH_PATH, patch_size=(75,75)):
 
-      PATCH_PATH = os.path.abspath('/home/d/patches/') + os.sep + PATCH_PATH + os.sep
+      PATCH_PATH = os.path.expanduser('~/patches/') + os.sep + PATCH_PATH + os.sep
 
       t0 = time.time()
 
