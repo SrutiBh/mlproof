@@ -17,7 +17,7 @@ if not os.path.exists(OUTPUT_FOLDER):
 
 
 # create CNN
-cnn = eval("nets."+CNN_NAME)
+cnn = eval("nets."+CNN_NAME)()
 
 # load data
 X_train, y_train, X_test, y_test = mlp.Patch.load(PATCH_PATH)
