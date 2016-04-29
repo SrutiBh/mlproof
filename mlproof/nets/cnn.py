@@ -4,6 +4,7 @@ from nolearn.lasagne import NeuralNet
 from nolearn.lasagne import TrainSplit
 from nolearn.lasagne import objective
 from lasagne.updates import nesterov_momentum
+import theano
 
 from helper import *
 
@@ -14,10 +15,10 @@ class CNN(object):
         '''
 
         kwargs['update'] = nesterov_momentum
-        kwargs['update_learning_rate'] = 0.001
-        kwargs['update_momentum'] = 0.9
-        # # update_learning_rate=theano.shared(float32(0.03)),
-        # # update_momentum=theano.shared(float32(0.9)),
+        kwargs['update_learning_rate'] = theano.shared(helper.float32(0.03))#0.001
+        kwargs['update_momentum'] = theano.shared(helper.float32(0.9))#0.9
+        # update_learning_rate=theano.shared(float32(0.03)),
+        # update_momentum=theano.shared(float32(0.9)),
 
         kwargs['regression'] = False
         kwargs['batch_iterator_train'] = MyBatchIterator(batch_size=100)
