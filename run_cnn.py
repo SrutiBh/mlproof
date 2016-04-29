@@ -10,7 +10,7 @@ CNN_NAME = 'MergeNet'
 PATCH_PATH = 'cylinder_small1'
 BORDER = 'larger_border_overlap'
 DESC = 'test'
-OUTPUT_FOLDER = os.path.expanduser('~/nets/MergeNet_'+BORDER+'_'+DESC)
+OUTPUT_FOLDER = os.path.expanduser('~/nets/MergeNet_'+PATCH_PATH+'_'+BORDER+'_'+DESC)
 
 if not os.path.exists(OUTPUT_FOLDER):
   os.makedirs(OUTPUT_FOLDER)
@@ -36,7 +36,7 @@ test_accuracy = cnn.score({'image_input': X_test['image'],
                            'border_input': X_test[BORDER]},
                            y_test)
 
-with open(os.path.join(OUTPUT_PATH, 'test_'+str(test_accuracy)+'.txt', 'w') as f:
+with open(os.path.join(OUTPUT_PATH, 'test_'+str(test_accuracy)+'.txt'), 'w') as f:
   f.write(str(test_accuracy))
 
 # store CNN
