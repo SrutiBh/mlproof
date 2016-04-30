@@ -5,7 +5,7 @@ import mlproof.nets as nets
 
 import os
 
-import cPickle as picke
+import cPickle as pickle
 
 
 if __name__ == '__main__':
