@@ -49,7 +49,9 @@ if __name__ == '__main__':
                              'border_input': X_test[BORDER]},
                              y_test)
 
-  with open(os.path.join(OUTPUT_PATH, 'test_'+str(test_accuracy)+'.txt'), 'w') as f:
+  print test_accuracy
+
+  with open(os.path.join(OUTPUT_FOLDER, 'test_'+str(test_accuracy)+'.txt'), 'w') as f:
     f.write(str(test_accuracy))
 
   # store CNN
