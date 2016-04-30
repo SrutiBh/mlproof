@@ -11,8 +11,8 @@
 #SBATCH -t 7-12:00
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=haehn@seas.harvard.edu
-#SBATCH -o /n/home05/haehn/nets/out-.txt
-#SBATCH -e /n/home05/haehn/nets/err-.txt
+#SBATCH -o /n/home05/haehn/nets/out-test.txt
+#SBATCH -e /n/home05/haehn/nets/err-test.txt
 
 # add additional commands needed for Lmod and module loads here
 source new-modules.sh
@@ -33,12 +33,12 @@ module load cudnn/7.0-fasrc01
 module load gcc/4.8.2-fasrc01 acml/5.3.1-fasrc01
 module load gcc/4.8.2-fasrc01 openmpi/1.10.1-fasrc01 hdf5/1.8.16-fasrc01
 
-source nolearn/bin/activate
+source /n/home05/haehn/nolearn/bin/activate
 
 
 # add commands for analyses here
-cd /n/home05/haehn/Projects/mlproof/
-python run_cnn.py -p cylinder1 -b larger_border_overlap -d usevars
+cd /n/home05/haehn/Projects/mlproof/mlproof/
+python test.py
 
 # end of program
 exit 0;
