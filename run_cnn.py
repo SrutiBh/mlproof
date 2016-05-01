@@ -7,6 +7,9 @@ import os
 
 import cPickle as pickle
 
+import sys
+sys.setrecursionlimit(1000000000)
+
 
 if __name__ == '__main__':
 
