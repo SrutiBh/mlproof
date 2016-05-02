@@ -53,7 +53,7 @@ class EarlyStopping(object):
             self.best_weights = nn.get_all_params_values()
         elif self.best_valid_epoch + self.patience < current_epoch:
             print("Early stopping.")
-            print("Best valid loss was {:.6f} at epoch {}.".format(
+            print("Best valid loss was {0:.6f} at epoch {1}.".format(
                 self.best_valid, self.best_valid_epoch))
             nn.load_params_from(self.best_weights)
             raise StopIteration()

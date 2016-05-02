@@ -4,6 +4,7 @@ from nolearn.lasagne import NeuralNet
 from nolearn.lasagne import TrainSplit
 from nolearn.lasagne import objective
 from lasagne.updates import nesterov_momentum
+import theano
 
 from helper import *
 
@@ -14,20 +15,20 @@ class CNN(object):
         '''
 
         kwargs['update'] = nesterov_momentum
-        kwargs['update_learning_rate'] = 0.001
-        kwargs['update_momentum'] = 0.9
-        # # update_learning_rate=theano.shared(float32(0.03)),
-        # # update_momentum=theano.shared(float32(0.9)),
+        kwargs['update_learning_rate'] = theano.shared(float32(0.03))#0.001
+        kwargs['update_momentum'] = theano.shared(float32(0.9))#0.9
+        # update_learning_rate=theano.shared(float32(0.03)),
+        # update_momentum=theano.shared(float32(0.9)),
 
         kwargs['regression'] = False
-        kwargs['batch_iterator_train'] = MyBatchIterator(batch_size=100)
-        kwargs['batch_iterator_test'] = MyBatchIterator(batch_size=100)
-        kwargs['max_epochs'] = 500
+        kwargs['batch_iterator_train'] = MyBatchIterator(batch_size=300)
+        kwargs['batch_iterator_test'] = MyBatchIterator(batch_size=300)
+        kwargs['max_epochs'] = 1000
         kwargs['train_split'] = TrainSplit(eval_size=0.25)
         kwargs['on_epoch_finished'] = [
-                # AdjustVariable('update_learning_rate', start=0.03, stop=0.0001),
-                # AdjustVariable('update_momentum', start=0.9, stop=0.999),
-                EarlyStopping(patience=50),
+                AdjustVariable('update_learning_rate', start=0.03, stop=0.0001),
+                AdjustVariable('update_momentum', start=0.9, stop=0.999),
+                EarlyStopping(patience=30),
             ]
         
         kwargs['verbose'] = True
@@ -37,23 +38,3 @@ class CNN(object):
         cnn = NeuralNet(*args, **kwargs)
         self.__class__ = cnn.__class__
         self.__dict__ = cnn.__dict__        
-
-    def store_values(self, filename):
-        '''
-        '''
-        v = self.get_all_params_values()
-        with open(filename, 'wb') as f:
-            pickle.dump(v, f)
-
-        print 'Stored everything.'
-
-    def load_values(self, filename):
-        '''
-        '''
-        with open(filename, 'rb') as f:
-            v = pickle.load(f)
-
-        self.load_params_from(v)
-
-        print 'Loaded everything.'
-
