@@ -3,6 +3,8 @@ import argparse
 import mlproof as mlp
 import mlproof.nets as nets
 
+import numpy as np
+
 import os
 
 import cPickle as pickle
