@@ -68,7 +68,7 @@ if __name__ == '__main__':
 
 
   # train
-  cnn = cnn.fit(, X_train_input, y_train)
+  cnn = cnn.fit(X_train_input, y_train)
 
   # test
   test_accuracy = cnn.score(X_test_input, y_test)
