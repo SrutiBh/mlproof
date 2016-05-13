@@ -26,7 +26,7 @@ if __name__ == '__main__':
   PATCH_PATH = args.patchpath
   BORDER = args.border
   DESC = args.desc
-  OUTPUT_FOLDER = os.path.expanduser('~/nets/MergeNet_'+PATCH_PATH+'_'+BORDER+'_'+DESC)
+  OUTPUT_FOLDER = os.path.expanduser('~/nets/'+CNN_NAME+'_'+PATCH_PATH+'_'+BORDER+'_'+DESC)
 
   if not os.path.exists(OUTPUT_FOLDER):
     os.makedirs(OUTPUT_FOLDER)
@@ -38,19 +38,40 @@ if __name__ == '__main__':
   # load data
   X_train, y_train, X_test, y_test = mlp.Patch.load(PATCH_PATH)
 
+  #
+  # train and test inputs
+  #
+  if CNN_NAME == 'MergeNet':
+    # 4 leg version
+    X_train_input = {'image_input': X_train['image'],
+                     'prob_input': X_train['prob'],
+                     'binary_input': X_train['merged_array'],
+                     'border_input': X_train[BORDER]}
+
+    X_test_input = {'image_input': X_test['image'],
+                    'prob_input': X_test['prob'],
+                    'binary_input': X_test['merged_array'],
+                    'border_input': X_test[BORDER]}
+
+  elif CNN_NAME == 'RGBANet':
+    # rgba version
+    X_train_input = np.concatenate((X_train['image'], 
+                                    X_train['prob'], 
+                                    X_train['merged_array'],
+                                    X_train[BORDER]), 1)
+
+    X_test_rgba = np.concatenate((X_test['image'], 
+                                  X_test['prob'], 
+                                  X_test['merged_array'],
+                                  X_test[BORDER]), 1)
+
+
+
   # train
-  cnn = cnn.fit({'image_input': X_train['image'],
-                 'prob_input': X_train['prob'],
-                 'binary_input': X_train['merged_array'],
-                 'border_input': X_train[BORDER]},
-                 y_train)
+  cnn = cnn.fit(, X_train_input, y_train)
 
   # test
-  test_accuracy = cnn.score({'image_input': X_test['image'],
-                             'prob_input': X_test['prob'],
-                             'binary_input': X_test['merged_array'],
-                             'border_input': X_test[BORDER]},
-                             y_test)
+  test_accuracy = cnn.score(X_test_input, y_test)
 
   print test_accuracy
 

@@ -30,11 +30,11 @@ class RGBANet(CNN):
             input_shape=(None, 4, 75, 75),
 
             # conv2d + pool + dropout
-            conv1_filter_size=(13,13), conv1_num_filters=16,
+            conv1_filter_size=(13,13), conv1_num_filters=64,
             pool1_pool_size=(2,2),
 
             # conv2d + pool + dropout
-            conv2_filter_size=(13,13), conv2_num_filters=16,
+            conv2_filter_size=(13,13), conv2_num_filters=48,
             pool2_pool_size=(2,2),
 
             # dense layer 1
