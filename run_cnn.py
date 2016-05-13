@@ -43,7 +43,7 @@ if __name__ == '__main__':
   #
   # train and test inputs
   #
-  if CNN_NAME == 'MergeNet':
+  if CNN_NAME.startswith('MergeNet'):
     # 4 leg version
     X_train_input = {'image_input': X_train['image'],
                      'prob_input': X_train['prob'],
@@ -55,7 +55,7 @@ if __name__ == '__main__':
                     'binary_input': X_test['merged_array'],
                     'border_input': X_test[BORDER]}
 
-  elif CNN_NAME == 'RGBANet':
+  elif CNN_NAME.startswith('RGBANet'):
     # rgba version
     X_train_input = np.concatenate((X_train['image'], 
                                     X_train['prob'], 
