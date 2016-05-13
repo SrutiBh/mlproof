@@ -62,7 +62,7 @@ if __name__ == '__main__':
                                     X_train['merged_array'],
                                     X_train[BORDER]), 1)
 
-    X_test_rgba = np.concatenate((X_test['image'], 
+    X_test_input = np.concatenate((X_test['image'], 
                                   X_test['prob'], 
                                   X_test['merged_array'],
                                   X_test[BORDER]), 1)
