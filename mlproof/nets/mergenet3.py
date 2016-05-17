@@ -6,6 +6,8 @@ from cnn import CNN
 class MergeNet3(CNN):
     '''
     Our CNN with different "legs" for image, prob, merged_array, border_overlap.
+
+    And with 3 layers.
     '''
 
     def __init__(self):
@@ -59,7 +61,7 @@ class MergeNet3(CNN):
             # conv2d + pool + dropout
             image_conv2_filter_size=(13,13), image_conv2_num_filters=16,
             image_pool2_pool_size=(2,2),
-            image_conv3_filter_size=(13,13), image_conv3_num_filters=16,
+            image_conv3_filter_size=(7,7), image_conv3_num_filters=16,
             image_pool3_pool_size=(2,2),
 
             prob_input_shape=(None, 1, 75, 75),
@@ -69,7 +71,7 @@ class MergeNet3(CNN):
             # conv2d + pool + dropout
             prob_conv2_filter_size=(13,13), prob_conv2_num_filters=16,
             prob_pool2_pool_size=(2,2),
-            prob_conv3_filter_size=(13,13), prob_conv3_num_filters=16,
+            prob_conv3_filter_size=(7,7), prob_conv3_num_filters=16,
             prob_pool3_pool_size=(2,2),            
 
             binary_input_shape=(None, 1, 75, 75),
@@ -79,7 +81,7 @@ class MergeNet3(CNN):
             # conv2d + pool + dropout
             binary_conv2_filter_size=(13,13), binary_conv2_num_filters=16,
             binary_pool2_pool_size=(2,2),
-            binary_conv3_filter_size=(13,13), binary_conv3_num_filters=16,
+            binary_conv3_filter_size=(7,7), binary_conv3_num_filters=16,
             binary_pool3_pool_size=(2,2),            
 
             border_input_shape=(None, 1, 75, 75),
@@ -89,7 +91,7 @@ class MergeNet3(CNN):
             # conv2d + pool + dropout
             border_conv2_filter_size=(13,13), border_conv2_num_filters=16,
             border_pool2_pool_size=(2,2),
-            border_conv3_filter_size=(13,13), border_conv3_num_filters=16,
+            border_conv3_filter_size=(7,7), border_conv3_num_filters=16,
             border_pool3_pool_size=(2,2),            
 
             # concat
