@@ -43,7 +43,17 @@ if __name__ == '__main__':
   #
   # train and test inputs
   #
-  if CNN_NAME.startswith('MergeNet'):
+  if CNN_NAME.startswith('MergeNetThreeLeg'):
+    # 3 leg version
+    X_train_input = {'image_input': X_train['image'],
+                     'prob_input': X_train['prob'],
+                     'binary_input': X_train['merged_array']}
+
+    X_test_input = {'image_input': X_test['image'],
+                    'prob_input': X_test['prob'],
+                    'binary_input': X_test['merged_array']}
+
+  elif CNN_NAME.startswith('MergeNet'):
     # 4 leg version
     X_train_input = {'image_input': X_train['image'],
                      'prob_input': X_train['prob'],
