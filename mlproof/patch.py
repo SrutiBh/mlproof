@@ -35,6 +35,152 @@ class Patch(object):
 
     return patches_l, patches_n
 
+  @staticmethod
+  def group(patches):
+    '''
+    groups patches by label pair
+    '''
+
+    patch_grouper = {}
+    for p in patches:
+        # create key
+        minlabel = min(p['l'], p['n'])
+        maxlabel = max(p['l'], p['n'])
+        key = str(minlabel)+'-'+str(maxlabel)
+
+        if not key in patch_grouper:
+            patch_grouper[key] = []
+
+        patch_grouper[key] += [p]
+
+    return patch_grouper
+
+
+  @staticmethod
+  def test_and_unify(patches, cnn, method='weighted_arithmetic_mean'):
+    '''
+    '''
+
+    if method != 'weighted_arithmetic_mean':
+
+      # just the standard mean
+      return np.mean(Patch.test(patches, cnn, stats=False))
+
+    else:
+
+      # weighted arithmetic mean based on border length
+
+      weights = []
+      predictions = []
+
+      for p in patches:
+
+          # calculate the border length based on the patch size
+          bbox = p['bbox']
+          valid_border_points = 0
+          for c in p['border']:
+              if c[0] >= bbox[0] and c[0] <= bbox[1]:
+                  if c[1] >= bbox[2] and c[1] <= bbox[3]:
+                      # valid border point
+                      valid_border_points += 1
+
+          # pred = cnn.test_patch(p)
+
+          inputs = {}
+          for i,n in enumerate(cnn.input_names):
+            inputs[n] = p[cnn.input_values[i]].reshape(-1,1,75,75)
+
+
+          # print inputs
+          
+
+          # normalize input_image and input_prob
+          # inputs['prob_input'] = inputs['prob_input'].astype(np.float) / 255.        
+          # inputs['image_input'] = inputs['image_input'].astype(np.float) / 255.
+          
+
+          pred = cnn.predict_proba(inputs)[0][1]
+
+          # pred = cnn.predict_proba({'image_input': p['image'].reshape(-1,1,75,75),
+          #  'prob_input': p['prob'].reshape(-1,1,75,75),
+          #  'binary_input': p['merged_array'].reshape(-1,1,75,75),
+          #  'border_input': p['border_overlap'].reshape(-1,1,75,75)})[0][1]
+          weights.append(valid_border_points)
+          predictions.append(pred)
+
+      p_sum = 0
+      w_sum = 0
+      for i,w in enumerate(weights):
+          # weighted arithmetic mean
+          p_sum += w*predictions[i]
+          w_sum += w
+
+      p_sum /= w_sum
+
+      return p_sum
+
+  @staticmethod
+  def grab_group_test_and_unify(cnn, image, prob, segmentation, l, n, sample_rate=10, oversampling=False):
+    '''
+    '''
+    patches = []
+    patches_l, patches_n = Patch.grab(image, prob, segmentation, l, n, oversampling=oversampling)
+    patches += patches_l
+    patches += patches_n
+
+    grouped_patches = Patch.group(patches)
+
+    if len(grouped_patches.keys()) != 1:
+      # out of bound condition due to probability map
+      return -1
+
+    prediction = Patch.test_and_unify(grouped_patches.items()[0][1], cnn)
+
+    return prediction
+
+
+
+  @staticmethod
+  def patchify(image, prob, segmentation, sample_rate=10, min_pixels=100, max=1000, oversampling=False, ignore_zero_neighbor=True):
+    '''
+    '''
+    patches = []
+    hist = Util.get_histogram(segmentation.astype(np.uint64))
+    labels = len(hist)
+
+    batch_count = 0
+    
+
+    for l in range(labels):
+
+      if l == 0:
+        continue
+
+      if hist[l] < min_pixels:
+        continue
+
+      neighbors = Util.grab_neighbors(segmentation, l)
+
+      for n in neighbors:
+
+        if ignore_zero_neighbor and n == 0:
+          continue
+
+        if hist[n] < min_pixels:
+          continue
+
+        # print 'grabbing', l, n
+        p_l, p_n = Patch.grab(image, prob, segmentation, l, n, sample_rate, oversampling=oversampling)
+
+        patches += p_l
+        patches += p_n
+
+        if len(patches) >= max:
+
+          return patches[0:max]        
+
+
+    return patches
 
 
   @staticmethod
@@ -381,9 +527,9 @@ class Patch(object):
 
           output = {}
           output['id'] = str(uuid.uuid4())
-          output['image'] = image[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1]
-          
-          output['prob'] = prob[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1]
+          output['image'] = image[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1].astype(np.float32) / 255.
+
+          output['prob'] = prob[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1].astype(np.float32) / 255.
           # output['binary1'] = binary_mask[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1]
           output['binary'] = label1#binary_mask[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1].astype(np.bool)
           output['binary1'] = label1#binary_mask[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1].astype(np.bool)

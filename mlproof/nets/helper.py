@@ -2,6 +2,22 @@ import numpy as np
 
 from nolearn.lasagne import BatchIterator
 
+class MyTestBatchIterator(BatchIterator):
+    def transform(self, Xb, yb):
+        
+        # regularize the batch (which is already in the range 0..1)
+        if isinstance(Xb, dict):
+            # this is for our multi-leg CNN
+
+            for k in Xb:
+                Xb[k] = (Xb[k] - .5).astype(np.float32)
+
+        else:
+
+            Xb = Xb - .5
+            
+        return Xb, yb
+
 class MyBatchIterator(BatchIterator):
 
     def transform(self, Xb, yb):

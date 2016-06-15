@@ -3,7 +3,9 @@ import h5py
 import mahotas as mh
 import matplotlib.pyplot as plt
 import numpy as np
+import partition_comparison
 import os
+from scipy import ndimage as nd
 import skimage.measure
 
 
@@ -198,4 +200,47 @@ class Util(object):
     output_array[array == value] = 1
 
     return output_array
+
+  @staticmethod
+  def frame_image(image, shape=(75,75)):
+    framed = np.array(image)
+    framed[:shape[0]/2+1] = 0
+    framed[-shape[0]/2+1:] = 0
+    framed[:,0:shape[0]/2+1] = 0
+    framed[:,-shape[0]/2+1:] = 0
+
+    return framed
+
+  @staticmethod
+  def fill(data, invalid=None):
+    """
+    Replace the value of invalid 'data' cells (indicated by 'invalid') 
+    by the value of the nearest valid data cell
+
+    Input:
+        data:    numpy array of any dimension
+        invalid: a binary array of same shape as 'data'. 
+                 data value are replaced where invalid is True
+                 If None (default), use: invalid  = np.isnan(data)
+
+    Output: 
+        Return a filled array. 
+    """    
+    if invalid is None: invalid = np.isnan(data)
+
+    ind = nd.distance_transform_edt(invalid, 
+                                    return_distances=False, 
+                                    return_indices=True)
+    return data[tuple(ind)]
     
+  @staticmethod
+  def crop_by_bbox(array, bbox):
+
+    return array[bbox[0]:bbox[1], bbox[2]:bbox[3]]
+
+  @staticmethod
+  def vi(array1, array2):
+    '''
+    '''
+    return partition_comparison.variation_of_information(array1.ravel(), array2.ravel())
+        
