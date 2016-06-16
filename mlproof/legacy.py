@@ -468,7 +468,7 @@ class Legacy(object):
     for me in merge_errors:
         pred = me[2]
         if pred < p:
-            print 'fixing', pred
+            # print 'fixing', pred
             z = me[0]
             label = me[1]
             border = me[3][0][1]
@@ -477,6 +477,35 @@ class Legacy(object):
 
     return rhoana_after_merge_correction
 
+  @staticmethod
+  def perform_sim_user_merge_correction(input_image, input_gold, input_rhoana, merge_errors):
+      rhoana_after_merge_correction = np.array(input_rhoana)
+      
+      fixes = []
+
+      for me in merge_errors:
+          pred = me[2]
+      
+          z = me[0]
+          label = me[1]
+          border = me[3][0][1]
+          a,b,c,d,e,f,g,h,i = Legacy.get_merge_error_image(input_image[z], rhoana_after_merge_correction[z], label, border)
+
+          # check VI for this slice
+          vi_before = Util.vi(input_gold[z], input_rhoana[z])
+          vi_after = Util.vi(input_gold[z], f)
+          if (vi_after < vi_before):
+            # this is a good fix
+            rhoana_after_merge_correction[z] = f
+            fixes.append('Good')
+          else:
+            # skipping this one
+            fixes.append('Bad')
+            continue            
+
+      return rhoana_after_merge_correction, fixes
+
+  @staticmethod
   def perform_auto_split_correction(cnn, input_image, input_prob, input_rhoana, input_gold, p):
 
     '''

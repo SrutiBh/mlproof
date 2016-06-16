@@ -21,14 +21,14 @@ class CNN(object):
         # update_momentum=theano.shared(float32(0.9)),
 
         kwargs['regression'] = False
-        kwargs['batch_iterator_train'] = MyBatchIterator(batch_size=100)
-        kwargs['batch_iterator_test'] = MyTestBatchIterator(batch_size=100)
-        kwargs['max_epochs'] = 1000
+        kwargs['batch_iterator_train'] = MyBatchIterator(batch_size=50)
+        kwargs['batch_iterator_test'] = MyTestBatchIterator(batch_size=50)
+        kwargs['max_epochs'] = 2000
         kwargs['train_split'] = TrainSplit(eval_size=0.25)
         kwargs['on_epoch_finished'] = [
                 AdjustVariable('update_learning_rate', start=0.03, stop=0.0001),
                 AdjustVariable('update_momentum', start=0.9, stop=0.999),
-                EarlyStopping(patience=30),
+                EarlyStopping(patience=50),
             ]
         
         kwargs['verbose'] = True

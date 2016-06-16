@@ -127,29 +127,53 @@ class Stats(object):
 
     print len(merge_errors), ' merge errors found.'
 
+
+    print
     #
     # perform merge correction with p < .05
     #
 
     print 'Correcting merge errors with p < .05'
-    corrected_rhoana = mlp.Legacy.perform_auto_merge_correction(input_image, input_rhoana, merge_errors, .05)
+    corrected_rhoana_05 = mlp.Legacy.perform_auto_merge_correction(input_image, input_rhoana, merge_errors, .05)
 
-    print 'Median VI improvement', originalVI-mlp.Legacy.VI(input_gold, corrected_rhoana)[1]
+    print '   Median VI improvement', originalVI-mlp.Legacy.VI(input_gold, corrected_rhoana_05)[1]
 
     #
     # perform split correction with p > .95
     #
     print 'Correcting split errors with p > .95'
-    # vi_95 = mlp.Legacy.perform_auto_split_correction(cnn, input_image, input_prob, corrected_rhoana, input_gold, .95)
+    vi_95 = mlp.Legacy.perform_auto_split_correction(cnn, input_image, input_prob, corrected_rhoana_05, input_gold, .95)
 
-    # print 'Median VI improvement', originalVI-mlp.Legacy.VI(input_gold, corrected_rhoana)[1]
+    print '   Median VI improvement', originalVI-vi_95[1]
 
-
+    print
+    #
+    # perform merge correction with p < .01
+    #
 
     print 'Correcting merge errors with p < .01'
-    corrected_rhoana = mlp.Legacy.perform_auto_merge_correction(input_image, input_rhoana, merge_errors, .01)
+    corrected_rhoana_01 = mlp.Legacy.perform_auto_merge_correction(input_image, input_rhoana, merge_errors, .01)
 
-    print 'Median VI improvement', originalVI-mlp.Legacy.VI(input_gold, corrected_rhoana)[1]
+    print '   Median VI improvement', originalVI-mlp.Legacy.VI(input_gold, corrected_rhoana_01)[1]
+
+    #
+    # perform split correction with p > .99
+    #
+    print 'Correcting split errors with p > .99'
+    vi_99 = mlp.Legacy.perform_auto_split_correction(cnn, input_image, input_prob, corrected_rhoana_01, input_gold, .99)
+
+    print '   Median VI improvement', originalVI-vi_99[1]
+
+
+    print
+    #
+    # perform merge correction with simulated user
+    #
+    print 'Correcting merge errors by simulated user (er=0)'
+    corrected_rhoana_sim_user, sim_user_fixes = mlp.Legacy.perform_sim_user_merge_correction(input_image, input_gold, input_rhoana, merge_errors)
+    print '   Median VI improvement', originalVI-mlp.Legacy.VI(input_gold, corrected_rhoana_sim_user)[1]
+
+
 
     # perform merge correction with p < .01
     return merge_errors
