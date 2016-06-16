@@ -57,7 +57,7 @@ class MergeNetDropout(CNN):
             # conv2d + pool + dropout
             image_conv2_filter_size=(13,13), image_conv2_num_filters=16,
             image_pool2_pool_size=(2,2),
-            image_dropout_p=0.2,
+            image_dropout_p=0.1,
 
             prob_input_shape=(None, 1, 75, 75),
             # conv2d + pool + dropout
@@ -66,7 +66,7 @@ class MergeNetDropout(CNN):
             # conv2d + pool + dropout
             prob_conv2_filter_size=(13,13), prob_conv2_num_filters=16,
             prob_pool2_pool_size=(2,2),
-            prob_dropout_p=0.2,
+            prob_dropout_p=0.1,
 
             binary_input_shape=(None, 1, 75, 75),
             # conv2d + pool + dropout
@@ -75,7 +75,7 @@ class MergeNetDropout(CNN):
             # conv2d + pool + dropout
             binary_conv2_filter_size=(13,13), binary_conv2_num_filters=16,
             binary_pool2_pool_size=(2,2),
-            binary_dropout_p=0.2,
+            binary_dropout_p=0.1,
 
             border_input_shape=(None, 1, 75, 75),
             # conv2d + pool + dropout
@@ -84,7 +84,7 @@ class MergeNetDropout(CNN):
             # conv2d + pool + dropout
             border_conv2_filter_size=(13,13), border_conv2_num_filters=16,
             border_pool2_pool_size=(2,2),
-            border_dropout_p=0.2,
+            border_dropout_p=0.1,
 
             # concat
             # merge_incomings=['image_pool2','prob_pool2','binary_pool2','border_pool2'],

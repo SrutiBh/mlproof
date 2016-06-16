@@ -663,6 +663,60 @@ class Legacy(object):
 
 
   @staticmethod
+  def create_bigM_without_mask(cnn, volume, volume_prob, volume_segmentation, oversampling=False, verbose=False, max=10000):
+
+
+    bigM = []
+    global_patches = []
+
+    t0 = time.time()
+    for slice in range(volume.shape[0]):
+
+      image = volume[slice]
+      prob = volume_prob[slice]
+      segmentation = volume_segmentation[slice]
+
+      
+      patches = Patch.patchify(image, prob, segmentation, oversampling=oversampling, max=max)
+      if verbose:
+        print len(patches), 'generated in', time.time()-t0, 'seconds.'
+
+      t0 = time.time()
+      grouped_patches = Patch.group(patches)
+      if verbose:
+        print 'Grouped into', len(grouped_patches.keys()), 'patches in', time.time()-t0, 'seconds.'
+      global_patches.append(patches)
+
+      hist = Util.get_histogram(segmentation.astype(np.float))
+      labels = len(hist)
+
+      # create Matrix
+      M = np.zeros((labels, labels), dtype=np.float)
+      # .. and initialize with -1
+      M[:,:] = -1
+
+
+
+      for l_n in grouped_patches.keys():
+
+        l = int(l_n.split('-')[0])
+        n = int(l_n.split('-')[1])
+
+        # test this patch group for l and n
+        prediction = Patch.test_and_unify(grouped_patches[l_n], cnn)
+
+        # fill value into matrix
+        M[l,n] = prediction
+        M[n,l] = prediction
+
+
+      # now the matrix for this slice is filled
+      bigM.append(M)
+
+    return bigM
+
+
+  @staticmethod
   def VI(gt, seg):
       # total_vi = 0
       slice_vi = []    
