@@ -6,6 +6,10 @@ import skimage.measure
 import tifffile as tif
 import time
 
+from matplotlib.pyplot import imshow
+import matplotlib.pyplot as plt    
+
+
 from patch import Patch
 from util import Util
 
@@ -462,9 +466,18 @@ class Legacy(object):
     return corrected_binary
 
   @staticmethod
-  def perform_auto_merge_correction(input_image, input_rhoana, merge_errors, p):
+  def perform_auto_merge_correction(cnn, big_M, input_image, input_prob, input_rhoana, merge_errors, p):
+    
+    # explicit copy
+    bigM = [None]*len(big_M)
+    for z in range(len(big_M)):
+      bigM[z] = np.array(big_M[z])
+
     rhoana_after_merge_correction = np.array(input_rhoana)
     
+    old_labels = []
+    new_labels = []
+
     for me in merge_errors:
         pred = me[2]
         if pred < p:
@@ -473,12 +486,42 @@ class Legacy(object):
             label = me[1]
             border = me[3][0][1]
             a,b,c,d,e,f,g,h,i = Legacy.get_merge_error_image(input_image[z], rhoana_after_merge_correction[z], label, border)        
-            rhoana_after_merge_correction[z] = f
+    
 
-    return rhoana_after_merge_correction
+            new_rhoana = f
+            rhoana_after_merge_correction[z] = new_rhoana
+
+            #
+            # and remove the original label from our bigM matrix
+            #
+            bigM[z][label,:] = -3
+            bigM[z][:,label] = -3
+
+            # now add the two new labels
+            label1 = new_rhoana.max()
+            label2 = new_rhoana.max()-1
+            new_m = np.zeros((bigM[z].shape[0]+2, bigM[z].shape[1]+2), dtype=bigM[z].dtype)
+            new_m[:,:] = -1
+            new_m[0:-2,0:-2] = bigM[z]
+
+            # print 'adding', label1, 'to', z
+
+            new_m = Legacy.add_new_label_to_M(cnn, new_m, input_image[z], input_prob[z], new_rhoana, label1)
+            new_m = Legacy.add_new_label_to_M(cnn, new_m, input_image[z], input_prob[z], new_rhoana, label2)
+
+            # re-propapage new_m to bigM
+            bigM[z] = new_m
+
+    return bigM, rhoana_after_merge_correction
 
   @staticmethod
-  def perform_sim_user_merge_correction(input_image, input_gold, input_rhoana, merge_errors):
+  def perform_sim_user_merge_correction(cnn, big_M, input_image, input_prob, input_rhoana, input_gold, merge_errors):
+
+      # explicit copy
+      bigM = [None]*len(big_M)
+      for z in range(len(big_M)):
+        bigM[z] = np.array(big_M[z])
+
       rhoana_after_merge_correction = np.array(input_rhoana)
       
       fixes = []
@@ -491,175 +534,50 @@ class Legacy(object):
           border = me[3][0][1]
           a,b,c,d,e,f,g,h,i = Legacy.get_merge_error_image(input_image[z], rhoana_after_merge_correction[z], label, border)
 
+
+          new_rhoana = f
+
+
+
           # check VI for this slice
           vi_before = Util.vi(input_gold[z], input_rhoana[z])
           vi_after = Util.vi(input_gold[z], f)
           if (vi_after < vi_before):
             # this is a good fix
-            rhoana_after_merge_correction[z] = f
+            rhoana_after_merge_correction[z] = new_rhoana
+
+            #
+            # and remove the original label from our bigM matrix
+            #
+            bigM[z][label,:] = -3
+            bigM[z][:,label] = -3
+
+            # now add the two new labels
+            label1 = new_rhoana.max()
+            label2 = new_rhoana.max()-1
+            new_m = np.zeros((bigM[z].shape[0]+2, bigM[z].shape[1]+2), dtype=bigM[z].dtype)
+            new_m[:,:] = -1
+            new_m[0:-2,0:-2] = bigM[z]
+
+            # print 'adding', label1, 'to', z
+
+            new_m = Legacy.add_new_label_to_M(cnn, new_m, input_image[z], input_prob[z], new_rhoana, label1)
+            new_m = Legacy.add_new_label_to_M(cnn, new_m, input_image[z], input_prob[z], new_rhoana, label2)
+
+            # re-propapage new_m to bigM
+            bigM[z] = new_m
+
+
             fixes.append('Good')
           else:
             # skipping this one
             fixes.append('Bad')
             continue            
 
-      return rhoana_after_merge_correction, fixes
-
-  @staticmethod
-  def perform_auto_split_correction(cnn, input_image, input_prob, input_rhoana, input_gold, p):
-
-    '''
-    Return VI rather than data.
-    '''
-
-    vol_vi_s = []
-    for z in range(input_image.shape[0]):
-      vi_s, merge_pairs, surenesses = Legacy.splits(cnn, input_image[z], input_prob[z], input_rhoana[z], input_gold[z], 
-                                                   sureness_threshold=p,
-                                                   verbose=False)
-      vol_vi_s.append(vi_s[-1])
-
-    return np.mean(vol_vi_s), np.median(vol_vi_s), vol_vi_s
-
-
-  @staticmethod
-  def splits(cnn, image, prob, segmentation, groundtruth=np.zeros((1,1)), sureness_threshold=0., smallest_first=False, oversampling=False, verbose=True, max=10000):
-    '''
-    '''
-    t0 = time.time()
-    patches = Patch.patchify(image, prob, segmentation, oversampling=oversampling, max=max)
-    if verbose:
-      print len(patches), 'generated in', time.time()-t0, 'seconds.'
-
-    t0 = time.time()
-    grouped_patches = Patch.group(patches)
-    if verbose:
-      print 'Grouped into', len(grouped_patches.keys()), 'patches in', time.time()-t0, 'seconds.'
-
-
-    hist = Util.get_histogram(segmentation.astype(np.float))
-    labels = len(hist)
-
-    # create Matrix
-    M = np.zeros((labels, labels), dtype=np.float)
-    # .. and initialize with -1
-    M[:,:] = -1
-
-
-    for l_n in grouped_patches.keys():
-
-      l = int(l_n.split('-')[0])
-      n = int(l_n.split('-')[1])
-
-      # test this patch group for l and n
-      prediction = Patch.test_and_unify(grouped_patches[l_n], cnn)
-
-      # fill value into matrix
-      M[l,n] = prediction
-      M[n,l] = prediction
-      
-
-    #
-    # NOW the matrix is filled and we can start merging
-    #
-
-    # sureness_threshold = 0.
-    matrix = np.array(M)
-    segmentation_copy = np.array(segmentation)
-
-    if groundtruth.shape[0]>1:
-      before_vi = Util.vi(segmentation_copy, groundtruth)
-
-    # we keep track of the following values
-    vi_s = []
-    ed_s = []
-    merge_pairs = []
-    surenesses = []
-
-    # now the loop
-    t0 = time.time()
-    while (matrix.max() >= sureness_threshold):
-        
-        sureness = matrix.max()
-        
-        largest_indices = np.where(matrix==sureness)
-        #
-        #
-        # TO TRY: merge smaller ones with smaller ones first
-        #
+      return bigM, rhoana_after_merge_correction, fixes
 
 
 
-        picked = 0
-
-        if smallest_first:
-          smallest = np.Infinity
-          smallest_label = -1
-
-          for i,label in enumerate(largest_indices[0]):
-            current_size = len(segmentation_copy[segmentation_copy == label])
-            if current_size < smallest:
-              smallest = current_size
-              smallest_label = label
-              picked = i
-
-
-        l,n = largest_indices[0][picked], largest_indices[1][picked]
-        
-
-        #
-        # TODO also check for alternative n's
-        #
-
-
-
-
-
-
-        segmentation_copy[segmentation_copy == n] = l
-        
-        # reset all l,n entries
-        matrix[l,:] = -2
-        matrix[:,l] = -2
-        matrix[n,:] = -2
-        matrix[:,n] = -2
-        
-        if groundtruth.shape[0]>1:
-          after_merge_vi = Util.vi(segmentation_copy, groundtruth)
-          # after_merge_ed = Util.vi(segmentation_copy, groundtruth)
-          vi_s.append(after_merge_vi)
-
-        merge_pairs.append((l,n))
-        surenesses.append(sureness)
-        
-        
-        # grab new neighbors of l
-        l_neighbors = Util.grab_neighbors(segmentation_copy, l)
-
-        for l_neighbor in l_neighbors:
-            # recalculate new neighbors of l
-            
-            if l_neighbor == 0:
-                # ignore neighbor zero
-                continue
-        
-            prediction = Patch.grab_group_test_and_unify(cnn, image, prob, segmentation_copy, l, l_neighbor, oversampling=oversampling)
-        
-            matrix[l,l_neighbor] = prediction
-            matrix[l_neighbor,l] = prediction
-
-    if verbose:
-      print 'Merge loop finished in', time.time()-t0, 'seconds.'
-
-    if groundtruth.shape[0]>1:
-      min_vi_index = vi_s.index(np.min(vi_s))
-      if verbose:
-        print 'Before VI:', before_vi
-        print 'Smallest VI:', vi_s[min_vi_index]
-        print 'Sureness threshold:', surenesses[min_vi_index]
-
-
-    return vi_s, merge_pairs, surenesses
 
 
   @staticmethod
@@ -726,4 +644,456 @@ class Legacy(object):
           slice_vi.append(current_vi)
       # total_vi /= 10
       return np.mean(slice_vi), np.median(slice_vi), slice_vi
+
+
+  @staticmethod
+  def add_new_label_to_M(cnn, m, input_image, input_prob, input_rhoana, label1):
+
+    # calculate neighbors of the two new labels
+    label1_neighbors = Util.grab_neighbors(input_rhoana, label1)
+    for l_neighbor in label1_neighbors:
+      # recalculate new neighbors of l
+
+      if l_neighbor == 0:
+          # ignore neighbor zero
+          continue
+
+      prediction = Patch.grab_group_test_and_unify(cnn, input_image, input_prob, input_rhoana, label1, l_neighbor, oversampling=False)
+
+      m[label1,l_neighbor] = prediction
+      m[l_neighbor,label1] = prediction
+
+    return m
+
+  @staticmethod
+  def splits_global_from_M_automatic(cnn, big_M, volume, volume_prob, volume_segmentation, volume_groundtruth=np.zeros((1,1)), sureness_threshold=0.95, smallest_first=False, oversampling=False, verbose=True, max=10000):
+    '''
+    '''
+
+    # explicit copy
+    bigM = [None]*len(big_M)
+    for z in range(len(big_M)):
+      bigM[z] = np.array(big_M[z])
+    # for development, we just need the matrix and the patches
+    # return bigM, None, global_patches
+
+    out_volume = np.array(volume_segmentation)
+    # return out_volume
+
+    good_fix_counter = 0
+    bad_fix_counter = 0
+    # error_rate = 0
+    fixes = []
+    vi_s_30mins = []
+
+    superMax = -np.inf
+    j = 0 # minute counter
+    # for i in range(60): # no. corrections in 1 minute
+    #for i in range(17280): # no. corrections in 24 h
+    i = 0
+    time_counter = 0
+    while True: # no time limit
+      # print 'Correction', i
+
+      if (j>0 and j % 30 == 0):
+        # compute VI every 30 minutes
+        vi_after_30_min = []
+        for ov in range(out_volume.shape[0]):
+            vi = Util.vi(volume_groundtruth[ov], out_volume[ov])
+            vi_after_30_min.append(vi)
+        vi_s_30mins.append(vi_after_30_min)
+        j = 0
+        time_counter += 1
+        print time_counter*30, 'minutes done bigM_max=', superMax
+
+      if i>0 and i % 12 == 0:
+        # every 12 corrections == 1 minute
+        j += 1
+        # print 'minutes', j
+      i+=1
+
+
+      superMax = -np.inf
+      superL = -1
+      superN = -1
+      superSlice = -1
+
+      #
+      for slice in range(len(bigM)):
+          max_in_slice = bigM[slice].max()
+          largest_indices = np.where(bigM[slice]==max_in_slice)
+          # print largest_indices
+          if max_in_slice > superMax:
+              
+              # found a new large one
+              l,n = largest_indices[0][0], largest_indices[1][0]
+              superSlice = slice
+              superL = l
+              superN = n
+              superMax = max_in_slice
+
+              # print 'found', l, n, slice, max_in_slice
+          
+      if superMax < sureness_threshold:
+        break
+
+
+
+      # print 'merging', superL, superN, 'in slice ', superSlice, 'with', superMax
+
+      image = volume[superSlice]
+      prob = volume_prob[superSlice]
+      # segmentation = volume_segmentation[slice]
+      groundtruth = volume_groundtruth[superSlice]
+
+
+
+      ### now we have a new max
+      slice_with_max_value = np.array(out_volume[superSlice])
+
+      rollback_slice_with_max_value = np.array(slice_with_max_value)
+
+      last_vi = Util.vi(slice_with_max_value, groundtruth)
+
+      # now we merge
+      # print 'merging', superL, superN
+      slice_with_max_value[slice_with_max_value == superN] = superL
+
+
+    
+      after_merge_vi = Util.vi(slice_with_max_value, groundtruth)
+      # after_merge_ed = Util.vi(segmentation_copy, groundtruth)
+      
+      # pxlsize = len(np.where(before_segmentation_copy == l)[0])
+      # pxlsize2 = len(np.where(before_segmentation_copy == n)[0])
+
+
+      good_fix = False
+      # print '-'*80
+      # print 'vi diff', last_vi-after_merge_vi
+      if after_merge_vi < last_vi:
+        #
+        # this is a good fix
+        #
+        good_fix = True
+        good_fix_counter += 1
+        # Util.view_labels(before_segmentation_copy,[l,n], crop=False)
+        # print 'good fix'
+        # print 'size first label:', pxlsize
+        # print 'size second label:',pxlsize2   
+        fixes.append('Good')       
+      else:
+        #
+        # this is a bad fix
+        #
+        good_fix = False
+        bad_fix_counter += 1
+        fixes.append('Bad')
+        # print 'bad fix, excluding it..'
+        # print 'size first label:', pxlsize
+        # print 'size second label:',pxlsize2
+
+
+
+
+
+      # reset all l,n entries
+      bigM[superSlice][superL,:] = -2
+      bigM[superSlice][:, superL] = -2
+      bigM[superSlice][superN,:] = -2
+      bigM[superSlice][:, superN] = -2
+
+      # re-calculate neighbors
+      # grab new neighbors of l
+      l_neighbors = Util.grab_neighbors(slice_with_max_value, superL)
+
+      for l_neighbor in l_neighbors:
+        # recalculate new neighbors of l
+
+        if l_neighbor == 0:
+            # ignore neighbor zero
+            continue
+
+        prediction = Patch.grab_group_test_and_unify(cnn, image, prob, slice_with_max_value, superL, l_neighbor, oversampling=oversampling)
+        # print superL, l_neighbor
+        # print 'new pred', prediction
+        bigM[superSlice][superL,l_neighbor] = prediction
+        bigM[superSlice][l_neighbor,superL] = prediction
+
+
+
+
+      out_volume[superSlice] = slice_with_max_value
+
+    return bigM, out_volume, fixes, vi_s_30mins
+
+
+  @staticmethod
+  def splits_global_from_M(cnn, big_M, volume, volume_prob, volume_segmentation, volume_groundtruth=np.zeros((1,1)), hours=.5, randomize=False, error_rate=0, oversampling=False):
+
+    # explicit copy
+    bigM = [None]*len(big_M)
+    for z in range(len(big_M)):
+      bigM[z] = np.array(big_M[z])
+
+    # for development, we just need the matrix and the patches
+    # return bigM, None, global_patches
+
+    out_volume = np.array(volume_segmentation)
+    # return out_volume
+
+    good_fix_counter = 0
+    bad_fix_counter = 0
+    # error_rate = 0
+    fixes = []
+    vi_s_30mins = []
+
+    superMax = -np.inf
+    j = 0 # minute counter
+    # for i in range(60): # no. corrections in 1 minute
+    #for i in range(17280): # no. corrections in 24 h
+    if hours == -1:
+      # no timelimit == 30 days
+      hours = 24*30
+
+    corrections_time_limit = int(hours * 60 * 12)
+    time_counter = 0
+    # print 'limit',corrections_time_limit
+    for i in range(corrections_time_limit):
+    # while True: # no time limit
+      # print 'Correction', i
+
+      if (j>0 and j % 30 == 0):
+        # compute VI every 30 minutes
+        vi_after_30_min = []
+        for ov in range(out_volume.shape[0]):
+            vi = Util.vi(volume_groundtruth[ov], out_volume[ov])
+            vi_after_30_min.append(vi)
+        vi_s_30mins.append(vi_after_30_min)
+        j = 0
+        time_counter += 1
+        print time_counter*30, 'minutes done bigM_max=', superMax
+
+      if i>0 and i % 12 == 0:
+        # every 12 corrections == 1 minute
+        j += 1
+        # print 'minutes', j
+
+      superMax = -np.inf
+      superL = -1
+      superN = -1
+      superSlice = -1
+
+      #
+      for slice in range(len(bigM)):
+          max_in_slice = bigM[slice].max()
+
+          largest_indices = np.where(bigM[slice]==max_in_slice)
+          # print largest_indices
+          if max_in_slice > superMax:
+            
+              # found a new large one
+              l,n = largest_indices[0][0], largest_indices[1][0]
+              superSlice = slice
+              superL = l
+              superN = n
+              superMax = max_in_slice
+
+              # print 'found', l, n, slice, max_in_slice
+          
+      if superMax <= 0.:
+        print 'SUPERMAX 0'
+        break
+
+      if randomize:
+        superMax = .5
+        superSlice = np.random.choice(len(bigM))
+
+        uniqueIDs = np.where(bigM[superSlice] > -3)
+
+        superL = np.random.choice(uniqueIDs[0])
+
+        neighbors = Util.grab_neighbors(volume_segmentation[superSlice], superL)
+        superN = np.random.choice(neighbors)
+
+
+      # print 'merging', superL, superN, 'in slice ', superSlice, 'with', superMax
+
+      image = volume[superSlice]
+      prob = volume_prob[superSlice]
+      # segmentation = volume_segmentation[slice]
+      groundtruth = volume_groundtruth[superSlice]
+
+
+
+      ### now we have a new max
+      slice_with_max_value = np.array(out_volume[superSlice])
+
+      rollback_slice_with_max_value = np.array(slice_with_max_value)
+
+      last_vi = Util.vi(slice_with_max_value, groundtruth)
+
+      # now we merge
+      # print 'merging', superL, superN
+      slice_with_max_value[slice_with_max_value == superN] = superL
+
+
+    
+      after_merge_vi = Util.vi(slice_with_max_value, groundtruth)
+      # after_merge_ed = Util.vi(segmentation_copy, groundtruth)
+      
+      # pxlsize = len(np.where(before_segmentation_copy == l)[0])
+      # pxlsize2 = len(np.where(before_segmentation_copy == n)[0])
+
+
+      good_fix = False
+      # print '-'*80
+      # print 'vi diff', last_vi-after_merge_vi
+      if after_merge_vi < last_vi:
+        #
+        # this is a good fix
+        #
+        good_fix = True
+        good_fix_counter += 1
+        # Util.view_labels(before_segmentation_copy,[l,n], crop=False)
+        # print 'good fix'
+        # print 'size first label:', pxlsize
+        # print 'size second label:',pxlsize2   
+        fixes.append('Good')       
+      else:
+        #
+        # this is a bad fix
+        #
+        good_fix = False
+        bad_fix_counter += 1
+        fixes.append('Bad')
+        # print 'bad fix, excluding it..'
+        # print 'size first label:', pxlsize
+        # print 'size second label:',pxlsize2
+
+      #
+      #
+      # ERROR RATE
+      #
+      rnd = random.random()
+      # print rnd
+      if rnd < error_rate:
+        # no matter what, this is a user error
+        good_fix = not good_fix
+        # print 'user err'
+      
+
+
+
+      # reset all l,n entries
+      bigM[superSlice][superL,superN] = -2
+      bigM[superSlice][superN,superL] = -2
+
+      if good_fix:
+
+        bigM[superSlice][superL,:] = -2
+        bigM[superSlice][:, superL] = -2
+        bigM[superSlice][superN,:] = -2
+        bigM[superSlice][:, superN] = -2
+
+        # re-calculate neighbors
+        # grab new neighbors of l
+        l_neighbors = Util.grab_neighbors(slice_with_max_value, superL)
+
+        for l_neighbor in l_neighbors:
+          # recalculate new neighbors of l
+
+          if l_neighbor == 0:
+              # ignore neighbor zero
+              continue
+
+          prediction = Patch.grab_group_test_and_unify(cnn, image, prob, slice_with_max_value, superL, l_neighbor, oversampling=oversampling)
+          # print superL, l_neighbor
+          # print 'new pred', prediction
+          bigM[superSlice][superL,l_neighbor] = prediction
+          bigM[superSlice][l_neighbor,superL] = prediction
+
+      else:
+
+        slice_with_max_value = rollback_slice_with_max_value
+
+
+
+
+      out_volume[superSlice] = slice_with_max_value
+
+    return bigM, out_volume, fixes, vi_s_30mins
+
+  @staticmethod
+  def plot_vis(data,filename=None):
+
+    median_input_vi = np.median(data.values()[0])
+    median_input_vi_count = len(data.values())+3
+
+    fig, ax = plt.subplots(figsize=(22,22))
+    ax.plot(range(median_input_vi_count), [median_input_vi]*median_input_vi_count, 'k:' , color='gray', label='Avg. input VI')
+
+    objects = data.keys()
+
+    y_pos = range(1,len(objects)+1)
+
+
+    plt.ylabel('Variation of Information', labelpad=20)
+
+    plt.setp(plt.xticks()[1], rotation=45)
+
+    font = {'family' : 'normal',
+    #         'weight' : 'bold',
+            'size'   : 26}
+
+    plt.rc('font', **font)
+    plt.boxplot(data.values(), 0, 'gD', whis=1.5)
+    plt.xticks(y_pos, objects)
+
+    if filename:
+      plt.savefig(filename)
+
+    plt.show()
+
+
+  @staticmethod
+  def plot_vis_error_rate(data,dojo_avg_user_mean,dojo_best_user_mean,filename=None):
+
+    # x_labels = range(10)
+    x_labels = [float(l)/100. for l in range(21)]# for l in x_labels:
+        
+    fig, ax = plt.subplots(figsize=(22,22))
+    ax.plot(x_labels, data.values(), 'o')
+
+    ax.plot(x_labels, data.values(), 'k--', label='Simulated User')
+    # ax.plot(epochs, validation_loss, 'k:', label='Validation Loss')
+    # ax.plot(epochs, validation_acc, 'k', label='Validation Accuracy')
+    # ax.set_yscale('log')
+    # ax.plot(range(10), error_rate_results, 'o', label='Training Loss')
+    # plt.boxplot(error_rate_results)
+    # Now add the legend with some customizations.
+    ax.plot(x_labels, [dojo_avg_user_mean]*len(data.keys()), 'k', label='Dojo average', color='red')
+    ax.plot(x_labels, [dojo_best_user_mean]*len(data.keys()), 'k', label='Dojo best', color='blue')
+    legend = ax.legend(loc='upper right', shadow=False)
+    ax.tick_params(axis='both', which='major', pad=15)
+    plt.ylabel('Variation of Information', labelpad=20)
+    plt.xlabel('User Error Rate', labelpad=20)
+    # The frame is matplotlib.patches.Rectangle instance surrounding the legend.
+    frame = legend.get_frame()
+    frame.set_facecolor('0.90')
+    font = {'family' : 'normal',
+    #         'weight' : 'bold',
+            'size'   : 26}
+    plt.rc('font', **font)
+    # Set the fontsize
+    for label in legend.get_texts():
+        label.set_fontsize('large')
+
+    for label in legend.get_lines():
+        label.set_linewidth(1.5)  # the legend line width
+
+    if filename:
+      plt.savefig(filename)
+
+    plt.show()
 

@@ -128,60 +128,270 @@ class Stats(object):
 
     print len(merge_errors), ' merge errors found.'
 
+    # we need to create a bigM for the dojo volume
+    bigM_dojo_file = output_folder + '/bigM_dojo.p'
+    if os.path.exists(bigM_dojo_file):
+      print 'Loading dojo bigM from file..'
+      with open(bigM_dojo_file, 'rb') as f:
+        bigM_dojo = pickle.load(f)
+    else:
+      print 'Creating dojo bigM..'
+      bigM_dojo = mlp.Legacy.create_bigM_without_mask(cnn, input_image, input_prob, input_rhoana, verbose=False)
+      with open(bigM_dojo_file, 'wb') as f:
+        pickle.dump(bigM_dojo, f)    
 
-
-    # print
-    # #
-    # # perform merge correction with p < .05
-    # #
-
-    # print 'Correcting merge errors with p < .05'
-    # corrected_rhoana_05 = mlp.Legacy.perform_auto_merge_correction(input_image, input_rhoana, merge_errors, .05)
-
-    # print '   Mean VI improvement', original_mean_VI-mlp.Legacy.VI(input_gold, corrected_rhoana_05)[0]
-
-    # #
-    # # perform split correction with p > .95
-    # #
-    # print 'Correcting split errors with p > .95'
-    # vi_95 = mlp.Legacy.perform_auto_split_correction(cnn, input_image, input_prob, corrected_rhoana_05, input_gold, .95)
-
-    # print '   Mean VI improvement', original_mean_VI-vi_95[0]
-
-
-
-
-    # print
-    # #
-    # # perform merge correction with p < .01
-    # #
-
-    # print 'Correcting merge errors with p < .01'
-    # corrected_rhoana_01 = mlp.Legacy.perform_auto_merge_correction(input_image, input_rhoana, merge_errors, .01)
-
-    # print '   Mean VI improvement', original_mean_VI-mlp.Legacy.VI(input_gold, corrected_rhoana_01)[0]
-
-    # #
-    # # perform split correction with p > .99
-    # #
-    # print 'Correcting split errors with p > .99'
-    # vi_99 = mlp.Legacy.perform_auto_split_correction(cnn, input_image, input_prob, corrected_rhoana_01, input_gold, .99)
-
-    # print '   Mean VI improvement', original_mean_VI-vi_99[0]
 
 
     print
-    #
-    # perform merge correction with simulated user
-    #
-    print 'Correcting merge errors by simulated user (er=0)'
-    corrected_rhoana_sim_user, sim_user_fixes = mlp.Legacy.perform_sim_user_merge_correction(input_image, input_gold, input_rhoana, merge_errors)
+    dojo_vi_95_file = output_folder + '/dojo_vi_95.p'
+    if os.path.exists(dojo_vi_95_file):
+      print 'Loading merge errors p < .05 and split errors p > .95 from file..'
+      with open(dojo_vi_95_file, 'rb') as f:
+        dojo_vi_95 = pickle.load(f)
+    else:      
+      #
+      # perform merge correction with p < .05
+      #
+      print 'Correcting merge errors with p < .05'
+      bigM_dojo_05, corrected_rhoana_05 = mlp.Legacy.perform_auto_merge_correction(cnn, bigM_dojo, input_image, input_prob, input_rhoana, merge_errors, .05)
+
+      print '   Mean VI improvement', original_mean_VI-mlp.Legacy.VI(input_gold, corrected_rhoana_05)[0]
+      print '   Median VI improvement', original_median_VI-mlp.Legacy.VI(input_gold, corrected_rhoana_05)[1]
+
+      #
+      # perform split correction with p > .95
+      #
+      print 'Correcting split errors with p > .95'
+      bigM_dojo_after_95, out_dojo_volume_after_auto_95, dojo_auto_fixes_95, dojo_auto_vi_s_95 = mlp.Legacy.splits_global_from_M_automatic(cnn, bigM_dojo_05, input_image, input_prob, corrected_rhoana_05, input_gold, sureness_threshold=.95)
+
+      dojo_vi_95 = mlp.Legacy.VI(input_gold, out_dojo_volume_after_auto_95)
+
+      with open(dojo_vi_95_file, 'wb') as f:
+        pickle.dump(dojo_vi_95, f)
+
+    print '   Mean VI improvement', original_mean_VI-dojo_vi_95[0]
+    print '   Median VI improvement', original_median_VI-dojo_vi_95[1]
+
+
+
+
+    print
+    dojo_vi_99_file = output_folder + '/dojo_vi_99.p'
+    if os.path.exists(dojo_vi_99_file):
+      print 'Loading merge errors p < .01 and split errors p > .99 from file..'
+      with open(dojo_vi_99_file, 'rb') as f:
+        dojo_vi_99 = pickle.load(f)
+    else:      
+      #
+      # perform merge correction with p < .01
+      #
+      print 'Correcting merge errors with p < .01'
+      bigM_dojo_01, corrected_rhoana_01 = mlp.Legacy.perform_auto_merge_correction(cnn, bigM_dojo, input_image, input_prob, input_rhoana, merge_errors, .01)
+
+      print '   Mean VI improvement', original_mean_VI-mlp.Legacy.VI(input_gold, corrected_rhoana_01)[0]
+      print '   Median VI improvement', original_median_VI-mlp.Legacy.VI(input_gold, corrected_rhoana_01)[1]
+
+      #
+      # perform split correction with p > .99
+      #
+      print 'Correcting split errors with p > .99'
+      bigM_dojo_after_99, out_dojo_volume_after_auto_99, dojo_auto_fixes_99, dojo_auto_vi_s_99 = mlp.Legacy.splits_global_from_M_automatic(cnn, bigM_dojo_01, input_image, input_prob, corrected_rhoana_01, input_gold, sureness_threshold=.99)
+
+      dojo_vi_99 = mlp.Legacy.VI(input_gold, out_dojo_volume_after_auto_99)
+
+      with open(dojo_vi_99_file, 'wb') as f:
+        pickle.dump(dojo_vi_99, f)
+
+    print '   Mean VI improvement', original_mean_VI-dojo_vi_99[0]
+    print '   Median VI improvement', original_median_VI-dojo_vi_99[1]
+
+
+
+
+    print
+    dojo_vi_simuser_file = output_folder + '/dojo_vi_simuser.p'
+    if os.path.exists(dojo_vi_simuser_file):
+      print 'Loading merge errors and split errors (simulated user) from file..'
+      with open(dojo_vi_simuser_file, 'rb') as f:
+        dojo_vi_simuser = pickle.load(f)
+    else:
+      #
+      # perform merge correction with simulated user
+      #
+      print 'Correcting merge errors by simulated user (er=0)'
+      bigM_dojo_simuser, corrected_rhoana_sim_user, sim_user_fixes = mlp.Legacy.perform_sim_user_merge_correction(cnn, bigM_dojo, input_image, input_prob, input_rhoana, input_gold, merge_errors)
+      
+      print '   Mean VI improvement', original_mean_VI-mlp.Legacy.VI(input_gold, corrected_rhoana_sim_user)[0]    
+      print '   Median VI improvement', original_median_VI-mlp.Legacy.VI(input_gold, corrected_rhoana_sim_user)[1]
+      
+      #
+      # perform split correction with simulated user
+      #
+      print 'Correcting split errors by simulated user (er=0)'
+      bigM_dojo_after, out_dojo_volume_after_sim_user, dojo_sim_user_fixes, dojo_sim_user_vi_s = mlp.Legacy.splits_global_from_M(cnn, bigM_dojo_simuser, input_image, input_prob, corrected_rhoana_sim_user, input_gold, hours=.5)
+
+      dojo_vi_simuser = mlp.Legacy.VI(input_gold, out_dojo_volume_after_sim_user)
+
+      with open(dojo_vi_simuser_file, 'wb') as f:
+        pickle.dump(dojo_vi_simuser, f)      
+
+    print '   Mean VI improvement', original_mean_VI-dojo_vi_simuser[0]
+    print '   Median VI improvement', original_median_VI-dojo_vi_simuser[1]
+
     
-    print '   Mean VI improvement', original_mean_VI-mlp.Legacy.VI(input_gold, corrected_rhoana_sim_user)[0]
-    
+    print
+    dojo_vi_simuser_er_file = output_folder + '/dojo_vi_simuser_er.p'
+    if os.path.exists(dojo_vi_simuser_er_file):
+      print 'Loading merge errors and split errors (simulated user) with error rates from file..'
+      with open(dojo_vi_simuser_er_file, 'rb') as f:
+        dojo_vi_simuser_er = pickle.load(f)
+    else:
+      #
+      # Simulated user split correction with error rate
+      #
+      print '   Re-running simulated user with er=0 .. 0.2'
+      dojo_vi_simuser_er = collections.OrderedDict()
+      for error_rate in range(0,21):
+        error_rate /= 100.
+        # print '---',error_rate
+        bigM_dojo_after, out_dojo_volume_after_sim_user, dojo_sim_user_fixes, dojo_sim_user_vi_s = mlp.Legacy.splits_global_from_M(cnn, bigM_dojo, input_image, input_prob, input_rhoana, input_gold, hours=.5, error_rate=error_rate)
+
+        # append the mean VI
+        dojo_vi_simuser_er[str(error_rate)] = mlp.Legacy.VI(input_gold, out_dojo_volume_after_sim_user)[1]
+
+      with open(dojo_vi_simuser_er_file, 'wb') as f:
+        pickle.dump(dojo_vi_simuser_er, f)
+
+
+
     #
-    # perform split correction with simulated user
     #
+    # DOJO VIs
+    #
+    #
+    dojo_input_vi = mlp.Legacy.VI(input_gold, input_rhoana)[2]
+    dojo_best_user = [0.3764043166,
+                      0.3516472472,
+                      0.4079547444,
+                      0.4530306854,
+                      0.489459557,
+                      0.4783714198,
+                      0.4691797846,
+                      0.4852945057,
+                      0.4989719721,
+                      0.4631116968]
+
+    dojo_avg_user = [0.4731860794,
+                     0.4412143846,
+                     0.4645102603,
+                     0.4790327986,
+                     0.5483534853,
+                     0.5209529753,
+                     0.5614397773,
+                     0.5669964498,
+                     0.6037881064,
+                     0.5986637472]
+
+    dojo_novice = [0.37012190195707095,
+                   0.38968960153287835,
+                   0.37045672764672943,
+                   0.38191441070762,
+                   0.45717155397457265,
+                   0.4307223374738305,
+                   0.46325236818430504,
+                   0.5049116191382206,
+                   0.45915778345523783,
+                   0.5901800985629162]
+
+    # josh
+    dojo_expert1 = [0.37484603520770676,
+                    0.3939621266824016,
+                    0.3896524948878737,
+                    0.39639562518511084,
+                    0.4477210348104004,
+                    0.4647934798574145,
+                    0.4647357412387576,
+                    0.4583758825458508,
+                    0.42396064070850503,
+                    0.4060052118497355]
+
+    # alyssa
+    dojo_expert2 = [0.36955775659747747,
+                    0.39250293829836735,
+                    0.3688303634072678,
+                    0.37744240803449625,
+                    0.40022644067826807,
+                    0.3815527838331203,
+                    0.4472774009966649,
+                    0.44162415508056707,
+                    0.4729849772418282,
+                    0.4966401210922369]
+
+    random_recommendations = [0.4595423295850365,
+                              0.4308474043605237,
+                              0.3986397439416596,
+                              0.39881363108964063,
+                              0.4774106038339303,
+                              0.47744847314733896,
+                              0.5331778295505849,
+                              0.5657477626512799,
+                              0.6298385736857668,
+                              0.5383586601809531]
+
+
+    data = collections.OrderedDict()
+    data['Automatic\nSegmentation'] = dojo_input_vi
+    data['Dojo\n(avg. user)'] = dojo_avg_user
+    data['Dojo\n(best user)'] = dojo_best_user
+    data['Novice    \nUser'] = dojo_novice
+    data['Expert     \nUser 1'] = dojo_expert1
+    data['Expert     \nUser 2'] = dojo_expert2
+    data['Simulated   \nUser   '] = dojo_vi_simuser[2]
+    data['Random\nRecommen-\ndations'] = random_recommendations
+    data['Automatic\nCorrections\n(p=.95)'] = dojo_vi_95[2]
+    data['Automatic\nCorrections\n(p=.99)'] = dojo_vi_99[2]
+
+
+    mlp.Legacy.plot_vis(data)
+
+    mlp.Legacy.plot_vis_error_rate(dojo_vi_simuser_er, np.median(dojo_avg_user), np.median(dojo_best_user))
+
+
+
+    return dojo_vi_simuser_er, np.median(dojo_avg_user), np.median(dojo_best_user)
+
+
+
+
+
+
+  @staticmethod
+  def run_cylinder_xp(cnn):
+
+    # load dojo data
+    input_image, input_prob, input_gold, input_rhoana, dojo_bbox = mlp.Legacy.read_dojo_data()
+
+
+    original_mean_VI, original_median_VI, original_VI_s = mlp.Legacy.VI(input_gold, input_rhoana)
+
+    # output folder for anything to store
+    output_folder = '/tmp/netstats/'+cnn.uuid+'/'
+    if not os.path.exists(output_folder):
+      os.makedirs(output_folder)
+
+    # find merge errors, if we did not generate them before
+    merge_error_file = output_folder+'/merge_errors.p'
+    if os.path.exists(merge_error_file):
+      print 'Loading merge errors from file..'
+      with open(merge_error_file, 'rb') as f:
+        merge_errors = pickle.load(f)
+    else:
+      print 'Finding Top 5 merge errors..'
+      merge_errors = mlp.Legacy.get_top5_merge_errors(cnn, input_image, input_prob, input_rhoana)
+      with open(merge_error_file, 'wb') as f:
+        pickle.dump(merge_errors, f)
+
+    print len(merge_errors), ' merge errors found.'
 
     # we need to create a bigM for the dojo volume
     bigM_dojo_file = output_folder + '/bigM_dojo.p'
@@ -196,15 +406,24 @@ class Stats(object):
         pickle.dump(bigM_dojo, f)    
 
 
-    return bigM_dojo
-    
 
+    # print
+    # #
+    # # perform merge correction with p < .05
+    # #
+    # print 'Correcting merge errors with p < .05'
+    # bigM_dojo_05, corrected_rhoana_05 = mlp.Legacy.perform_auto_merge_correction(cnn, bigM_dojo, input_image, input_prob, input_rhoana, merge_errors, .05)
 
+    # print '   Mean VI improvement', original_mean_VI-mlp.Legacy.VI(input_gold, corrected_rhoana_05)[0]
+    # print '   Median VI improvement', original_median_VI-mlp.Legacy.VI(input_gold, corrected_rhoana_05)[1]
 
+    # #
+    # # perform split correction with p > .95
+    # #
+    # print 'Correcting split errors with p > .95'
+    # bigM_dojo_after_95, out_dojo_volume_after_auto_95, dojo_auto_fixes_95, dojo_auto_vi_s_95 = mlp.Legacy.splits_global_from_M_automatic(cnn, bigM_dojo_05, input_image, input_prob, corrected_rhoana_05, input_gold, sureness_threshold=.95)
 
+    # dojo_vi_95 = mlp.Legacy.VI(input_gold, out_dojo_volume_after_auto_95)
 
-    # perform merge correction with p < .01
-    return merge_errors
-
-    # 
-
+    # print '   Mean VI improvement', original_mean_VI-dojo_vi_95[0]
+    # print '   Median VI improvement', original_median_VI-dojo_vi_95[1]    

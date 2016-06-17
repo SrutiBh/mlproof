@@ -26,7 +26,7 @@ class CNN(object):
         kwargs['max_epochs'] = 2000
         kwargs['train_split'] = TrainSplit(eval_size=0.25)
         kwargs['on_epoch_finished'] = [
-                AdjustVariable('update_learning_rate', start=0.03, stop=0.0001),
+                AdjustVariable('update_learning_rate', start=0.03, stop=0.00001),
                 AdjustVariable('update_momentum', start=0.9, stop=0.999),
                 EarlyStopping(patience=50),
             ]
