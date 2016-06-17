@@ -96,7 +96,7 @@ class MergeNetDropout(CNN):
 
             # concat
             # merge_incomings=['image_pool2','prob_pool2','binary_pool2','border_pool2'],
-            merge_incomings=['image_dropout','prob_dropout','binary_dropout','border_dropout'],
+            merge_incomings=['image_dropout2','prob_dropout2','binary_dropout2','border_dropout2'],
 
             # dense layer 1
             hidden3_num_units=256,

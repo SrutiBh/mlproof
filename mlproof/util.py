@@ -13,7 +13,7 @@ import skimage.measure
 class Util(object):
 
   @staticmethod
-  def read_section(path, z):
+  def read_section(path, z, verbose=True):
     '''
     '''
     image = sorted(glob.glob(os.path.join(path, 'image', '*'+str(z)+'.png')))
@@ -22,7 +22,8 @@ class Util(object):
     rhoana = sorted(glob.glob(os.path.join(path, 'rhoana', '*'+str(z)+'.png')))
     prob = sorted(glob.glob(os.path.join(path, 'prob', '*'+str(z)+'_syn.tif')))
 
-    print 'Loading', os.path.basename(image[0])
+    if verbose:
+      print 'Loading', os.path.basename(image[0])
 
     image = mh.imread(image[0])
     mask = mh.imread(mask[0]).astype(np.bool)

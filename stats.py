@@ -12,6 +12,8 @@ from nolearn.lasagne.visualize import plot_occlusion
 
 from sklearn.metrics import classification_report, accuracy_score
 
+import matplotlib.pyplot as plt    
+
 import mlproof as mlp
 
 
@@ -89,14 +91,23 @@ class Stats(object):
     print 'Test Accuracy:', test_acc
     print 'Accuracy Score:', acc_score
 
-    # plot loss
-    loss_plot = plot_loss(cnn)
-    # loss_plot.savefig('/tmp/aaa.png')
-
+    
     # attach patch selection
     cnn.input_names = input_names
     cnn.input_values = input_values
     cnn.uuid = os.path.basename(os.path.dirname(path))
+    
+    # plot loss    
+    output_folder = '/tmp/netstats/'+cnn.uuid+'/'
+    if not os.path.exists(output_folder):
+      os.makedirs(output_folder)
+    font = {'family' : 'normal',
+    #         'weight' : 'bold',
+            'size'   : 26}
+    plt.rc('font', **font)      
+    plt.figure(figsize=(22,22))
+    loss_plot = plot_loss(cnn)
+    loss_plot.savefig(output_folder+'/loss.pdf')
 
     return cnn, loss_plot
 
@@ -352,13 +363,10 @@ class Stats(object):
     data['Automatic\nCorrections\n(p=.99)'] = dojo_vi_99[2]
 
 
-    mlp.Legacy.plot_vis(data)
+    mlp.Legacy.plot_vis(data, output_folder+'/dojo_vi.pdf')
 
-    mlp.Legacy.plot_vis_error_rate(dojo_vi_simuser_er, np.median(dojo_avg_user), np.median(dojo_best_user))
+    mlp.Legacy.plot_vis_error_rate(dojo_vi_simuser_er, np.median(dojo_avg_user), np.median(dojo_best_user), output_folder+'/dojo_errorrate.pdf')
 
-
-
-    return dojo_vi_simuser_er, np.median(dojo_avg_user), np.median(dojo_best_user)
 
 
 
@@ -368,8 +376,18 @@ class Stats(object):
   @staticmethod
   def run_cylinder_xp(cnn):
 
-    # load dojo data
-    input_image, input_prob, input_gold, input_rhoana, dojo_bbox = mlp.Legacy.read_dojo_data()
+    # load cylinder data
+    input_image = []
+    input_prob = []
+    input_rhoana = []
+    input_gold = []
+    for z in range(250, 300):
+        image, prob, mask, gold, rhoana = mlp.Util.read_section('/home/d/data/cylinder/', z, verbose=False)
+        
+        input_image.append(image)
+        input_prob.append(prob)
+        input_rhoana.append(rhoana)
+        input_gold.append(gold)
 
 
     original_mean_VI, original_median_VI, original_VI_s = mlp.Legacy.VI(input_gold, input_rhoana)
@@ -379,51 +397,38 @@ class Stats(object):
     if not os.path.exists(output_folder):
       os.makedirs(output_folder)
 
-    # find merge errors, if we did not generate them before
-    merge_error_file = output_folder+'/merge_errors.p'
-    if os.path.exists(merge_error_file):
-      print 'Loading merge errors from file..'
-      with open(merge_error_file, 'rb') as f:
-        merge_errors = pickle.load(f)
+
+
+
+
+
+    ### SKIPPING MERGE FOR NOW
+    # # find merge errors, if we did not generate them before
+    # merge_error_file = output_folder+'/merge_errors.p'
+    # if os.path.exists(merge_error_file):
+    #   print 'Loading merge errors from file..'
+    #   with open(merge_error_file, 'rb') as f:
+    #     merge_errors = pickle.load(f)
+    # else:
+    #   print 'Finding Top 5 merge errors..'
+    #   merge_errors = mlp.Legacy.get_top5_merge_errors(cnn, input_image, input_prob, input_rhoana)
+    #   with open(merge_error_file, 'wb') as f:
+    #     pickle.dump(merge_errors, f)
+
+    # print len(merge_errors), ' merge errors found.'
+    ####
+
+    # we need to create a bigM for the cylinder volume
+    bigM_cylinder_file = output_folder + '/bigM_cylinder.p'
+    if os.path.exists(bigM_cylinder_file):
+      print 'Loading cylinder bigM from file..'
+      with open(bigM_cylinder_file, 'rb') as f:
+        bigM_cylinder = pickle.load(f)
     else:
-      print 'Finding Top 5 merge errors..'
-      merge_errors = mlp.Legacy.get_top5_merge_errors(cnn, input_image, input_prob, input_rhoana)
-      with open(merge_error_file, 'wb') as f:
-        pickle.dump(merge_errors, f)
-
-    print len(merge_errors), ' merge errors found.'
-
-    # we need to create a bigM for the dojo volume
-    bigM_dojo_file = output_folder + '/bigM_dojo.p'
-    if os.path.exists(bigM_dojo_file):
-      print 'Loading dojo bigM from file..'
-      with open(bigM_dojo_file, 'rb') as f:
-        bigM_dojo = pickle.load(f)
-    else:
-      print 'Creating dojo bigM..'
-      bigM_dojo = mlp.Legacy.create_bigM_without_mask(cnn, input_image, input_prob, input_rhoana, verbose=False)
-      with open(bigM_dojo_file, 'wb') as f:
-        pickle.dump(bigM_dojo, f)    
+      print 'Creating cylinder bigM..'
+      bigM_cylinder = mlp.Legacy.create_bigM_without_mask(cnn, input_image, input_prob, input_rhoana, verbose=False)
+      with open(bigM_cylinder_file, 'wb') as f:
+        pickle.dump(bigM_cylinder, f)    
 
 
 
-    # print
-    # #
-    # # perform merge correction with p < .05
-    # #
-    # print 'Correcting merge errors with p < .05'
-    # bigM_dojo_05, corrected_rhoana_05 = mlp.Legacy.perform_auto_merge_correction(cnn, bigM_dojo, input_image, input_prob, input_rhoana, merge_errors, .05)
-
-    # print '   Mean VI improvement', original_mean_VI-mlp.Legacy.VI(input_gold, corrected_rhoana_05)[0]
-    # print '   Median VI improvement', original_median_VI-mlp.Legacy.VI(input_gold, corrected_rhoana_05)[1]
-
-    # #
-    # # perform split correction with p > .95
-    # #
-    # print 'Correcting split errors with p > .95'
-    # bigM_dojo_after_95, out_dojo_volume_after_auto_95, dojo_auto_fixes_95, dojo_auto_vi_s_95 = mlp.Legacy.splits_global_from_M_automatic(cnn, bigM_dojo_05, input_image, input_prob, corrected_rhoana_05, input_gold, sureness_threshold=.95)
-
-    # dojo_vi_95 = mlp.Legacy.VI(input_gold, out_dojo_volume_after_auto_95)
-
-    # print '   Mean VI improvement', original_mean_VI-dojo_vi_95[0]
-    # print '   Median VI improvement', original_median_VI-dojo_vi_95[1]    
