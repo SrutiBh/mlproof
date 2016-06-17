@@ -587,8 +587,13 @@ class Legacy(object):
     bigM = []
     global_patches = []
 
+    if type(volume) is list:
+      z_s = len(volume)
+    else:
+      z_s = volume.shape[0]
+
     t0 = time.time()
-    for slice in range(volume.shape[0]):
+    for slice in range(z_s):
 
       image = volume[slice]
       prob = volume_prob[slice]
@@ -638,7 +643,13 @@ class Legacy(object):
   def VI(gt, seg):
       # total_vi = 0
       slice_vi = []    
-      for i in range(gt.shape[0]):
+
+      if type(gt) is list:
+        z_s = len(gt)
+      else:
+        z_s = gt.shape[0]
+
+      for i in range(z_s):
           current_vi = Util.vi(gt[i].astype(np.int64), seg[i].astype(np.int64))
           # total_vi += current_vi
           slice_vi.append(current_vi)

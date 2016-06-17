@@ -426,7 +426,7 @@ class Stats(object):
         bigM_cylinder = pickle.load(f)
     else:
       print 'Creating cylinder bigM..'
-      bigM_cylinder = mlp.Legacy.create_bigM_without_mask(cnn, input_image, input_prob, input_rhoana, verbose=False)
+      bigM_cylinder = mlp.Legacy.create_bigM_without_mask(cnn, input_image, input_prob, input_rhoana, verbose=True, max=1000000)
       with open(bigM_cylinder_file, 'wb') as f:
         pickle.dump(bigM_cylinder, f)    
 
