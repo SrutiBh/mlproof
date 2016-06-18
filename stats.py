@@ -432,3 +432,117 @@ class Stats(object):
 
 
 
+
+    print
+    cylinder_vi_95_file = output_folder + '/cylinder_vi_95.p'
+    if os.path.exists(cylinder_vi_95_file):
+      print 'Loading merge errors p < .05 and split errors p > .95 from file..'
+      with open(cylinder_vi_95_file, 'rb') as f:
+        cylinder_vi_95 = pickle.load(f)
+    else:      
+      # #
+      # # perform merge correction with p < .05
+      # #
+      # print 'Correcting merge errors with p < .05'
+      # bigM_dojo_05, corrected_rhoana_05 = mlp.Legacy.perform_auto_merge_correction(cnn, bigM_dojo, input_image, input_prob, input_rhoana, merge_errors, .05)
+
+      # print '   Mean VI improvement', original_mean_VI-mlp.Legacy.VI(input_gold, corrected_rhoana_05)[0]
+      # print '   Median VI improvement', original_median_VI-mlp.Legacy.VI(input_gold, corrected_rhoana_05)[1]
+
+      #
+      # perform split correction with p > .95
+      #
+      print 'Correcting split errors with p > .95'
+      bigM_cylinder_05 = bigM_cylinder
+      corrected_rhoana_05 = input_rhoana
+      bigM_cylinder_after_95, out_cylinder_volume_after_auto_95, cylinder_auto_fixes_95, cylinder_auto_vi_s_95 = mlp.Legacy.splits_global_from_M_automatic(cnn, bigM_cylinder_05, input_image, input_prob, corrected_rhoana_05, input_gold, sureness_threshold=.95)
+
+      cylinder_vi_95 = mlp.Legacy.VI(input_gold, out_cylinder_volume_after_auto_95)
+
+      with open(cylinder_vi_95_file, 'wb') as f:
+        pickle.dump(cylinder_vi_95, f)
+
+    print '   Mean VI improvement', original_mean_VI-cylinder_vi_95[0]
+    print '   Median VI improvement', original_median_VI-cylinder_vi_95[1]
+
+
+
+
+
+    print
+    cylinder_vi_99_file = output_folder + '/cylinder_vi_99.p'
+    if os.path.exists(cylinder_vi_99_file):
+      print 'Loading merge errors p < .01 and split errors p > .99 from file..'
+      with open(cylinder_vi_99_file, 'rb') as f:
+        cylinder_vi_99 = pickle.load(f)
+    else:      
+      # #
+      # # perform merge correction with p < .01
+      # #
+      # print 'Correcting merge errors with p < .01'
+      # bigM_dojo_05, corrected_rhoana_05 = mlp.Legacy.perform_auto_merge_correction(cnn, bigM_dojo, input_image, input_prob, input_rhoana, merge_errors, .05)
+
+      # print '   Mean VI improvement', original_mean_VI-mlp.Legacy.VI(input_gold, corrected_rhoana_05)[0]
+      # print '   Median VI improvement', original_median_VI-mlp.Legacy.VI(input_gold, corrected_rhoana_05)[1]
+
+      #
+      # perform split correction with p > .99
+      #
+      print 'Correcting split errors with p > .99'
+      bigM_cylinder_01 = bigM_cylinder
+      corrected_rhoana_01 = input_rhoana
+      bigM_cylinder_after_99, out_cylinder_volume_after_auto_99, cylinder_auto_fixes_99, cylinder_auto_vi_s_99 = mlp.Legacy.splits_global_from_M_automatic(cnn, bigM_cylinder_01, input_image, input_prob, corrected_rhoana_01, input_gold, sureness_threshold=.99)
+
+      cylinder_vi_99 = mlp.Legacy.VI(input_gold, out_cylinder_volume_after_auto_99)
+
+      with open(cylinder_vi_99_file, 'wb') as f:
+        pickle.dump(cylinder_vi_99, f)
+
+    print '   Mean VI improvement', original_mean_VI-cylinder_vi_99[0]
+    print '   Median VI improvement', original_median_VI-cylinder_vi_99[1]
+
+
+
+
+    print
+    cylinder_vi_simuser_file = output_folder + '/cylinder_vi_simuser.p'
+    if os.path.exists(cylinder_vi_simuser_file):
+      print 'Loading merge errors and split errors (simulated user) from file..'
+      with open(cylinder_vi_simuser_file, 'rb') as f:
+        cylinder_vi_simuser = pickle.load(f)
+    else:
+      # #
+      # # perform merge correction with simulated user
+      # #
+      # print 'Correcting merge errors by simulated user (er=0)'
+      # bigM_dojo_simuser, corrected_rhoana_sim_user, sim_user_fixes = mlp.Legacy.perform_sim_user_merge_correction(cnn, bigM_dojo, input_image, input_prob, input_rhoana, input_gold, merge_errors)
+      
+      # print '   Mean VI improvement', original_mean_VI-mlp.Legacy.VI(input_gold, corrected_rhoana_sim_user)[0]    
+      # print '   Median VI improvement', original_median_VI-mlp.Legacy.VI(input_gold, corrected_rhoana_sim_user)[1]
+      
+      #
+      # perform split correction with simulated user
+      #
+      print 'Correcting split errors by simulated user (er=0)'
+      bigM_cylinder_simuser = bigM_cylinder
+      corrected_rhoana_sim_user = input_rhoana
+      bigM_cylinder_after, out_cylinder_volume_after_sim_user, cylinder_sim_user_fixes, cylinder_sim_user_vi_s = mlp.Legacy.splits_global_from_M(cnn, bigM_cylinder_simuser, input_image, input_prob, corrected_rhoana_sim_user, input_gold, hours=-1)
+
+      cylinder_vi_simuser = mlp.Legacy.VI(input_gold, out_cylinder_volume_after_sim_user)
+
+      with open(cylinder_vi_simuser_file, 'wb') as f:
+        pickle.dump(cylinder_vi_simuser, f)      
+
+    print '   Mean VI improvement', original_mean_VI-cylinder_vi_simuser[0]
+    print '   Median VI improvement', original_median_VI-cylinder_vi_simuser[1]
+
+
+    data = collections.OrderedDict()
+    data['Automatic\nSegmentation'] = mlp.Legacy.VI(input_gold, input_rhoana)[2]
+    data['Simulated   \nUser   '] = cylinder_vi_simuser[2]
+    data['Automatic\nCorrections\n(p=.95)'] = cylinder_vi_95[2]
+    data['Automatic\nCorrections\n(p=.99)'] = cylinder_vi_99[2]
+
+
+    mlp.Legacy.plot_vis(data, output_folder+'/cylinder_vi.pdf')    
+
