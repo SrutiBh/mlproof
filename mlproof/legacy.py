@@ -1,6 +1,8 @@
+from collections import Counter
 import numpy as np
 import mahotas as mh
 import random
+from scipy.optimize import curve_fit
 from scipy.spatial import distance
 import skimage.measure
 import tifffile as tif
@@ -840,7 +842,7 @@ class Legacy(object):
 
 
   @staticmethod
-  def splits_global_from_M(cnn, big_M, volume, volume_prob, volume_segmentation, volume_groundtruth=np.zeros((1,1)), hours=.5, randomize=False, error_rate=0, oversampling=False):
+  def splits_global_from_M(cnn, big_M, volume, volume_prob, volume_segmentation, volume_groundtruth=np.zeros((1,1)), hours=.5, randomize=False, error_rate=0, oversampling=False, verbose=False):
 
     # explicit copy
     bigM = [None]*len(big_M)
@@ -883,7 +885,8 @@ class Legacy(object):
         vi_s_30mins.append(vi_after_30_min)
         j = 0
         time_counter += 1
-        print time_counter*30, 'minutes done bigM_max=', superMax
+        if verbose:
+          print time_counter*30, 'minutes done bigM_max=', superMax
 
       if i>0 and i % 12 == 0:
         # every 12 corrections == 1 minute
@@ -913,7 +916,7 @@ class Legacy(object):
               # print 'found', l, n, slice, max_in_slice
           
       if superMax <= 0.:
-        print 'SUPERMAX 0'
+        # print 'SUPERMAX 0'
         break
 
       if randomize:
@@ -1042,13 +1045,13 @@ class Legacy(object):
     median_input_vi_count = len(data.values())+3
 
     fig, ax = plt.subplots(figsize=(22,22))
-    ax.plot(range(median_input_vi_count), [median_input_vi]*median_input_vi_count, 'k:' , color='gray', label='Avg. input VI')
+    ax.plot(range(median_input_vi_count), [median_input_vi]*median_input_vi_count, 'k:' , color='gray', linewidth=2, label='Avg. input VI')
 
     objects = data.keys()
 
     y_pos = range(1,len(objects)+1)
 
-
+    # setp(r['whiskers'], color='black', lw=2) 
     plt.ylabel('Variation of Information', labelpad=20)
 
     plt.setp(plt.xticks()[1], rotation=45)
@@ -1058,7 +1061,10 @@ class Legacy(object):
             'size'   : 26}
 
     plt.rc('font', **font)
-    plt.boxplot(data.values(), 0, 'gD', whis=1.5)
+    
+    bp = plt.boxplot(data.values(), 0, 'gD', whis=1.5)
+    plt.setp(bp['boxes'], linewidth=4)
+    plt.setp(bp['medians'], linewidth=4)        
     plt.xticks(y_pos, objects)
 
     if filename:
@@ -1108,3 +1114,61 @@ class Legacy(object):
 
     plt.show()
 
+  @staticmethod
+  def plot_vi_simuser(data, filename=None):
+    fig, ax = plt.subplots(figsize=(22,22))
+
+    x_marks = range(len(data))
+    def green_func(x, a, b, c):
+        return a*np.exp(-b*x)+c
+    popt, _ = curve_fit(green_func, x_marks, data)
+
+    xx = np.linspace(0,len(data),100)
+    mediany = green_func(xx, *popt)
+
+    # ax.plot(x_marks, median_vis_per_min, 'r', label='Simulated User')
+
+    ax.plot(xx, mediany, linewidth=4)#, label='Simulated User')
+    # ax.axvline(x=403, ymin=0, ymax=.245, color='b', linestyle='dashed', linewidth=2)
+
+    plt.ylabel('Variation of Information', labelpad=20)
+
+    plt.xlabel('Corrections', labelpad=20)
+    plt.xlim([0,len(data)])
+    # plt.ylim([0.4,0.5])
+
+
+    legend = ax.legend(loc='upper right', shadow=True)
+
+    font = {'family' : 'normal',
+            'size'   : 26}
+
+    plt.rc('font', **font)
+
+    if filename:
+      plt.savefig(filename)
+
+    plt.show()    
+
+  @staticmethod
+  def plot_roc(data, filename=None):
+
+    counts = Counter(data)
+    P = counts['Good']
+    N = counts['Bad']
+    TP_P = []
+    TN_N = []
+    for i,f in enumerate(data):
+        counts_ = Counter(data[0:i+1])
+        TP_P.append(float(counts_['Good'])/P)
+        TN_N.append(float(counts_['Bad'])/N)    
+    fig, ax = plt.subplots(figsize=(22,22))
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+
+    ax.plot(TN_N, TP_P, linewidth=4)
+
+    if filename:
+      plt.savefig(filename)
+
+    plt.show()

@@ -365,9 +365,37 @@ class Stats(object):
 
     mlp.Legacy.plot_vis(data, output_folder+'/dojo_vi.pdf')
 
+    #
+    # simple VI plot
+    #
+    data = collections.OrderedDict()
+    data['Initial\nSegmentation'] = dojo_input_vi
+    data['Automatic\nCorrections'] = dojo_vi_99[2]
+    data['Dojo       '] = dojo_best_user
+    expert_sum = []
+    for i,d in enumerate(dojo_expert1):
+      expert_sum.append((dojo_expert1[i]+dojo_expert2[i])/2.)
+    data['Guided    \n(Expert)   '] = expert_sum
+    data['Guided\n(Simulated)'] = dojo_vi_simuser[2]
+    mlp.Legacy.plot_vis(data, output_folder+'/dojo_vi_simple.pdf')
+
+    #
+    # simple VI plot
+    #
+    data = collections.OrderedDict()
+    data['Initial\nSegmentation'] = dojo_input_vi
+    data['Automatic\nCorrections'] = dojo_vi_99[2]
+    data['Dojo       '] = dojo_best_user
+    expert_sum = []
+    for i,d in enumerate(dojo_expert1):
+      expert_sum.append((dojo_expert1[i]+dojo_expert2[i])/2.)
+    # data['Guided    \n(Novice)   '] = dojo_novice
+    data['Guided     '] = expert_sum
+    # data['Guided\n(Simulated)'] = dojo_vi_simuser[2]
+    mlp.Legacy.plot_vis(data, output_folder+'/dojo_vi_simple2.pdf')
+
+
     mlp.Legacy.plot_vis_error_rate(dojo_vi_simuser_er, np.median(dojo_avg_user), np.median(dojo_best_user), output_folder+'/dojo_errorrate.pdf')
-
-
 
 
 
@@ -506,10 +534,18 @@ class Stats(object):
 
     print
     cylinder_vi_simuser_file = output_folder + '/cylinder_vi_simuser.p'
+    cylinder_fixes_simuser_file = output_folder + '/cylinder_fixes_simuser.p'
+    cylinder_vis_simuser_file = output_folder + '/cylinder_vi_s_simuser.p'
     if os.path.exists(cylinder_vi_simuser_file):
       print 'Loading merge errors and split errors (simulated user) from file..'
       with open(cylinder_vi_simuser_file, 'rb') as f:
         cylinder_vi_simuser = pickle.load(f)
+      with open(cylinder_fixes_simuser_file, 'rb') as f:
+        cylinder_sim_user_fixes = pickle.load(f)
+      with open(cylinder_vis_simuser_file, 'rb') as f:
+        cylinder_sim_user_vi_s = pickle.load(f)
+
+
     else:
       # #
       # # perform merge correction with simulated user
@@ -533,6 +569,12 @@ class Stats(object):
       with open(cylinder_vi_simuser_file, 'wb') as f:
         pickle.dump(cylinder_vi_simuser, f)      
 
+      with open(cylinder_vis_simuser_file, 'wb') as f:
+        pickle.dump(cylinder_sim_user_vi_s, f)
+
+      with open(cylinder_fixes_simuser_file, 'wb') as f:
+        pickle.dump(cylinder_sim_user_fixes, f)
+
     print '   Mean VI improvement', original_mean_VI-cylinder_vi_simuser[0]
     print '   Median VI improvement', original_median_VI-cylinder_vi_simuser[1]
 
@@ -544,5 +586,30 @@ class Stats(object):
     data['Automatic\nCorrections\n(p=.99)'] = cylinder_vi_99[2]
 
 
-    mlp.Legacy.plot_vis(data, output_folder+'/cylinder_vi.pdf')    
+    mlp.Legacy.plot_vis(data, output_folder+'/cylinder_vi.pdf')
 
+    #
+    # Simple VI boxplot
+    #
+    data = collections.OrderedDict()
+    data['Initial\nSegmentation'] = mlp.Legacy.VI(input_gold, input_rhoana)[2]
+    data['Automatic\nCorrections'] = cylinder_vi_95[2]    
+    data['Guided\n(Simulated)'] = cylinder_vi_simuser[2]
+
+    mlp.Legacy.plot_vis(data, output_folder+'/cylinder_vi_simple.pdf')
+
+
+
+
+    proofread_vis = [original_VI_s] + cylinder_sim_user_vi_s
+    vi_s_per_correction = [np.median(proofread_vis[0])]
+    for m in proofread_vis[1:]:
+        for i in range(30*12):
+            vi_s_per_correction.append(np.median(m))
+
+    mlp.Legacy.plot_vi_simuser(vi_s_per_correction, output_folder+'/cylinder_simuser_vi.pdf')
+
+
+    mlp.Legacy.plot_roc(cylinder_sim_user_fixes, output_folder+'/cylinder_roc.pdf')
+
+    return cylinder_sim_user_fixes, proofread_vis
