@@ -3,7 +3,7 @@ from lasagne import nonlinearities
 
 from cnn import CNN
 
-class RGBANet(CNN):
+class RGBNet(CNN):
     '''
     Our CNN with image, prob, merged_array as RGB.
     '''
