@@ -81,6 +81,7 @@ class Stats(object):
 
     # calc F1
     test_prediction = cnn.predict(test_inputs)
+    test_prediction_prob = cnn.predict_proba(test_inputs)
     print
     print 'Precision/Recall:'
     print classification_report(y_test, test_prediction)
@@ -116,7 +117,7 @@ class Stats(object):
 
 
 
-    return cnn, loss_plot, y_test, test_prediction
+    return cnn, loss_plot, y_test, test_prediction, test_prediction_prob
 
   @staticmethod
   def run_dojo_xp(cnn):
