@@ -563,7 +563,7 @@ class Patch(object):
 
 
   @staticmethod
-  def load(PATCH_PATH, patch_size=(75,75)):
+  def load(PATCH_PATH, patch_size=(75,75), verbose=True):
 
       PATCH_PATH = os.path.expanduser('~/patches/') + os.sep + PATCH_PATH + os.sep
 
@@ -575,6 +575,7 @@ class Patch(object):
       test = np.load(PATCH_PATH+'test.npz', mmap_mode='r')
       test_targets = np.load(PATCH_PATH+'test_targets.npz')
 
-      print 'Loaded', PATCH_PATH, 'in', time.time()-t0, 'seconds.'
+      if verbose:
+        print 'Loaded', PATCH_PATH, 'in', time.time()-t0, 'seconds.'
 
       return training, training_targets['targets'].astype(np.uint8), test, test_targets['targets'].astype(np.uint8)

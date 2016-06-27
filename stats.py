@@ -10,11 +10,30 @@ from nolearn.lasagne.visualize import plot_conv_weights
 from nolearn.lasagne.visualize import plot_conv_activity
 from nolearn.lasagne.visualize import plot_occlusion
 
-from sklearn.metrics import classification_report, accuracy_score, roc_curve, auc
+from sklearn.metrics import classification_report, accuracy_score, roc_curve, auc, precision_recall_fscore_support, f1_score
 
 import matplotlib.pyplot as plt    
 
 import mlproof as mlp
+
+
+# from http://calebmadrigal.com/display-list-as-table-in-ipython-notebook/
+class ListTable(list):
+    """ Overridden list class which takes a 2-dimensional list of 
+        the form [[1,2,3],[4,5,6]], and renders an HTML Table in 
+        IPython Notebook. """
+    
+    def _repr_html_(self):
+        html = ["<table>"]
+        for row in self:
+            html.append("<tr>")
+            
+            for col in row:
+                html.append("<td>{0}</td>".format(col))
+            
+            html.append("</tr>")
+        html.append("</table>")
+        return ''.join(html)
 
 
 #
@@ -46,6 +65,173 @@ class MyTestBatchIterator(BatchIterator):
 class Stats(object):
 
   @staticmethod
+  def quantify_cnns(cnns):
+
+    # load dojo data
+    input_image, input_prob, input_gold, input_rhoana, dojo_bbox = mlp.Legacy.read_dojo_data()
+    dojo_mean_VI, dojo_median_VI, dojo_VI_s = mlp.Legacy.VI(input_gold, input_rhoana)
+
+    # load cylinder data
+    input_image = []
+    input_prob = []
+    input_rhoana = []
+    input_gold = []
+    for z in range(250, 300):
+        image, prob, mask, gold, rhoana = mlp.Util.read_section('/home/d/data/cylinder/', z, verbose=False)
+        
+        input_image.append(image)
+        input_prob.append(prob)
+        input_rhoana.append(rhoana)
+        input_gold.append(gold)
+
+
+    cyl_mean_VI, cyl_median_VI, cyl_VI_s = mlp.Legacy.VI(input_gold, input_rhoana)
+
+
+    # load patches
+    X_train, y_train, X_test, y_test = mlp.Patch.load('cylinder1', verbose=False)
+
+    T = ListTable()
+    T.append(['',
+              '',
+              '',
+              '',
+              '',
+              '',
+              '',
+              '',
+              'median VI improvement'
+              ])
+    T.append(['', 
+              'Cost [h]', 
+              'Valid. Loss', 
+              'Valid. ACC', 
+              'Test. ACC', 
+              'Prec./Recall', 
+              'F1 Score', 
+              'ROC AUC', 
+              'AC4 (autom.)', 
+              'AC4 (guided)', 
+              'LCylinder (autom.)', 
+              'LCylinder (guided)'])
+
+    
+
+    for cnn_name in cnns:
+      # load cnn
+      if not os.path.exists(cnns[cnn_name]):
+        T.append([cnn_name])
+        continue
+
+      path = cnns[cnn_name]
+
+      with open(path, 'rb') as f:
+        cnn = pickle.load(f)
+
+      cnn.uuid = os.path.basename(os.path.dirname(path))
+
+      # make sure we have the correct test batch iterator
+      cnn.batch_iterator_test = MyTestBatchIterator(cnn.batch_iterator_train.batch_size)
+
+
+      test_inputs = collections.OrderedDict()
+      input_names = []
+      input_values = []
+      for l in cnn.layers:
+        layer_name, layer_type = l
+        if layer_type == lasagne.layers.input.InputLayer:
+          input_name = layer_name.split('_')[0]
+          if input_name == 'binary':
+            input_name = 'merged_array'
+          if input_name == 'border':
+            input_name = 'border_overlap'
+            if path.find('larger_border_overlap') != -1:
+              input_name = 'larger_border_overlap'
+
+          input_names.append(layer_name)
+          input_values.append(input_name)
+          test_inputs[layer_name] = X_test[input_name]
+
+      test_prediction = cnn.predict(test_inputs)
+      test_prediction_prob = cnn.predict_proba(test_inputs)
+
+      # test score
+      test_acc = accuracy_score(y_test, test_prediction)
+
+      # ROC/AUC
+      fpr, tpr, _ = roc_curve(y_test, test_prediction_prob[:,1])
+      roc_auc = auc(fpr, tpr)
+
+      # prec./recall
+      precision, recall, _, _ = precision_recall_fscore_support(y_test, test_prediction)
+      prec_recall = str(round((precision[0] + precision[1])/2,3)) + '/' + str(round((recall[0] + recall[1])/2,3))
+      f1_score_val = f1_score(y_test, test_prediction)
+
+      #
+      patience_counter = cnn.on_epoch_finished[2].patience
+      best_epoch = cnn.train_history_[-2-patience_counter]
+      duration = best_epoch['dur']
+      epoch = best_epoch['epoch']
+      valid_acc = best_epoch['valid_accuracy']
+      valid_loss = best_epoch['valid_loss']
+      cost = (epoch * duration) / 3600.
+
+      output_folder = '/home/d/netstats/'+cnn.uuid+'/'
+      # AC4 (automatic)
+      vi_file = output_folder + '/dojo_vi_95.p'
+      if os.path.exists(vi_file):
+        with open(vi_file, 'rb') as f:
+          vi = pickle.load(f)        
+        ac4_autom = dojo_median_VI-vi[1]
+      else:
+        ac4_autom = -1
+
+      # AC4 (guided)
+      vi_file = output_folder + '/dojo_vi_simuser.p'
+      if os.path.exists(vi_file):
+        with open(vi_file, 'rb') as f:
+          vi = pickle.load(f)        
+        ac4_guided = dojo_median_VI-vi[1]
+      else:
+        ac4_guided = -1    
+
+      # Cylinder (automatic)
+      vi_file = output_folder + '/cylinder_vi_95.p'
+      if os.path.exists(vi_file):
+        with open(vi_file, 'rb') as f:
+          vi = pickle.load(f)        
+        cylinder_autom = cyl_median_VI-vi[1]
+      else:
+        cylinder_autom = -1
+      # Cylinder (guided)
+      vi_file = output_folder + '/cylinder_vi_simuser.p'
+      if os.path.exists(vi_file):
+        with open(vi_file, 'rb') as f:
+          vi = pickle.load(f)        
+        cylinder_guided = cyl_median_VI-vi[1]
+      else:
+        cylinder_guided = -1
+
+      T.append([
+                cnn_name,
+                round(cost,3),
+                round(valid_loss,3),
+                round(valid_acc,3),
+                round(test_acc,3),
+                prec_recall,
+                round(f1_score_val,3),
+                round(roc_auc,3),
+                round(ac4_autom,3),
+                round(ac4_guided,3),
+                round(cylinder_autom,3),
+                round(cylinder_guided,3)
+               ])
+
+
+    return T
+
+
+  @staticmethod
   def load_cnn(path):
 
     # load cnn
@@ -53,7 +239,7 @@ class Stats(object):
       cnn = pickle.load(f)    
 
     # make sure we have the correct test batch iterator
-    cnn.batch_iterator_test = MyTestBatchIterator(100)
+    cnn.batch_iterator_test = MyTestBatchIterator(cnn.batch_iterator_train.batch_size)
 
 
     # load patches
@@ -93,17 +279,16 @@ class Stats(object):
     print 'Accuracy Score:', acc_score
 
     # ROC/AUC
-    fpr, tpr, _ = roc_curve(y_test, test_prediction)
+    fpr, tpr, _ = roc_curve(y_test, test_prediction_prob[:,1])
     roc_auc = auc(fpr, tpr)
 
-    
     # attach patch selection
     cnn.input_names = input_names
     cnn.input_values = input_values
     cnn.uuid = os.path.basename(os.path.dirname(path))
     
     # plot loss    
-    output_folder = '/tmp/netstats/'+cnn.uuid+'/'
+    output_folder = '/home/d/netstats/'+cnn.uuid+'/'
     if not os.path.exists(output_folder):
       os.makedirs(output_folder)
     font = {'family' : 'normal',
@@ -129,7 +314,7 @@ class Stats(object):
     original_mean_VI, original_median_VI, original_VI_s = mlp.Legacy.VI(input_gold, input_rhoana)
 
     # output folder for anything to store
-    output_folder = '/tmp/netstats/'+cnn.uuid+'/'
+    output_folder = '/home/d/netstats/'+cnn.uuid+'/'
     if not os.path.exists(output_folder):
       os.makedirs(output_folder)
 
