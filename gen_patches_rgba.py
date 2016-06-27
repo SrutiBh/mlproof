@@ -5,7 +5,7 @@ import time
 
 import mlproof as mlp
 
-PATCH_PATH = os.path.expanduser('~/home/d/patches/cylinder1_rgba/')
+PATCH_PATH = os.path.expanduser('~/patches/cylinder1_rgba/')
 
 
 
@@ -22,7 +22,7 @@ def generate_patches(start_slice, end_slice):
 
         t0 = time.time()
         print 'working on slice', z
-        input_image, input_prob, input_mask, input_gold, input_rhoana = mlp.Util.read_section('/home/d/data/cylinder/',z)
+        input_image, input_prob, input_mask, input_gold, input_rhoana = mlp.Util.read_section(os.path.expanduser('~/data/cylinder/',z))
 
         error_patches, patches = mlp.Patch.patchify_maxoverlap(input_image, input_prob, input_mask, input_rhoana, input_gold, sample_rate=1)
 

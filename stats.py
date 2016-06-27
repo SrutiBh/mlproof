@@ -10,7 +10,7 @@ from nolearn.lasagne.visualize import plot_conv_weights
 from nolearn.lasagne.visualize import plot_conv_activity
 from nolearn.lasagne.visualize import plot_occlusion
 
-from sklearn.metrics import classification_report, accuracy_score
+from sklearn.metrics import classification_report, accuracy_score, roc_curve, auc
 
 import matplotlib.pyplot as plt    
 
@@ -91,6 +91,10 @@ class Stats(object):
     print 'Test Accuracy:', test_acc
     print 'Accuracy Score:', acc_score
 
+    # ROC/AUC
+    fpr, tpr, _ = roc_curve(y_test, test_prediction)
+    roc_auc = auc(fpr, tpr)
+
     
     # attach patch selection
     cnn.input_names = input_names
@@ -106,10 +110,13 @@ class Stats(object):
             'size'   : 26}
     plt.rc('font', **font)      
     plt.figure(figsize=(22,22))
+
     loss_plot = plot_loss(cnn)
     loss_plot.savefig(output_folder+'/loss.pdf')
 
-    return cnn, loss_plot
+
+
+    return cnn, loss_plot, y_test, test_prediction
 
   @staticmethod
   def run_dojo_xp(cnn):
@@ -611,5 +618,8 @@ class Stats(object):
 
 
     mlp.Legacy.plot_roc(cylinder_sim_user_fixes, output_folder+'/cylinder_roc.pdf')
+
+
+
 
     return cylinder_sim_user_fixes, proofread_vis
