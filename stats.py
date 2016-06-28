@@ -115,7 +115,8 @@ class Stats(object):
               'LCylinder (autom.)', 
               'LCylinder (guided)'])
 
-    
+    # store values for ROC plots
+    roc_vals = {}
 
     for cnn_name in cnns:
       # load cnn
@@ -161,6 +162,8 @@ class Stats(object):
       # ROC/AUC
       fpr, tpr, _ = roc_curve(y_test, test_prediction_prob[:,1])
       roc_auc = auc(fpr, tpr)
+
+      roc_vals[cnn_name] = (fpr, tpr, roc_auc)
 
       # prec./recall
       precision, recall, _, _ = precision_recall_fscore_support(y_test, test_prediction)
@@ -227,6 +230,8 @@ class Stats(object):
                 round(cylinder_guided,3)
                ])
 
+
+    mlp.Legacy.plot_roc(roc_vals, title='Classifier ROC Comparison')
 
     return T
 
@@ -300,9 +305,11 @@ class Stats(object):
     loss_plot = plot_loss(cnn)
     loss_plot.savefig(output_folder+'/loss.pdf')
 
+    data = {}
+    data['CNN'] = (fpr, tpr, roc_auc)
+    mlp.Legacy.plot_roc(data, output_folder+'/cnn_roc.pdf')
 
-
-    return cnn, loss_plot, y_test, test_prediction, test_prediction_prob
+    return cnn
 
   @staticmethod
   def run_dojo_xp(cnn):
@@ -614,7 +621,7 @@ class Stats(object):
     original_mean_VI, original_median_VI, original_VI_s = mlp.Legacy.VI(input_gold, input_rhoana)
 
     # output folder for anything to store
-    output_folder = '/tmp/netstats/'+cnn.uuid+'/'
+    output_folder = '/home/d/netstats/'+cnn.uuid+'/'
     if not os.path.exists(output_folder):
       os.makedirs(output_folder)
 
@@ -803,8 +810,13 @@ class Stats(object):
     mlp.Legacy.plot_vi_simuser(vi_s_per_correction, output_folder+'/cylinder_simuser_vi.pdf')
 
 
-    mlp.Legacy.plot_roc(cylinder_sim_user_fixes, output_folder+'/cylinder_roc.pdf')
-
+    data = {}
+    y_text_fixes = [v[0] for v in cylinder_sim_user_fixes]
+    y_pred_fixes = [v[1] for v in cylinder_sim_user_fixes]
+    fpr, tpr, _ = roc_curve(y_test_fixes, y_pred_fixes)
+    roc_auc = auc(fpr, tpr)    
+    data['Cylinder Fixes'] = (fpr, tpr, roc_auc)
+    mlp.Legacy.plot_roc(data, output_folder+'/cylinder_roc.pdf')
 
 
 

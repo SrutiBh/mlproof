@@ -794,14 +794,14 @@ class Legacy(object):
         # print 'good fix'
         # print 'size first label:', pxlsize
         # print 'size second label:',pxlsize2   
-        fixes.append('Good')       
+        fixes.append((1, superMax))       
       else:
         #
         # this is a bad fix
         #
         good_fix = False
         bad_fix_counter += 1
-        fixes.append('Bad')
+        fixes.append((0, superMax))
         # print 'bad fix, excluding it..'
         # print 'size first label:', pxlsize
         # print 'size second label:',pxlsize2
@@ -973,14 +973,14 @@ class Legacy(object):
         # print 'good fix'
         # print 'size first label:', pxlsize
         # print 'size second label:',pxlsize2   
-        fixes.append('Good')       
+        fixes.append((1, superMax))       
       else:
         #
         # this is a bad fix
         #
         good_fix = False
         bad_fix_counter += 1
-        fixes.append('Bad')
+        fixes.append((0, superMax))
         # print 'bad fix, excluding it..'
         # print 'size first label:', pxlsize
         # print 'size second label:',pxlsize2
@@ -1082,16 +1082,16 @@ class Legacy(object):
     fig, ax = plt.subplots(figsize=(22,22))
     ax.plot(x_labels, data.values(), 'o')
 
-    ax.plot(x_labels, data.values(), 'k--', label='Simulated User')
+    ax.plot(x_labels, data.values(), 'k--', label='Guided (Simulated)', linewidth=4)
     # ax.plot(epochs, validation_loss, 'k:', label='Validation Loss')
     # ax.plot(epochs, validation_acc, 'k', label='Validation Accuracy')
     # ax.set_yscale('log')
     # ax.plot(range(10), error_rate_results, 'o', label='Training Loss')
     # plt.boxplot(error_rate_results)
     # Now add the legend with some customizations.
-    ax.plot(x_labels, [dojo_avg_user_mean]*len(data.keys()), 'k', label='Dojo average', color='red')
-    ax.plot(x_labels, [dojo_best_user_mean]*len(data.keys()), 'k', label='Dojo best', color='blue')
-    legend = ax.legend(loc='upper right', shadow=False)
+    ax.plot(x_labels, [dojo_avg_user_mean]*len(data.keys()), 'k', label='Dojo average', color='red', linewidth=4)
+    ax.plot(x_labels, [dojo_best_user_mean]*len(data.keys()), 'k', label='Dojo best', color='blue', linewidth=4)
+    legend = ax.legend(loc='upper right')
     ax.tick_params(axis='both', which='major', pad=15)
     plt.ylabel('Variation of Information', labelpad=20)
     plt.xlabel('User Error Rate', labelpad=20)
@@ -1128,7 +1128,7 @@ class Legacy(object):
 
     # ax.plot(x_marks, median_vis_per_min, 'r', label='Simulated User')
 
-    ax.plot(xx, mediany, linewidth=4)#, label='Simulated User')
+    ax.plot(xx, mediany, linewidth=4, label='Guided (Simulated)')
     # ax.axvline(x=403, ymin=0, ymax=.245, color='b', linestyle='dashed', linewidth=2)
 
     plt.ylabel('Variation of Information', labelpad=20)
@@ -1138,7 +1138,7 @@ class Legacy(object):
     # plt.ylim([0.4,0.5])
 
 
-    legend = ax.legend(loc='upper right', shadow=True)
+    legend = ax.legend(loc='upper right')
 
     font = {'family' : 'normal',
             'size'   : 26}
@@ -1151,24 +1151,47 @@ class Legacy(object):
     plt.show()    
 
   @staticmethod
-  def plot_roc(data, filename=None):
+  def plot_roc(roc_vals, filename=None, title=None):
 
-    counts = Counter(data)
-    P = counts['Good']
-    N = counts['Bad']
-    TP_P = []
-    TN_N = []
-    for i,f in enumerate(data):
-        counts_ = Counter(data[0:i+1])
-        TP_P.append(float(counts_['Good'])/P)
-        TN_N.append(float(counts_['Bad'])/N)    
-    fig, ax = plt.subplots(figsize=(22,22))
+    plt.figure(figsize=(22,22))
+    for v in roc_vals:
+        fpr = roc_vals[v][0]
+        tpr = roc_vals[v][1]    
+        roc_auc = roc_vals[v][2]
+        plt.plot(fpr, tpr, label=v+' (area = %0.2f)' % roc_auc, linewidth=4)
+    plt.plot([0, 1], [0, 1], 'k--')
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
+    if title:
+      plt.title(title)
+    plt.legend(loc="lower right")
+    font = {'family' : 'normal',
+            'size'   : 26}
 
-    ax.plot(TN_N, TP_P, linewidth=4)
+    plt.rc('font', **font)
 
     if filename:
       plt.savefig(filename)
-
     plt.show()
+
+    # counts = Counter(data)
+    # P = counts['Good']
+    # N = counts['Bad']
+    # TP_P = []
+    # TN_N = []
+    # for i,f in enumerate(data):
+    #     counts_ = Counter(data[0:i+1])
+    #     TP_P.append(float(counts_['Good'])/P)
+    #     TN_N.append(float(counts_['Bad'])/N)    
+    # fig, ax = plt.subplots(figsize=(22,22))
+    # plt.xlabel('False Positive Rate')
+    # plt.ylabel('True Positive Rate')
+
+    # ax.plot(TN_N, TP_P, linewidth=4)
+
+    # if filename:
+    #   plt.savefig(filename)
+
+    # plt.show()
