@@ -1,3 +1,4 @@
+import cPickle as pickle
 import mahotas as mh
 import numpy as np
 import os
@@ -9,7 +10,7 @@ PATCH_PATH = os.path.expanduser('~/patches/cylinder1_rgba/')
 
 
 
-def generate_patches(start_slice, end_slice):
+def generate_patches(start_slice, end_slice, filename):
 
     patch_index = 0
 
@@ -44,6 +45,15 @@ def generate_patches(start_slice, end_slice):
     print 'Errors:',len(all_error_patches)
     print 'Correct:',len(all_correct_patches)    
     
+    with open(PATCH_PATH+'/'+filename+'_error_patches.p', 'wb') as f:
+        pickle.dump(all_error_patches, f)
+
+    with open(PATCH_PATH+'/'+filename+'_correct_patches.p', 'wb') as f:
+        pickle.dump(all_correct_patches, f)
+
+    return None
+
+
     PATCH_BYTES = 75*75
     P_SIZE = (NO_PATCHES, 4, 75,75) # rather than raveled right now
     
@@ -110,18 +120,18 @@ def run(start_slice, end_slice, filename):
     if not os.path.exists(PATCH_PATH):
         os.makedirs(PATCH_PATH)
     
-    p = generate_patches(start_slice, end_slice)
+    p = generate_patches(start_slice, end_slice, filename)
     
-    shuffled = shuffle_in_unison_inplace(p[0],
-                                         p[1],
-                                         p[2]
-                                        )
+    # shuffled = shuffle_in_unison_inplace(p[0],
+    #                                      p[1],
+    #                                      p[2]
+    #                                     )
     
-    print 'saving..'
-    np.savez(PATCH_PATH+filename+'.npz', rgba=shuffled[0],
-                                         rgba_large=shuffled[1])
-    np.savez(PATCH_PATH+filename+'_targets.npz', targets=shuffled[2])
-    print 'Done!'
+    # print 'saving..'
+    # np.savez(PATCH_PATH+filename+'.npz', rgba=shuffled[0],
+    #                                      rgba_large=shuffled[1])
+    # np.savez(PATCH_PATH+filename+'_targets.npz', targets=shuffled[2])
+    # print 'Done!'
     
 
 ###
