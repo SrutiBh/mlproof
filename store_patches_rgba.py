@@ -18,7 +18,10 @@ def shuffle_in_unison_inplace(a, b):
 
 def run(outname, borderprefix):
 
-  NO_PATCHES = 13408*2#266088*2
+  if outname == 'test':
+    NO_PATCHES = 13408*2
+  elif outname == 'train':
+    NO_PATCHES = 266088*2
 
   PATCH_BYTES = 75*75
   P_SIZE = (NO_PATCHES, 4, 75,75) # rather than raveled right now
@@ -29,7 +32,10 @@ def run(outname, borderprefix):
 
   i = 0
 
-  groups = [(outname,200,250)]
+  if outname == 'test':
+    groups = [(outname,200,250)]
+  elif outname == 'train':
+    groups = [(outname,0,50),(outname,50,100),(outname,100,150),(outname,150,200),(outname,200,250)]
 
   for g in groups:
 
