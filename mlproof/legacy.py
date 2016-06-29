@@ -1083,31 +1083,18 @@ class Legacy(object):
     ax.plot(x_labels, data.values(), 'o')
 
     ax.plot(x_labels, data.values(), 'k--', label='Guided (Simulated)', linewidth=4)
-    # ax.plot(epochs, validation_loss, 'k:', label='Validation Loss')
-    # ax.plot(epochs, validation_acc, 'k', label='Validation Accuracy')
-    # ax.set_yscale('log')
-    # ax.plot(range(10), error_rate_results, 'o', label='Training Loss')
-    # plt.boxplot(error_rate_results)
-    # Now add the legend with some customizations.
+
     ax.plot(x_labels, [dojo_avg_user_mean]*len(data.keys()), 'k', label='Dojo average', color='red', linewidth=4)
     ax.plot(x_labels, [dojo_best_user_mean]*len(data.keys()), 'k', label='Dojo best', color='blue', linewidth=4)
     legend = ax.legend(loc='upper right')
     ax.tick_params(axis='both', which='major', pad=15)
     plt.ylabel('Variation of Information', labelpad=20)
     plt.xlabel('User Error Rate', labelpad=20)
-    # The frame is matplotlib.patches.Rectangle instance surrounding the legend.
-    frame = legend.get_frame()
-    frame.set_facecolor('0.90')
+
     font = {'family' : 'normal',
     #         'weight' : 'bold',
             'size'   : 26}
     plt.rc('font', **font)
-    # Set the fontsize
-    for label in legend.get_texts():
-        label.set_fontsize('large')
-
-    for label in legend.get_lines():
-        label.set_linewidth(1.5)  # the legend line width
 
     if filename:
       plt.savefig(filename)

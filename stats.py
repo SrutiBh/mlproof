@@ -117,6 +117,7 @@ class Stats(object):
 
     # store values for ROC plots
     roc_vals = {}
+    cyl_roc_vals = {}
 
     for cnn_name in cnns:
       # load cnn
@@ -215,6 +216,20 @@ class Stats(object):
       else:
         cylinder_guided = -1
 
+      # load fixes for second ROC plot
+      cylinder_fixes_simuser_file = output_folder + '/cylinder_fixes_simuser.p'
+      if os.path.exists(cylinder_fixes_simuser_file):
+        with open(cylinder_fixes_simuser_file, 'rb') as f:
+          cylinder_sim_user_fixes = pickle.load(f)   
+
+        y_test_fixes = [v[0] for v in cylinder_sim_user_fixes]
+        y_pred_fixes = [v[1] for v in cylinder_sim_user_fixes]
+        fpr, tpr, _ = roc_curve(y_test_fixes, y_pred_fixes)
+        roc_auc = auc(fpr, tpr)    
+        cyl_roc_vals[cnn_name] = (fpr, tpr, roc_auc)
+
+
+
       T.append([
                 cnn_name,
                 round(cost,3),
@@ -232,6 +247,8 @@ class Stats(object):
 
 
     mlp.Legacy.plot_roc(roc_vals, title='Classifier ROC Comparison')
+    mlp.Legacy.plot_roc(cyl_roc_vals, title='Guided Proofreading ROC Comparison')
+
 
     return T
 
@@ -813,11 +830,8 @@ class Stats(object):
     data = {}
     y_text_fixes = [v[0] for v in cylinder_sim_user_fixes]
     y_pred_fixes = [v[1] for v in cylinder_sim_user_fixes]
-    fpr, tpr, _ = roc_curve(y_test_fixes, y_pred_fixes)
+    fpr, tpr, _ = roc_curve(y_text_fixes, y_pred_fixes)
     roc_auc = auc(fpr, tpr)    
     data['Cylinder Fixes'] = (fpr, tpr, roc_auc)
     mlp.Legacy.plot_roc(data, output_folder+'/cylinder_roc.pdf')
 
-
-
-    return cylinder_sim_user_fixes, proofread_vis
