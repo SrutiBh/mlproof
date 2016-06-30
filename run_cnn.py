@@ -38,7 +38,14 @@ if __name__ == '__main__':
   cnn = eval("nets."+CNN_NAME)()
 
   # load data
-  X_train, y_train, X_test, y_test = mlp.Patch.load(PATCH_PATH)
+  if CNN_NAME.startswith('RGB'):
+    if BORDER == 'larger_border_overlap':
+      border_prefix = 'larger_border'
+    else:
+      border_prefix = 'border'
+    X_train, y_train, X_test, y_test = mlp.Patch.load_rgba(PATCH_PATH, border_prefix=border_prefix)
+  else:
+    X_train, y_train, X_test, y_test = mlp.Patch.load(PATCH_PATH)
 
   #
   # train and test inputs
@@ -65,17 +72,15 @@ if __name__ == '__main__':
                     'binary_input': X_test['merged_array'],
                     'border_input': X_test[BORDER]}
 
-  elif CNN_NAME.startswith('RGBANet'):
-    # rgba version
-    X_train_input = np.concatenate((X_train['image'], 
-                                    X_train['prob'], 
-                                    X_train['merged_array'],
-                                    X_train[BORDER]), 1)
+  elif CNN_NAME.startswith('RGB'):
 
-    X_test_input = np.concatenate((X_test['image'], 
-                                  X_test['prob'], 
-                                  X_test['merged_array'],
-                                  X_test[BORDER]), 1)
+    if CNN_NAME.startswith('RGBA'):
+      X_train_input = X_train
+      X_test_input = X_test
+    else:
+      # this is only RGB
+      X_train_input = X_train[:,:-1,:,:]
+      X_test_input = X_test[:,:-1,:,:] 
 
 
 
