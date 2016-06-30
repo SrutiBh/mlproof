@@ -579,3 +579,22 @@ class Patch(object):
         print 'Loaded', PATCH_PATH, 'in', time.time()-t0, 'seconds.'
 
       return training, training_targets['targets'].astype(np.uint8), test, test_targets['targets'].astype(np.uint8)
+
+  @staticmethod
+  def load_rgba(PATCH_PATH, border_prefix='border', patch_size=(75,75), verbose=True):
+
+    PATCH_PATH = os.path.expanduser('~/patches/') + os.sep + PATCH_PATH + os.sep
+
+    t0 = time.time()
+
+    training = np.load(PATCH_PATH+'train_'+border_prefix+'.npz', mmap_mode='r')
+    training_targets = np.load(PATCH_PATH+'train_'+border_prefix+'_targets.npz')
+
+    test = np.load(PATCH_PATH+'test_'+border_prefix+'.npz', mmap_mode='r')
+    test_targets = np.load(PATCH_PATH+'test_'+border_prefix+'_targets.npz')
+
+    if verbose:
+      print 'Loaded', PATCH_PATH, 'in', time.time()-t0, 'seconds.'
+
+    return training['rgba'], training_targets['targets'].astype(np.uint8), test['rgba'], test_targets['targets'].astype(np.uint8)
+
