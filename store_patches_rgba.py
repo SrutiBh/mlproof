@@ -65,6 +65,11 @@ def run(outname, borderprefix):
           p_target[i] = 1 # <--- important
           i += 1
 
+  print 'saving'
+  np.savez(PATCH_PATH+groups[0][0]+'_'+borderprefix+'_unshuffled.npz', rgba=p_rgba)
+  np.savez(PATCH_PATH+groups[0][0]+'_'+borderprefix+'_targets_unshuffled.npz', rgba=p_target)
+  print 'Done!'
+
   shuffled = shuffle_in_unison_inplace(p_rgba, p_target)
 
   print 'saving'
