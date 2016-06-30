@@ -7,7 +7,7 @@
 #SBATCH -n 1 # Number of cores
 #SBATCH -N 1 # Ensure that all cores are on one machine
 #SBATCH --gres=gpu
-#SBATCH --mem=96000
+#SBATCH --mem=94000
 #SBATCH -t 10-12:00
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=haehn@seas.harvard.edu
