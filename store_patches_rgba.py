@@ -33,7 +33,7 @@ def run(outname, borderprefix):
   i = 0
 
   if outname == 'test':
-    groups = [(outname,200,250)]
+    groups = [(outname,250,300)]
   elif outname == 'train':
     groups = [(outname,0,50),(outname,50,100),(outname,100,150),(outname,150,200),(outname,200,250)]
 
