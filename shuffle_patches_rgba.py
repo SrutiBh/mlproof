@@ -20,11 +20,11 @@ def shuffle_patches(outname, borderprefix):
   patches = np.load(PATCH_PATH+outname+'_'+borderprefix+'_unshuffled.npz')
   targets = np.load(PATCH_PATH+outname+'_'+borderprefix+'_targets_unshuffled.npz')
 
-  shuffled = shuffle_in_unison_inplace(patches, targets)
+  shuffled = shuffle_in_unison_inplace(patches['rgba'], targets['rgba'])
 
   print 'saving'
   np.savez(PATCH_PATH+outname+'_'+borderprefix+'.npz', rgba=shuffled[0])
-  np.savez(PATCH_PATH+outname+'_'+borderprefix+'_targets.npz', rgba=shuffled[1])
+  np.savez(PATCH_PATH+outname+'_'+borderprefix+'_targets.npz', targets=shuffled[1])
   print 'Done!'
 
 
