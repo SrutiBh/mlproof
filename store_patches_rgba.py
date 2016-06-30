@@ -62,7 +62,7 @@ def run(outname, borderprefix):
           p_rgba[i][2] = p['merged_array']
           p_rgba[i][3] = p[borderprefix+'_overlap']
           
-          p_target[i] = 1 # <--- important
+          p_target[i] = 0 # <--- important
           i += 1
 
   print 'saving'

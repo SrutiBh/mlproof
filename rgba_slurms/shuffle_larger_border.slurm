@@ -36,7 +36,7 @@ source /n/home05/haehn/nolearn/bin/activate
 
 # add commands for analyses here
 cd /n/home05/haehn/Projects/mlproof/
-python shuffle_patches_rgba.py train larger_border
+python store_patches_rgba.py train larger_border
 
 # end of program
 exit 0;
