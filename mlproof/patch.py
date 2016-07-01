@@ -583,11 +583,13 @@ class Patch(object):
   @staticmethod
   def load_rgba(PATCH_PATH, border_prefix='border', patch_size=(75,75), verbose=True):
 
-    PATCH_PATH = '/tmp/' + os.sep + PATCH_PATH + os.sep
+    PATCH_PATH_ = '/tmp/' + os.sep + PATCH_PATH + os.sep
     if not os.path.exists(PATCH_PATH):
-      PATCH_PATH = '/n/regal/pfister_lab/haehn' + os.sep + PATCH_PATH + os.sep    
+      PATCH_PATH_ = '/n/regal/pfister_lab/haehn' + os.sep + PATCH_PATH + os.sep    
     if not os.path.exists(PATCH_PATH):
-      PATCH_PATH = os.path.expanduser('~/patches/') + os.sep + PATCH_PATH + os.sep
+      PATCH_PATH_ = os.path.expanduser('~/patches/') + os.sep + PATCH_PATH + os.sep
+
+    PATCH_PATH = PATCH_PATH_
 
     t0 = time.time()
 
