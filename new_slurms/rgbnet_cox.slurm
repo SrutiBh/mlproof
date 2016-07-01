@@ -37,7 +37,7 @@ source /n/home05/haehn/nolearn/bin/activate
 
 
 # add commands for analyses here
-cp -R /n/regal/pfister_lab/haehn/cylinder1_rgba /tmp/
+# cp -R /n/regal/pfister_lab/haehn/cylinder1_rgba /tmp/
 cd /n/home05/haehn/Projects/mlproof/
 python run_cnn.py -n RGBNet -p cylinder1_rgba -b larger_border_overlap -d dropout_usevars_COX
 

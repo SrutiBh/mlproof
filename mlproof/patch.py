@@ -601,6 +601,6 @@ class Patch(object):
 
     if verbose:
       print 'Loaded', PATCH_PATH, 'in', time.time()-t0, 'seconds.'
-
+    
     return training['rgba'], training_targets['rgba'].astype(np.uint8), test['rgba'], test_targets['rgba'].astype(np.uint8)
 
