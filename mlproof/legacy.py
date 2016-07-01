@@ -1172,7 +1172,7 @@ class Legacy(object):
         recall = roc_vals[v][1]    
         pc_auc = roc_vals[v][2]
         plt.plot(recall, precision, label=v+' (area = %0.2f)' % pc_auc, linewidth=4)
-    plt.plot([1, 0], [1, 0], 'k--')
+    plt.plot([1, 0], [0, 1], 'k--')
     plt.xlim([0.0, 1.0])
     plt.ylim([0.0, 1.05])
     plt.xlabel('Recall')
