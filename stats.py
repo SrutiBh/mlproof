@@ -87,9 +87,10 @@ class Stats(object):
 
     cyl_mean_VI, cyl_median_VI, cyl_VI_s = mlp.Legacy.VI(input_gold, input_rhoana)
 
-
     # load patches
-    X_train, y_train, X_test, y_test = mlp.Patch.load('cylinder1', verbose=False)
+    X_train, y_train, X_test_m, y_test_m = mlp.Patch.load('cylinder1', verbose=False)
+    X_test_rgba_l, y_test_rgba_l = mlp.Patch.load_rgba_test_only('cylinder1_rgba', border_prefix = 'larger_border', verbose=False)
+    X_test_rgba, y_test_rgba = mlp.Patch.load_rgba_test_only('cylinder1_rgba', verbose=False)
 
     T = ListTable()
     T.append(['',
@@ -135,28 +136,57 @@ class Stats(object):
         cnn = pickle.load(f)
 
       cnn.uuid = os.path.basename(os.path.dirname(path))
+      cnn_type = cnn.uuid
 
       # make sure we have the correct test batch iterator
       cnn.batch_iterator_test = MyTestBatchIterator(cnn.batch_iterator_train.batch_size)
 
+        
+      if cnn_type.startswith('RGBA'):
+        # this is a rgba network
 
-      test_inputs = collections.OrderedDict()
-      input_names = []
-      input_values = []
-      for l in cnn.layers:
-        layer_name, layer_type = l
-        if layer_type == lasagne.layers.input.InputLayer:
-          input_name = layer_name.split('_')[0]
-          if input_name == 'binary':
-            input_name = 'merged_array'
-          if input_name == 'border':
-            input_name = 'border_overlap'
-            if path.find('larger_border_overlap') != -1:
-              input_name = 'larger_border_overlap'
+        if cnn_type.find('large') != -1:
+          # large border
+          X_test = X_test_rgba_l
+          y_test = y_test_rgba_l
+          
+        else:
+          # small border
+          X_test = X_test_rgba
+          y_test = y_test_rgba        
 
-          input_names.append(layer_name)
-          input_values.append(input_name)
-          test_inputs[layer_name] = X_test[input_name]
+        test_inputs = X_test
+        # input_names.append('RGBA')
+
+      elif cnn_type.startswith('RGB'):
+        # this is a RGB net
+        X_test = X_test_rgba
+        y_test = y_test_rgba
+        test_inputs = X_test[:,:-1,:,:]      
+        # input_names.append('RGB')
+
+      else:
+        # this is mergenet
+        X_test = X_test_m
+        y_test = y_test_m
+
+        test_inputs = collections.OrderedDict()
+
+        for l in cnn.layers:
+          layer_name, layer_type = l
+          if layer_type == lasagne.layers.input.InputLayer:
+            input_name = layer_name.split('_')[0]
+            if input_name == 'binary':
+              input_name = 'merged_array'
+            if input_name == 'border':
+              input_name = 'border_overlap'
+              if path.find('larger_border_overlap') != -1:
+                input_name = 'larger_border_overlap'
+
+            # input_names.append(layer_name)
+            # input_values.append(input_name)
+            test_inputs[layer_name] = X_test[input_name]
+
 
       test_prediction = cnn.predict(test_inputs)
       test_prediction_prob = cnn.predict_proba(test_inputs)
@@ -278,29 +308,54 @@ class Stats(object):
     # make sure we have the correct test batch iterator
     cnn.batch_iterator_test = MyTestBatchIterator(cnn.batch_iterator_train.batch_size)
 
+    cnn_type = os.path.basename(os.path.dirname(path))
 
-    # load patches
-    X_train, y_train, X_test, y_test = mlp.Patch.load('cylinder1')
-
-    test_inputs = collections.OrderedDict()
     input_names = []
     input_values = []
-    for l in cnn.layers:
-      layer_name, layer_type = l
-      if layer_type == lasagne.layers.input.InputLayer:
-        input_name = layer_name.split('_')[0]
-        if input_name == 'binary':
-          input_name = 'merged_array'
-        if input_name == 'border':
-          input_name = 'border_overlap'
-          if path.find('larger_border_overlap') != -1:
-            input_name = 'larger_border_overlap'
+    if cnn_type.startswith('RGBA'):
+      # this is a rgba network
 
-        input_names.append(layer_name)
-        input_values.append(input_name)
-        test_inputs[layer_name] = X_test[input_name]
+      if cnn_type.find('large') != -1:
+        # large border
+        X_test, y_test = mlp.Patch.load_rgba_test_only('cylinder1_rgba', border_prefix = 'larger_border')
+        
+      else:
+        # small border
+        X_test, y_test = mlp.Patch.load_rgba_test_only('cylinder1_rgba')
 
-    print 'Using test set:', input_values
+      test_inputs = X_test
+      input_names.append('RGBA')
+
+    elif cnn_type.startswith('RGB'):
+      # this is a RGB net
+      X_test, y_test = mlp.Patch.load_rgba_test_only('cylinder1_rgba')
+      test_inputs = X_test[:,:-1,:,:]      
+      input_names.append('RGB')
+
+    else:
+      # load patches
+      X_train, y_train, X_test, y_test = mlp.Patch.load('cylinder1')
+
+      test_inputs = collections.OrderedDict()
+
+      for l in cnn.layers:
+        layer_name, layer_type = l
+        if layer_type == lasagne.layers.input.InputLayer:
+          input_name = layer_name.split('_')[0]
+          if input_name == 'binary':
+            input_name = 'merged_array'
+          if input_name == 'border':
+            input_name = 'border_overlap'
+            if path.find('larger_border_overlap') != -1:
+              input_name = 'larger_border_overlap'
+
+          input_names.append(layer_name)
+          input_values.append(input_name)
+          test_inputs[layer_name] = X_test[input_name]
+
+      print 'Using test set:', input_values
+
+    
 
     # calc F1
     test_prediction = cnn.predict(test_inputs)
@@ -323,6 +378,7 @@ class Stats(object):
     cnn.input_names = input_names
     cnn.input_values = input_values
     cnn.uuid = os.path.basename(os.path.dirname(path))
+
     
     # plot loss    
     output_folder = '/home/d/netstats/'+cnn.uuid+'/'

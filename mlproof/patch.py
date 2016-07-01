@@ -86,9 +86,32 @@ class Patch(object):
 
           # pred = cnn.test_patch(p)
 
-          inputs = {}
-          for i,n in enumerate(cnn.input_names):
-            inputs[n] = p[cnn.input_values[i]].reshape(-1,1,75,75)
+          if cnn.uuid.startswith('RGBA'):
+
+            border_prefix = ''
+            if cnn.uuid.find('large') != -1:
+              border_prefix = 'larger_'
+
+            rgba_patch = np.zeros((1,4,75,75), dtype=np.float32)
+            rgba_patch[0][0] = p['image'].astype(np.float32)
+            rgba_patch[0][1] = p['prob'].astype(np.float32)
+            rgba_patch[0][2] = p['merged_array'].astype(np.float32)
+            rgba_patch[0][3] = p[border_prefix+'border_overlap'].astype(np.float32)
+
+            inputs = rgba_patch
+
+          elif cnn.uuid.startswith('RGB'):
+
+            rgb_patch = np.zeros((1,3,75,75), dtype=np.float32)
+            rgb_patch[0][0] = p['image'].astype(np.float32)
+            rgb_patch[0][1] = p['prob'].astype(np.float32)
+            rgb_patch[0][2] = p['merged_array'].astype(np.float32)
+            inputs = rgb_patch
+
+          else:
+            inputs = {}
+            for i,n in enumerate(cnn.input_names):
+              inputs[n] = p[cnn.input_values[i]].reshape(-1,1,75,75)
 
 
           # print inputs
@@ -601,6 +624,28 @@ class Patch(object):
 
     if verbose:
       print 'Loaded', PATCH_PATH, 'in', time.time()-t0, 'seconds.'
-    
+
     return training['rgba'], training_targets['rgba'].astype(np.uint8), test['rgba'], test_targets['rgba'].astype(np.uint8)
+
+
+  @staticmethod
+  def load_rgba_test_only(PATCH_PATH, border_prefix='border', patch_size=(75,75), verbose=True):
+
+    PATCH_PATH_ = '/tmp/' + os.sep + PATCH_PATH + os.sep
+    if not os.path.exists(PATCH_PATH):
+      PATCH_PATH_ = '/n/regal/pfister_lab/haehn' + os.sep + PATCH_PATH + os.sep    
+    if not os.path.exists(PATCH_PATH):
+      PATCH_PATH_ = os.path.expanduser('~/patches/') + os.sep + PATCH_PATH + os.sep
+
+    PATCH_PATH = PATCH_PATH_
+
+    t0 = time.time()
+
+    test = np.load(PATCH_PATH+'test_'+border_prefix+'.npz', mmap_mode='r')
+    test_targets = np.load(PATCH_PATH+'test_'+border_prefix+'_targets.npz')
+
+    if verbose:
+      print 'Loaded', PATCH_PATH, 'in', time.time()-t0, 'seconds.'
+    
+    return test['rgba'], test_targets['rgba'].astype(np.uint8)
 
