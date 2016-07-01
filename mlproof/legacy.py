@@ -1163,22 +1163,29 @@ class Legacy(object):
       plt.savefig(filename)
     plt.show()
 
-    # counts = Counter(data)
-    # P = counts['Good']
-    # N = counts['Bad']
-    # TP_P = []
-    # TN_N = []
-    # for i,f in enumerate(data):
-    #     counts_ = Counter(data[0:i+1])
-    #     TP_P.append(float(counts_['Good'])/P)
-    #     TN_N.append(float(counts_['Bad'])/N)    
-    # fig, ax = plt.subplots(figsize=(22,22))
-    # plt.xlabel('False Positive Rate')
-    # plt.ylabel('True Positive Rate')
+  @staticmethod
+  def plot_pc(roc_vals, filename=None, title=None):
 
-    # ax.plot(TN_N, TP_P, linewidth=4)
+    plt.figure(figsize=(22,22))
+    for v in roc_vals:
+        precision = roc_vals[v][0]
+        recall = roc_vals[v][1]    
+        pc_auc = roc_vals[v][2]
+        plt.plot(recall, precision, label=v+' (area = %0.2f)' % pc_auc, linewidth=4)
+    plt.plot([1, 0], [1, 0], 'k--')
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('Recall')
+    plt.ylabel('Precision')
+    if title:
+      plt.title(title)
+    plt.legend(loc="lower right")
+    font = {'family' : 'normal',
+            'size'   : 26}
 
-    # if filename:
-    #   plt.savefig(filename)
+    plt.rc('font', **font)
 
-    # plt.show()
+    if filename:
+      plt.savefig(filename)
+    plt.show()
+

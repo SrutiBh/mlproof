@@ -10,7 +10,7 @@ from nolearn.lasagne.visualize import plot_conv_weights
 from nolearn.lasagne.visualize import plot_conv_activity
 from nolearn.lasagne.visualize import plot_occlusion
 
-from sklearn.metrics import classification_report, accuracy_score, roc_curve, auc, precision_recall_fscore_support, f1_score
+from sklearn.metrics import classification_report, accuracy_score, roc_curve, auc, precision_recall_fscore_support, f1_score, precision_recall_curve, average_precision_score, zero_one_loss
 
 import matplotlib.pyplot as plt    
 
@@ -113,11 +113,15 @@ class Stats(object):
               'AC4 (autom.)', 
               'AC4 (guided)', 
               'LCylinder (autom.)', 
-              'LCylinder (guided)'])
+              'LCylinder (guided)'
+              ])
+              # 'Zero-one loss'])
 
     # store values for ROC plots
     roc_vals = {}
+    pc_vals = {}
     cyl_roc_vals = {}
+    cyl_pc_vals = {}
 
     for cnn_name in cnns:
       # load cnn
@@ -170,6 +174,9 @@ class Stats(object):
       precision, recall, _, _ = precision_recall_fscore_support(y_test, test_prediction)
       prec_recall = str(round((precision[0] + precision[1])/2,3)) + '/' + str(round((recall[0] + recall[1])/2,3))
       f1_score_val = f1_score(y_test, test_prediction)
+      p, c, _ = precision_recall_curve(y_test, test_prediction_prob[:,1])
+      pc_auc = average_precision_score(y_test, test_prediction_prob[:,1], average='micro')
+      pc_vals[cnn_name] = (p, c, pc_auc)
 
       #
       patience_counter = cnn.on_epoch_finished[2].patience
@@ -217,6 +224,7 @@ class Stats(object):
         cylinder_guided = -1
 
       # load fixes for second ROC plot
+      zero_one_loss = -1
       cylinder_fixes_simuser_file = output_folder + '/cylinder_fixes_simuser.p'
       if os.path.exists(cylinder_fixes_simuser_file):
         with open(cylinder_fixes_simuser_file, 'rb') as f:
@@ -228,7 +236,11 @@ class Stats(object):
         roc_auc = auc(fpr, tpr)    
         cyl_roc_vals[cnn_name] = (fpr, tpr, roc_auc)
 
+        p, c, _ = precision_recall_curve(y_test_fixes, y_pred_fixes)
+        pc_auc = average_precision_score(y_test_fixes, y_pred_fixes, average='micro')
+        cyl_pc_vals[cnn_name] = (p, c, pc_auc)        
 
+        # zero_one_loss = zero_one_loss(y_test_fixes, y_pred_fixes, normalize=True)
 
       T.append([
                 cnn_name,
@@ -243,11 +255,14 @@ class Stats(object):
                 round(ac4_guided,3),
                 round(cylinder_autom,3),
                 round(cylinder_guided,3)
+                # round(zero_one_loss,3)
                ])
 
 
     mlp.Legacy.plot_roc(roc_vals, title='Classifier ROC Comparison')
     mlp.Legacy.plot_roc(cyl_roc_vals, title='Guided Proofreading ROC Comparison')
+    mlp.Legacy.plot_pc(pc_vals, title='Classifier Precision/Recall Comparison')
+    mlp.Legacy.plot_pc(cyl_pc_vals, title='Guided Proofreading Precision/Recall Comparison')
 
 
     return T
