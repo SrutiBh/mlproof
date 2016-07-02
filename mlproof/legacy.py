@@ -1164,6 +1164,32 @@ class Legacy(object):
     plt.show()
 
   @staticmethod
+  def plot_roc_zoom(roc_vals, filename=None, title=None):
+
+    plt.figure(figsize=(22,22))
+    for v in roc_vals:
+        fpr = roc_vals[v][0]
+        tpr = roc_vals[v][1]    
+        roc_auc = roc_vals[v][2]
+        plt.plot(fpr, tpr, label=v+' (area = %0.2f)' % roc_auc, linewidth=4)
+    # plt.plot([0, 1], [0, 1], 'k--')
+    plt.xlim([0.0, 0.3])
+    plt.ylim([0.7, 1.05])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    if title:
+      plt.title(title)
+    plt.legend(loc="lower right")
+    font = {'family' : 'normal',
+            'size'   : 26}
+
+    plt.rc('font', **font)
+
+    if filename:
+      plt.savefig(filename)
+    plt.show()
+
+  @staticmethod
   def plot_pc(roc_vals, filename=None, title=None):
 
     plt.figure(figsize=(22,22))
@@ -1189,3 +1215,28 @@ class Legacy(object):
       plt.savefig(filename)
     plt.show()
 
+  @staticmethod
+  def plot_pc_zoom(roc_vals, filename=None, title=None):
+
+    plt.figure(figsize=(22,22))
+    for v in roc_vals:
+        precision = roc_vals[v][0]
+        recall = roc_vals[v][1]    
+        pc_auc = roc_vals[v][2]
+        plt.plot(recall, precision, label=v+' (area = %0.2f)' % pc_auc, linewidth=4)
+    # plt.plot([1, 0], [0, 1], 'k--')
+    plt.xlim([0.7, 1.0])
+    plt.ylim([0.7, 1.05])
+    plt.xlabel('Recall')
+    plt.ylabel('Precision')
+    if title:
+      plt.title(title)
+    plt.legend(loc="lower right")
+    font = {'family' : 'normal',
+            'size'   : 26}
+
+    plt.rc('font', **font)
+
+    if filename:
+      plt.savefig(filename)
+    plt.show()

@@ -141,7 +141,7 @@ class Stats(object):
       # make sure we have the correct test batch iterator
       cnn.batch_iterator_test = MyTestBatchIterator(cnn.batch_iterator_train.batch_size)
 
-        
+
       if cnn_type.startswith('RGBA'):
         # this is a rgba network
 
@@ -296,6 +296,100 @@ class Stats(object):
 
 
     return T
+
+  @staticmethod
+  def compare(cnns):
+
+    roc_vals = {}
+    pc_vals = {}
+
+    # load patches
+    X_train, y_train, X_test_m, y_test_m = mlp.Patch.load('cylinder1', verbose=False)
+    X_test_rgba_l, y_test_rgba_l = mlp.Patch.load_rgba_test_only('cylinder1_rgba', border_prefix = 'larger_border', verbose=False)
+    X_test_rgba, y_test_rgba = mlp.Patch.load_rgba_test_only('cylinder1_rgba', verbose=False)
+
+
+    for cnn_name in cnns:
+      # load cnn
+      path = cnns[cnn_name]
+
+      with open(path, 'rb') as f:
+        cnn = pickle.load(f)
+
+      cnn.uuid = os.path.basename(os.path.dirname(path))
+      cnn_type = cnn.uuid
+
+      # make sure we have the correct test batch iterator
+      cnn.batch_iterator_test = MyTestBatchIterator(cnn.batch_iterator_train.batch_size)
+
+
+      if cnn_type.startswith('RGBA'):
+        # this is a rgba network
+
+        if cnn_type.find('large') != -1:
+          # large border
+          X_test = X_test_rgba_l
+          y_test = y_test_rgba_l
+          
+        else:
+          # small border
+          X_test = X_test_rgba
+          y_test = y_test_rgba        
+
+        test_inputs = X_test
+        # input_names.append('RGBA')
+
+      elif cnn_type.startswith('RGB'):
+        # this is a RGB net
+        X_test = X_test_rgba
+        y_test = y_test_rgba
+        test_inputs = X_test[:,:-1,:,:]      
+        # input_names.append('RGB')
+
+      else:
+        # this is mergenet
+        X_test = X_test_m
+        y_test = y_test_m
+
+        test_inputs = collections.OrderedDict()
+
+        for l in cnn.layers:
+          layer_name, layer_type = l
+          if layer_type == lasagne.layers.input.InputLayer:
+            input_name = layer_name.split('_')[0]
+            if input_name == 'binary':
+              input_name = 'merged_array'
+            if input_name == 'border':
+              input_name = 'border_overlap'
+              if path.find('larger_border_overlap') != -1:
+                input_name = 'larger_border_overlap'
+
+            # input_names.append(layer_name)
+            # input_values.append(input_name)
+            test_inputs[layer_name] = X_test[input_name]
+
+
+      test_prediction = cnn.predict(test_inputs)
+      test_prediction_prob = cnn.predict_proba(test_inputs)
+
+      # ROC/AUC
+      fpr, tpr, _ = roc_curve(y_test, test_prediction_prob[:,1])
+      roc_auc = auc(fpr, tpr)
+
+      roc_vals[cnn_name] = (fpr, tpr, roc_auc)
+
+      # prec./recall
+      precision, recall, _, _ = precision_recall_fscore_support(y_test, test_prediction)
+      prec_recall = str(round((precision[0] + precision[1])/2,3)) + '/' + str(round((recall[0] + recall[1])/2,3))
+      f1_score_val = f1_score(y_test, test_prediction)
+      p, c, _ = precision_recall_curve(y_test, test_prediction_prob[:,1])
+      pc_auc = average_precision_score(y_test, test_prediction_prob[:,1], average='micro')
+      pc_vals[cnn_name] = (p, c, pc_auc)
+
+    mlp.Legacy.plot_roc(roc_vals, title='Classifier ROC Comparison')
+    mlp.Legacy.plot_roc_zoom(roc_vals, title='Classifier ROC Comparison')
+    mlp.Legacy.plot_pc(pc_vals, title='Classifier Precision/Recall Comparison')
+    mlp.Legacy.plot_pc_zoom(pc_vals, title='Classifier Precision/Recall Comparison')
 
 
   @staticmethod
