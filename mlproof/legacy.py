@@ -1166,12 +1166,16 @@ class Legacy(object):
   @staticmethod
   def plot_roc_zoom(roc_vals, filename=None, title=None):
 
-    plt.figure(figsize=(22,22))
+
+    fig = plt.figure(figsize=(22,22))
     for v in roc_vals:
         fpr = roc_vals[v][0]
         tpr = roc_vals[v][1]    
         roc_auc = roc_vals[v][2]
+
+
         plt.plot(fpr, tpr, label=v+' (area = %0.2f)' % roc_auc, linewidth=4)
+        # plt.plot(xx, yy, label=v+' (area = %0.2f)' % roc_auc, linewidth=4)
     # plt.plot([0, 1], [0, 1], 'k--')
     plt.xlim([0.0, 0.3])
     plt.ylim([0.7, 1.05])
@@ -1179,7 +1183,12 @@ class Legacy(object):
     plt.ylabel('True Positive Rate')
     if title:
       plt.title(title)
-    plt.legend(loc="lower right")
+    ax = plt.gca()
+    handles, labels = ax.get_legend_handles_labels()
+    # sort both labels and handles by labels
+    labels, handles = zip(*sorted(zip(labels, handles), key=lambda t: t[0]))
+    ax.legend(handles, labels, loc='lower right')
+    # plt.legend(loc="lower right")
     font = {'family' : 'normal',
             'size'   : 26}
 

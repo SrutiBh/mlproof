@@ -5,10 +5,45 @@
 \newblock \url{http://brainiac2.mit.edu/SNEMI3D}, 2013.
 \newblock Accessed on 31/03/2016.
 
+\bibitem{neuroproof2013}
+Neuroproof: Flyem tool, hhmi / janelia farm research campus.
+\newblock \url{https://github.com/janelia-flyem/NeuroProof}, 2013.
+\newblock Accessed on 03/15/2106.
+
+\bibitem{eyewire2012}
+Eyewire.
+\newblock \url{http://eyewire.org/}, 2014.
+\newblock Accessed on 31/03/2014.
+
 \bibitem{akselrod09}
 A.~Akselrod-Ballin, D.~Bock, R.~Reid, and S.~Warfield.
 \newblock Improved registration for large electron microscopy images.
 \newblock In {\em IEEE Int. Symp. Biomedical Imaging (ISBI)}, 2009.
+
+\bibitem{Neuroblocks}
+A.~K. Al-Awami, J.~Beyer, D.~Haehn, N.~Kasthuri, J.~W. Lichtman, H.~Pfister,
+  and M.~Hadwiger.
+\newblock Neuroblocks - visual tracking of segmentation and proofreading for
+  large connectomics projects.
+\newblock {\em IEEE Transactions on Visualization and Computer Graphics},
+  22(1):738--746, Jan 2016.
+
+\bibitem{anderson2011}
+J.~Anderson, S.~Mohammed, B.~Grimm, B.~Jones, P.~Koshevoy, T.~Tasdizen,
+  R.~Whitaker, and R.~Marc.
+\newblock The {V}iking {V}iewer for connectomics: Scalable multi-user
+  annotation and summarization of large volume data sets.
+\newblock {\em Journal of Microscopy}, 241(1):13--28, 2011.
+
+\bibitem{10.3389/fnana.2015.00142}
+I.~Arganda-Carreras, S.~C. Turaga, D.~R. Berger, D.~Ciresan, A.~Giusti, L.~M.
+  Gambardella, J.~Schmidhuber, D.~Laptev, S.~Dwivedi, J.~M. Buhmann, T.~Liu,
+  M.~Seyedhosseini, T.~Tasdizen, L.~Kamentsky, R.~Burget, V.~Uher, X.~Tan,
+  C.~Sun, T.~Pham, E.~Bas, M.~G. Uzunbas, A.~Cardona, J.~Schindelin, and H.~S.
+  Seung.
+\newblock Crowdsourcing the creation of image segmentation algorithms for
+  connectomics.
+\newblock {\em Frontiers in Neuroanatomy}, 9(142), 2015.
 
 \bibitem{Bastien-Theano-2012}
 F.~Bastien, P.~Lamblin, R.~Pascanu, J.~Bergstra, I.~J. Goodfellow, A.~Bergeron,
@@ -16,6 +51,13 @@ F.~Bastien, P.~Lamblin, R.~Pascanu, J.~Bergstra, I.~J. Goodfellow, A.~Bergeron,
 \newblock Theano: new features and speed improvements.
 \newblock Deep Learning and Unsupervised Feature Learning NIPS 2012 Workshop,
   2012.
+
+\bibitem{beyer13}
+J.~Beyer, M.~Hadwiger, A.~Al-Awami, W.-K. Jeong, N.~Kasthuri, J.~W. Lichtman,
+  and H.~Pfister.
+\newblock Exploring the connectome: Petascale volume visualization of
+  microscopy data streams.
+\newblock {\em IEEE Computer Graphics and Applications}, 33(4):50--61, 2013.
 
 \bibitem{BogovicHJ13}
 J.~A. Bogovic, G.~B. Huang, and V.~Jain.
@@ -28,6 +70,11 @@ D.~C. Ciresan, A.~Giusti, L.~M. Gambardella, and J.~Schmidhuber.
 \newblock Deep neural networks segment neuronal membranes in electron
   microscopy images.
 \newblock In {\em NIPS}, 2012.
+
+\bibitem{Giuly2013DP2}
+R.~J. Giuly, K.-Y. Kim, and M.~H. Ellisman.
+\newblock {DP2: Distributed 3D image segmentation using micro-labor workforce}.
+\newblock {\em Bioinformatics}, 29(10):1359--1360, 2013.
 
 \bibitem{haehn_dojo_2014}
 D.~Haehn, S.~Knowles-Barley, M.~Roberts, J.~Beyer, N.~Kasthuri, J.~Lichtman,
@@ -62,6 +109,11 @@ N.~Kasthuri, K.~J. Hayworth, D.~R. Berger, R.~L. Schalek, J.~A. Conchello,
 \newblock Saturated reconstruction of a volume of neocortex.
 \newblock {\em Cell}, 162(3):648--661, 2015.
 
+\bibitem{kaynig10}
+V.~Kaynig, T.~Fuchs, and J.~Buhmann.
+\newblock Neuron geometry extraction by perceptual grouping in sstem images.
+\newblock In {\em Proceedings of IEEE CVPR}, pages 2902--2909, 2010.
+
 \bibitem{kaynig2015large}
 V.~Kaynig, A.~Vazquez-Reina, S.~Knowles-Barley, M.~Roberts, T.~R. Jones,
   N.~Kasthuri, E.~Miller, J.~Lichtman, and H.~Pfister.
@@ -75,6 +127,12 @@ S.~Knowles-Barley, M.~Roberts, N.~Kasthuri, D.~Lee, H.~Pfister, and J.~W.
 \newblock Mojo 2.0: Connectome annotation tool.
 \newblock {\em Frontiers in Neuroinformatics}, (60), 2013.
 
+\bibitem{lee2015recursive}
+K.~Lee, A.~Zlateski, A.~Vishwanathan, and H.~S. Seung.
+\newblock Recursive training of 2d-3d convolutional networks for neuronal
+  boundary detection.
+\newblock {\em arXiv preprint arXiv:1508.04843}, 2015.
+
 \bibitem{Liu2014}
 T.~Liu, C.~Jones, M.~Seyedhosseini, and T.~Tasdizen.
 \newblock A modular hierarchical approach to {3D} electron microscopy image
@@ -87,11 +145,34 @@ J.~Masci, A.~Giusti, D.~C. Ciresan, G.~Fricout, and J.~Schmidhuber.
   convolutional networks.
 \newblock In {\em ICIP}, 2013.
 
+\bibitem{NunezIglesias2013Machine}
+J.~Nunez-Iglesias, R.~Kennedy, T.~Parag, J.~Shi, and D.~B. Chklovskii.
+\newblock Machine learning of hierarchical clustering to segment {2D} and {3D}
+  images.
+\newblock {\em PLoS ONE}, 8(8):e71715+, 2013.
+
 \bibitem{GALA2014}
 J.~Nunez-Iglesias, R.~Kennedy, S.~M. Plaza, A.~Chakraborty, and W.~T. Katz.
 \newblock Graph-based active learning of agglomeration {(GALA)}: A python
   library to segment {2D} and {3D} neuroimages.
 \newblock {\em Frontiers in Neuroinformatics}, 8(34), 2014.
+
+\bibitem{proofreading_bottleneck}
+H.~Peng, F.~Long, T.~Zhao, and E.~Myers.
+\newblock Proof-editing is the bottleneck of {3D} neuron reconstruction: The
+  problem and solutions.
+\newblock {\em Neuroinformatics}, 9(2-3):103--105, 2011.
+
+\bibitem{RonnebergerFB15}
+O.~Ronneberger, P.~Fischer, and T.~Brox.
+\newblock U-net: Convolutional networks for biomedical image segmentation.
+\newblock {\em CoRR}, abs/1505.04597, 2015.
+
+\bibitem{saalfeld09}
+S.~Saalfeld, A.~Cardona, V.~Hartenstein, and P.~Toman\v{c}\'{a}k.
+\newblock {CATMAID}: collaborative annotation toolkit for massive amounts of
+  image data.
+\newblock {\em Bioinformatics}, 25(15):1984--1986, 2009.
 
 \bibitem{Saalfeld2010Asrigidaspossible}
 S.~Saalfeld, A.~Cardona, V.~Hartenstein, and P.~Toman\v{c}\'{a}k.
@@ -111,5 +192,11 @@ M.~G. Uzunbas, C.~Chen, and D.~Metaxas.
   interactive neuron segmentation.
 \newblock {\em Medical Image Analysis}, 27:31 -- 44, 2016.
 \newblock Discrete Graphical Models in Biomedical Image Analysis.
+
+\bibitem{amelio_segmentation}
+A.~V\'azquez-Reina, M.~Gelbart, D.~Huang, J.~Lichtman, E.~Miller, and
+  H.~Pfister.
+\newblock Segmentation fusion for connectomics.
+\newblock In {\em Proceedings of IEEE ICCV}, pages 177--184, Nov 2011.
 
 \end{thebibliography}

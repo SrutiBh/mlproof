@@ -391,6 +391,8 @@ class Stats(object):
     mlp.Legacy.plot_pc(pc_vals, title='Classifier Precision/Recall Comparison')
     mlp.Legacy.plot_pc_zoom(pc_vals, title='Classifier Precision/Recall Comparison')
 
+    return roc_vals
+
 
   @staticmethod
   def load_cnn(path):
@@ -752,7 +754,7 @@ class Stats(object):
     #
     data = collections.OrderedDict()
     data['Initial\nSegmentation'] = dojo_input_vi
-    data['Automatic\nCorrections'] = dojo_vi_99[2]
+    data['Automatic\nCorrections'] = dojo_vi_95[2]
     data['Dojo       '] = dojo_best_user
     expert_sum = []
     for i,d in enumerate(dojo_expert1):
@@ -766,7 +768,7 @@ class Stats(object):
     #
     data = collections.OrderedDict()
     data['Initial\nSegmentation'] = dojo_input_vi
-    data['Automatic\nCorrections'] = dojo_vi_99[2]
+    data['Automatic\nCorrections'] = dojo_vi_95[2]
     data['Dojo       '] = dojo_best_user
     expert_sum = []
     for i,d in enumerate(dojo_expert1):
@@ -845,6 +847,8 @@ class Stats(object):
 
     print
     cylinder_vi_95_file = output_folder + '/cylinder_vi_95.p'
+    cylinder_vi_auto_95_fixes_file = output_folder + '/cylinder_vi_95_fixes.p'
+    cylinder_auto_vis_95_file = output_folder + '/cylinder_auto_vis_95.p'
     if os.path.exists(cylinder_vi_95_file):
       print 'Loading merge errors p < .05 and split errors p > .95 from file..'
       with open(cylinder_vi_95_file, 'rb') as f:
@@ -871,6 +875,12 @@ class Stats(object):
 
       with open(cylinder_vi_95_file, 'wb') as f:
         pickle.dump(cylinder_vi_95, f)
+
+      with open(cylinder_vi_auto_95_fixes_file, 'wb') as f:
+        pickle.dump(cylinder_auto_fixes_95, f)
+
+      with open(cylinder_auto_vis_95_file, 'wb') as f:
+        pickle.dump(cylinder_auto_vi_s_95, f)        
 
     print '   Mean VI improvement', original_mean_VI-cylinder_vi_95[0]
     print '   Median VI improvement', original_median_VI-cylinder_vi_95[1]
