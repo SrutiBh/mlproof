@@ -22,12 +22,14 @@
 \newcommand{\IGNORE}[1]{}
 % Include other packages here, before hyperref.
 
+\newcommand\Mark[1]{\textsuperscript#1}
+
 % If you comment hyperref and then uncomment it, you should delete
 % egpaper.aux before re-running latex.  (Or just hit 'q' on the first latex
 % run, let it finish, and you should be clear).
 \usepackage[pagebackref=true,breaklinks=true,letterpaper=true,colorlinks,bookmarks=false]{hyperref}
 
-%\cvprfinalcopy % *** Uncomment this line for the final submission
+\cvprfinalcopy % *** Uncomment this line for the final submission
 
 \def\cvprPaperID{****} % *** Enter the CVPR Paper ID here
 \def\httilde{\mbox{\tt\raisebox{-.5ex}{\symbol{126}}}}
@@ -38,21 +40,29 @@
 
 %%%%%%%%% TITLE
 \title{Guided Proofreading of Automatic Segmentations in Connectomics}
+%
+%\author{Daniel Haehn\mark{1} \and Verena Kaynig\mark{1,2} \and James Tompkin\mark{1} \and Jeff Lichtman\mark{2} \and Hanspeter Pfister\mark{1,2}\\
+%\begin{tabular}{*{3}{>{\centering}p{.25\textwidth}}}
+%\Mark{1}Harvard Paulson School of Engineering and Applied Science\\
+%\Mark{2}Harvard Center for Brain Science, Cambridge MA 02138, USA
+%\end{tabular}\par
+%}
 
-\author{First Author\\
-Institution1\\
-Institution1 address\\
-{\tt\small firstauthor@i1.org}
+\author{Daniel Haehn~~~Verena Kaynig~~~James Tompkin~~~Jeff W. Lichtman~~~Hanspeter Pfister\\~\\
+Harvard Paulson School of Engineering and Applied Science\\
+Harvard Center for Brain Science\\
+Cambridge, MA 02138, USA\\
+{\tt\small haehn@seas.harvard.edu}
 % For a paper whose authors are all at the same institution,
 % omit the following lines up until the closing ``}''.
 % Additional authors and addresses can be added with ``\and'',
 % just like the second author.
 % To save space, use either the email address or home page, not both
-\and
-Second Author\\
-Institution2\\
-First line of institution2 address\\
-{\tt\small secondauthor@i2.org}
+%\and
+%Second Author\\
+%Institution2\\
+%First line of institution2 address\\
+%{\tt\small secondauthor@i2.org}
 }
 
 \maketitle
@@ -60,7 +70,7 @@ First line of institution2 address\\
 
 %%%%%%%%% ABSTRACT
 \begin{abstract}
-Automatic cell image segmentation methods in connectomics can lead to \emph{split} and \emph{merge} errors, which require correction through proofreading. To aid error correction, we develop two classifiers that are able to recommend candidate errors and their corrections to the user. These classifiers are informed by training a convolutional neural network with known errors in automatic segmentations by comparison to expert-labeled ground truth. Our network architecture is able to detect potentially erroneous regions by considering a large context region around a segmentation boundary. With recommendations, proofreading of mouse cortex electron microscopy image segmentations can reduce VI scores on two different datasets from 0.4764 to 0.3996 and from XX to XX, which we find is an improvement on pure manual and pure automatic cases.
+Automatic cell image segmentation methods in connectomics can lead to \emph{split} and \emph{merge} errors, which require correction through proofreading. To aid error correction, we develop two classifiers that are able to recommend candidate errors and their corrections to the user. These classifiers are informed by training a convolutional neural network with known errors in automatic segmentations by comparison to expert-labeled ground truth. Our network architecture is able to detect potentially erroneous regions by considering a large context region around a segmentation boundary. With recommendations, proofreading of mouse cortex electron microscopy image segmentations can reduce variation of information scores on two different datasets from 0.4764 to 0.3996 and from 0.4847 to 0.3946, which we find is an improvement on pure manual and pure automatic cases.
 \end{abstract}
 
 \input{1.introduction} % Now contains related work

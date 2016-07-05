@@ -1138,6 +1138,90 @@ class Legacy(object):
     plt.show()    
 
   @staticmethod
+  def plot_vi_combined_no_interpolation(automatic, simuser, filename=None):
+
+    def green_func(x, a, b, c):
+        return a*np.exp(-b*x)+c
+
+    fig, ax = plt.subplots(figsize=(22,22))
+
+    # x_automatic = range(len(automatic))
+    # popt, _ = curve_fit(green_func, x_automatic, automatic)
+    xx_automatic = np.linspace(0,len(automatic),len(automatic))
+    # y_automatic = green_func(xx_automatic, *popt)
+
+    # x_simuser = range(len(simuser))    
+    # popt, _ = curve_fit(green_func, x_simuser, simuser)    
+    xx_simuser = np.linspace(0,len(simuser),len(simuser))
+    # y_simuser = green_func(xx_simuser, *popt)
+
+
+    ax.plot(xx_simuser, simuser, 'green', linewidth=4, label='Guided (Simulated)')
+    ax.plot(xx_automatic, automatic, 'red', linewidth=4, label='Automatic Corrections (p=.95)')
+    # ax.axvline(x=403, ymin=0, ymax=.245, color='b', linestyle='dashed', linewidth=2)
+
+    plt.ylabel('Variation of Information', labelpad=20)
+
+    plt.xlabel('Corrections', labelpad=20)
+    plt.xlim([0,len(simuser)])
+    # plt.ylim([0.4,0.5])
+
+
+    legend = ax.legend(loc='upper right')
+
+    font = {'family' : 'normal',
+            'size'   : 26}
+
+    plt.rc('font', **font)
+
+    if filename:
+      plt.savefig(filename)
+
+    plt.show()        
+
+  @staticmethod
+  def plot_vi_combined(automatic, simuser, filename=None):
+
+    def green_func(x, a, b, c):
+        return a*np.exp(-b*x)+c
+
+    fig, ax = plt.subplots(figsize=(22,22))
+
+    x_automatic = range(len(automatic))
+    popt, _ = curve_fit(green_func, x_automatic, automatic)
+    xx_automatic = np.linspace(0,len(simuser),len(simuser))
+    y_automatic = green_func(xx_automatic, *popt)
+
+    x_simuser = range(len(simuser))    
+    popt, _ = curve_fit(green_func, x_simuser, simuser)    
+    xx_simuser = np.linspace(0,len(simuser),len(simuser))
+    y_simuser = green_func(xx_simuser, *popt)
+
+
+    ax.plot(xx_simuser, y_simuser, 'green', linewidth=4, label='Guided (Simulated)')
+    ax.plot(xx_automatic, y_automatic, 'red', linewidth=4, label='Automatic Corrections(p=.95)')
+    # ax.axvline(x=403, ymin=0, ymax=.245, color='b', linestyle='dashed', linewidth=2)
+
+    plt.ylabel('Variation of Information', labelpad=20)
+
+    plt.xlabel('Corrections', labelpad=20)
+    plt.xlim([0,len(xx_simuser)])
+    # plt.ylim([0.4,0.5])
+
+
+    legend = ax.legend(loc='upper right')
+
+    font = {'family' : 'normal',
+            'size'   : 26}
+
+    plt.rc('font', **font)
+
+    if filename:
+      plt.savefig(filename)
+
+    plt.show()        
+
+  @staticmethod
   def plot_roc(roc_vals, filename=None, title=None):
 
     plt.figure(figsize=(22,22))

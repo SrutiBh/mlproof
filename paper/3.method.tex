@@ -11,6 +11,56 @@
 
 \end{figure}
 
+
+\begin{figure*}[ht]
+%\ffigbox[][\textwidth]{
+%\begin{floatrow}
+
+\includegraphics[width=.5\textwidth]{gfx/roc_plot.pdf}
+
+
+\begin{tabular}{l rrrr}
+\toprule
+Network & Validation loss & Test acc. ~(\%) & Prec./Recall & \hspace{0.1cm} F1 Score \\
+\midrule
+A. MergeNet: Image + boundary prob. + seg. label & 0.073 & 0.906 & 0.906/0.906 & 0.907 \\
+B. MergeNet: A config. + small border overlap ($d=1$) & 0.07 & 0.905 & 0.907/0.905 & 0.908 \\
+C. MergeNet: A config. + large border overlap ($d=5$) & 0.07 & 0.908 & 0.908/0.908 & 0.909 \\
+D. RGBANet: A. config. & 0.058 & 0.895 & 0.895/0.895 & 0.894 \\
+E. RGBANet: B. config. & 0.054 & 0.907 & 0.907/0.907 & 0.908 \\
+F. RGBANet: C. config. & 0.058 & 0.905 & 0.905/0.905 & 0.904\\
+%A. Image + boundary prob. + seg. label & 0.3853 & 0.4163 & 81.15 \\
+%B. A config. + small border overlap($d=1$) & 0.3798 & 0.3843 & 82.34\\
+%C. A config. + large border overlap ($d=5$) &  0.3703 & 0.3919 & 83.02\\
+%Bogovic et al. + small border overlap($d=1$) & 0.379833 & 0.384347 & 82.34\\
+%Bogovic et al. + large border overlap ($d=5$) &  0.370280 & 0.391911 & 83.02\\
+\bottomrule
+\end{tabular}
+
+%\end{floatrow}
+%}{
+ \caption{Network design training evaluation. Adding an extra channel containing a binary mask of just the border slightly increases performance in both network configurations. We take configuration MergeNet C to evaluate VI against human performance.}
+ \label{fig:trainingperformance}
+%}
+\end{figure*}
+
+
+\begin{figure*}[t]
+ \centering
+    \subfloat[Interactive (Dojo) vs. Guided Proofreading\label{fig:layers}]{%
+		\includegraphics[width=.45\textwidth]{gfx/dojo_vi.pdf}
+    }
+    \hfill
+    \subfloat[Simulated User Error Rate\label{fig:networks}]{%
+	    \includegraphics[width=.45\textwidth]{gfx/dojo_errorrate.pdf}
+    }
+
+\caption{(a) We compare distributions of VI measures across 10 sections for the initial automatic segmentation, a fully-automatic correction of recommended errors based on a threshold of acceptance, the best user in the Haehn et al.~experiment with Dojo, two experts using our system and our simulated user. Lower scores are better.}
+\label{fig:results}
+
+\end{figure*}
+
+
 \section{Method}
 %Paragraph one: Overview of the method. What are the high level steps taken to build the system? What are the key techniques used within the system?
 We build a split error classifier using a convolutional neural network (CNN) to check the boundaries of an existing automatic segmentation. For each boundary, the CNN provides a probability that points sampled along the boundary caused a split error. For each boundary, we sample up to 10 decision points, where the decision points are spread evenly over the boundary length, so long as their context windows do not overlap. These probabilities are then weighted by the length of the boundary within the context over the total boundary length, and averaged. A greedy algorithm then merges neighboring regions sequentially, starting with the highest probability score. Following each merge, neighboring boundaries are re-evaluated for split errors. Correcting a split error is as simple as merging the two bordering labels.
@@ -38,21 +88,6 @@ One way to combine these inputs is to treat them as a 4-channel input, so that a
 
 To better direct both networks to train on the true boundary edge, which in many cases is missing from the boundary probability map and hence is the cause of merge errors, we additionally pass as input a second binary mask. This mask contains the true boundary edge (configuration B, Fig.~\ref{fig:networks}). To consider slight edge ambiguities, we also test a version of this network where the true boundary mask has been dilated by 5 pixels (configuration C).
 
-% \VKF{DELETE RIGHT? Another change is in the pooling layer itself. Bogovic et al.~\cite{BogovicHJ13} designed an unsupervised learning approach for agglomerative clustering of oversegmentations, using dynamic pooling of features extracted around objects and boundaries to increase performance. Inspired by their call for a supervised learning equivalent, we integrate a pooling layer into our CNN which is similar in spirit to their unsupervised approach. Instead of conventional max- or avg-pooling where a sliding window is equally applied to the whole output of the convolutional layer, our dynamic pooling only averages outputs within a region of interest. We implemented both pooling methods and compared them ???} 
-
-
-%  
-%    \begin{subfig}[b]{0.5\textwidth}
-%        \includegraphics[scale=.15]
-%        \caption{CNN Layers}
-%        \label{fig:layers}
-%    \end{subfigure}
-%    \begin{subfigure}[b]{0.5\textwidth}
-%        \includegraphics[scale=.15]
-%        \caption{Different Network Configurations}
-%        \label{fig:networks}
-%    \end{subfigure}    
-%\missingfigure{Network architecture figure}
 
 
 \subsection{Training}
@@ -69,37 +104,6 @@ A manually-labeled expert segmentation is available as a ground truth for the en
 %#   test data: 5748 correct splits + 5748 split errors
 
 
-\begin{figure*}
-%\ffigbox[][\textwidth]{
-%\begin{floatrow}
-
-\includegraphics[width=.5\textwidth]{gfx/roc_plot.pdf}
-
-
-\begin{tabular}{l rrrr}
-\toprule
-Network & Validation loss & Test acc. ~(\%) & Prec./Recall & \hspace{0.1cm} F1 Score \\
-\midrule
-A. MergeNet: Image + boundary prob. + seg. label & 0.073 & 0.906 & 0.906/0.906 & 0.907 \\
-B. MergeNet: A config. + small border overlap ($d=1$) & 0.076 & 0.905 & 0.907/0.905 & 0.908 \\
-C. MergeNet: A config. + large border overlap ($d=5$) & 0.07 & 0.908 & 0.908/0.908 & 0.909 \\
-D. RGBANet: A. config. & 0.058 & 0.895 & 0.895/0.895 & 0.894 \\
-E. RGBANet: B. config. & 0.054 & 0.907 & 0.907/0.907 & 0.908 \\
-F. RGBANet: C. config. & 0.058 & 0.905 & 0.905/0.905 & 0.904\\
-%A. Image + boundary prob. + seg. label & 0.3853 & 0.4163 & 81.15 \\
-%B. A config. + small border overlap($d=1$) & 0.3798 & 0.3843 & 82.34\\
-%C. A config. + large border overlap ($d=5$) &  0.3703 & 0.3919 & 83.02\\
-%Bogovic et al. + small border overlap($d=1$) & 0.379833 & 0.384347 & 82.34\\
-%Bogovic et al. + large border overlap ($d=5$) &  0.370280 & 0.391911 & 83.02\\
-\bottomrule
-\end{tabular}
-
-%\end{floatrow}
-%}{
- \caption{Network design training evaluation. Adding an extra channel containing a binary mask of just the border slightly increases performance in both network configurations. We take configuration MergeNet C to evaluate VI against human performance.}
- \label{fig:trainingperformance}
-%}
-\end{figure*}
 
 We train our networks using the following parameters: learning rate $lr=0.03$ (iteratively decreasing until $lr=0.00001$), momentum $m=0.9$ (iteratively increasing until $m=0.999$), filter size $fs=13\times13$ and number of filters $fn=16$ for MergeNet, and number of filters $fn_1=64, fn_2=48$ for RGBANet. This results in ~1.5 million parameters for all network configurations. For regularization we use dropout layers after each pooling layer with $p=0.2$. We assume that the training has converged if the validation loss does not decrease for 50 epochs. The network is specified using the deep learning libraries Lasagne and Theano \cite{Bastien-Theano-2012}, and trained on a Tesla K40m graphics card.
 

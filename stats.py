@@ -804,6 +804,8 @@ class Stats(object):
 
     original_mean_VI, original_median_VI, original_VI_s = mlp.Legacy.VI(input_gold, input_rhoana)
 
+    print 'Original median VI', original_median_VI
+
     # output folder for anything to store
     output_folder = '/home/d/netstats/'+cnn.uuid+'/'
     if not os.path.exists(output_folder):
@@ -853,6 +855,8 @@ class Stats(object):
       print 'Loading merge errors p < .05 and split errors p > .95 from file..'
       with open(cylinder_vi_95_file, 'rb') as f:
         cylinder_vi_95 = pickle.load(f)
+      with open(cylinder_auto_vis_95_file, 'rb') as f:
+        cylinder_auto_vi_s_95 = pickle.load(f)
     else:      
       # #
       # # perform merge correction with p < .05
@@ -1000,6 +1004,15 @@ class Stats(object):
             vi_s_per_correction.append(np.median(m))
 
     mlp.Legacy.plot_vi_simuser(vi_s_per_correction, output_folder+'/cylinder_simuser_vi.pdf')
+
+    proofread_vis_auto = [original_VI_s] + cylinder_auto_vi_s_95
+    vi_s_per_correction_auto = [np.median(proofread_vis_auto[0])]
+    for m in proofread_vis_auto[1:]:
+        for i in range(30*12):
+            vi_s_per_correction_auto.append(np.median(m))
+
+    mlp.Legacy.plot_vi_combined(vi_s_per_correction_auto, vi_s_per_correction, output_folder+'/cylinder_combined_vi.pdf')
+    mlp.Legacy.plot_vi_combined_no_interpolation(vi_s_per_correction_auto, vi_s_per_correction, output_folder+'/cylinder_combined_vi_no_interpolation.pdf')
 
 
     data = {}

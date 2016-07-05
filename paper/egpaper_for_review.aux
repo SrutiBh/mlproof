@@ -32,20 +32,20 @@
 \citation{karimov_guided_volume_editing}
 \citation{uzunbas}
 \citation{haehn_dojo_2014}
-\citation{akselrod09}
-\citation{Saalfeld2010Asrigidaspossible}
 \@writefile{toc}{\contentsline {section}{\numberline {1}\hskip -1em.\nobreakspace  {}Introduction}{1}{section.1}}
 \@writefile{brf}{\backcite{jain2010,Liu2014,GALA2014,kaynig2015large}{{1}{1}{section.1}}}
 \@writefile{brf}{\backcite{isbi_challenge}{{1}{1}{section.1}}}
 \@writefile{brf}{\backcite{Ciresan:2012f}{{1}{1}{section.1}}}
 \@writefile{brf}{\backcite{BogovicHJ13}{{1}{1}{section.1}}}
-\@writefile{brf}{\backcite{Masci:2013a}{{1}{1}{section.1}}}
-\@writefile{brf}{\backcite{kasthuri2015saturated}{{1}{1}{section.1}}}
 \@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Split and merge error examples, their corrections, and their ground truths.\relax }}{1}{figure.caption.1}}
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
 \newlabel{fig:merge_error}{{1}{1}{Split and merge error examples, their corrections, and their ground truths.\relax }{figure.caption.1}{}}
+\@writefile{brf}{\backcite{Masci:2013a}{{1}{1}{section.1}}}
+\@writefile{brf}{\backcite{kasthuri2015saturated}{{1}{1}{section.1}}}
 \@writefile{brf}{\backcite{markus_proofreading,raveler,mojo2,haehn_dojo_2014,karimov_guided_volume_editing,uzunbas}{{1}{1}{section.1}}}
 \@writefile{brf}{\backcite{haehn_dojo_2014}{{1}{1}{section.1}}}
+\citation{akselrod09}
+\citation{Saalfeld2010Asrigidaspossible}
 \citation{haehn_dojo_2014}
 \citation{jain2010}
 \citation{kaynig10}
@@ -73,7 +73,6 @@
 \citation{raveler}
 \citation{haehn_dojo_2014}
 \citation{Neuroblocks}
-\citation{karimov_guided_volume_editing}
 \@writefile{brf}{\backcite{akselrod09,Saalfeld2010Asrigidaspossible}{{2}{1}{figure.caption.1}}}
 \@writefile{brf}{\backcite{haehn_dojo_2014}{{2}{1}{figure.caption.1}}}
 \@writefile{toc}{\contentsline {section}{\numberline {2}\hskip -1em.\nobreakspace  {}Related Work}{2}{section.2}}
@@ -96,11 +95,15 @@
 \@writefile{brf}{\backcite{proofreading_bottleneck}{{2}{2}{section*.4}}}
 \@writefile{brf}{\backcite{markus_proofreading}{{2}{2}{section*.4}}}
 \@writefile{brf}{\backcite{raveler}{{2}{2}{section*.4}}}
-\@writefile{brf}{\backcite{haehn_dojo_2014}{{2}{2}{section*.4}}}
-\@writefile{brf}{\backcite{Neuroblocks}{{2}{2}{section*.4}}}
-\@writefile{brf}{\backcite{karimov_guided_volume_editing}{{2}{2}{section*.4}}}
+\citation{karimov_guided_volume_editing}
 \citation{uzunbas}
 \citation{BogovicHJ13}
+\@writefile{brf}{\backcite{haehn_dojo_2014}{{3}{2}{section*.4}}}
+\@writefile{brf}{\backcite{Neuroblocks}{{3}{2}{section*.4}}}
+\@writefile{brf}{\backcite{karimov_guided_volume_editing}{{3}{2}{section*.4}}}
+\@writefile{brf}{\backcite{uzunbas}{{3}{2}{section*.4}}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}\hskip -1em.\nobreakspace  {}Method}{3}{section.3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}\hskip -1em.\nobreakspace  {}Convolutional Neural Network Design}{3}{subsection.3.1}}
 \newlabel{fig:layers}{{2a}{3}{Subfigure 2a}{subfigure.2.1}{}}
 \newlabel{sub@fig:layers}{{(a)}{a}{Subfigure 2a\relax }{subfigure.2.1}{}}
 \newlabel{fig:networks}{{2b}{3}{Subfigure 2b}{subfigure.2.2}{}}
@@ -108,50 +111,47 @@
 \@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces (a) Our network architecture with up to four input channels, each with two convolutional and two pooling layers. MergeNet includes four separate input channels and RGBANet uses a 4-channel input. (b) We trained three different network configurations with three and four inputs: A) image, boundary map probability, and merged binary mask; B) A configuration extended with a small border mask, to focus on the specific boundary in question; C) A configuration extended with a large border mask.\relax }}{3}{figure.caption.5}}
 \@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {CNN Layers}}}{3}{subfigure.2.1}}
 \@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {Network configurations}}}{3}{subfigure.2.2}}
-\@writefile{brf}{\backcite{uzunbas}{{3}{2}{section*.4}}}
-\@writefile{toc}{\contentsline {section}{\numberline {3}\hskip -1em.\nobreakspace  {}Method}{3}{section.3}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}\hskip -1em.\nobreakspace  {}Convolutional Neural Network Design}{3}{subsection.3.1}}
 \@writefile{brf}{\backcite{BogovicHJ13}{{3}{3.1}{subsection.3.1}}}
 \citation{kasthuri2015saturated}
-\citation{Bastien-Theano-2012}
-\citation{haehn_dojo_2014}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Network design training evaluation. Adding an extra channel containing a binary mask of just the border slightly increases performance in both network configurations. We take configuration MergeNet C to evaluate VI against human performance.\relax }}{4}{figure.caption.6}}
+\newlabel{fig:trainingperformance}{{3}{4}{Network design training evaluation. Adding an extra channel containing a binary mask of just the border slightly increases performance in both network configurations. We take configuration MergeNet C to evaluate VI against human performance.\relax }{figure.caption.6}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.2}\hskip -1em.\nobreakspace  {}Training}{4}{subsection.3.2}}
 \@writefile{brf}{\backcite{kasthuri2015saturated}{{4}{3.2}{subsection.3.2}}}
-\@writefile{brf}{\backcite{Bastien-Theano-2012}{{4}{3.2}{figure.caption.6}}}
-\@writefile{toc}{\contentsline {section}{\numberline {4}\hskip -1em.\nobreakspace  {}Evaluation}{4}{section.4}}
-\newlabel{sec:evaluation}{{4}{4}{\hskip -1em.~Evaluation}{section.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}\hskip -1em.\nobreakspace  {}Comparison Study}{4}{subsection.4.1}}
-\newlabel{sec:comparisonstudy}{{4.1}{4}{\hskip -1em.~Comparison Study}{subsection.4.1}{}}
-\@writefile{toc}{\contentsline {paragraph}{Guided proofreading.}{4}{section*.8}}
-\@writefile{brf}{\backcite{haehn_dojo_2014}{{4}{4.1}{section*.8}}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Network design training evaluation. Adding an extra channel containing a binary mask of just the border slightly increases performance in both network configurations. We take configuration MergeNet C to evaluate VI against human performance.\relax }}{5}{figure.caption.6}}
-\newlabel{fig:trainingperformance}{{3}{5}{Network design training evaluation. Adding an extra channel containing a binary mask of just the border slightly increases performance in both network configurations. We take configuration MergeNet C to evaluate VI against human performance.\relax }{figure.caption.6}{}}
-\@writefile{toc}{\contentsline {paragraph}{Random recommendations.}{5}{section*.10}}
-\@writefile{toc}{\contentsline {paragraph}{Automatic correction.}{5}{section*.11}}
-\newlabel{fig:layers}{{4a}{6}{Subfigure 4a}{subfigure.4.1}{}}
+\citation{Bastien-Theano-2012}
+\citation{haehn_dojo_2014}
+\newlabel{fig:layers}{{4a}{5}{Subfigure 4a}{subfigure.4.1}{}}
 \newlabel{sub@fig:layers}{{(a)}{a}{Subfigure 4a\relax }{subfigure.4.1}{}}
-\newlabel{fig:networks}{{4b}{6}{Subfigure 4b}{subfigure.4.2}{}}
+\newlabel{fig:networks}{{4b}{5}{Subfigure 4b}{subfigure.4.2}{}}
 \newlabel{sub@fig:networks}{{(b)}{b}{Subfigure 4b\relax }{subfigure.4.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces (a) We compare distributions of VI measures across 10 sections for the initial automatic segmentation, a fully-automatic correction of recommended errors based on a threshold of acceptance, the best user in the Haehn et al.\nobreakspace  {}experiment with Dojo, two experts using our system and our simulated user. Lower scores are better.\relax }}{6}{figure.caption.7}}
-\newlabel{fig:results}{{4}{6}{(a) We compare distributions of VI measures across 10 sections for the initial automatic segmentation, a fully-automatic correction of recommended errors based on a threshold of acceptance, the best user in the Haehn et al.~experiment with Dojo, two experts using our system and our simulated user. Lower scores are better.\relax }{figure.caption.7}{}}
-\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {Interactive (Dojo) vs. Guided Proofreading}}}{6}{subfigure.4.1}}
-\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {Simulated User Error Rate}}}{6}{subfigure.4.2}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces (a) We compare distributions of VI measures across 10 sections for the initial automatic segmentation, a fully-automatic correction of recommended errors based on a threshold of acceptance, the best user in the Haehn et al.\nobreakspace  {}experiment with Dojo, two experts using our system and our simulated user. Lower scores are better.\relax }}{5}{figure.caption.7}}
+\newlabel{fig:results}{{4}{5}{(a) We compare distributions of VI measures across 10 sections for the initial automatic segmentation, a fully-automatic correction of recommended errors based on a threshold of acceptance, the best user in the Haehn et al.~experiment with Dojo, two experts using our system and our simulated user. Lower scores are better.\relax }{figure.caption.7}{}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {Interactive (Dojo) vs. Guided Proofreading}}}{5}{subfigure.4.1}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {Simulated User Error Rate}}}{5}{subfigure.4.2}}
+\@writefile{brf}{\backcite{Bastien-Theano-2012}{{5}{3.2}{subsection.3.2}}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}\hskip -1em.\nobreakspace  {}Evaluation}{5}{section.4}}
+\newlabel{sec:evaluation}{{4}{5}{\hskip -1em.~Evaluation}{section.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}\hskip -1em.\nobreakspace  {}Comparison Study}{5}{subsection.4.1}}
+\newlabel{sec:comparisonstudy}{{4.1}{5}{\hskip -1em.~Comparison Study}{subsection.4.1}{}}
+\@writefile{toc}{\contentsline {paragraph}{Guided proofreading.}{5}{section*.10}}
 \newlabel{fig:layers}{{5a}{6}{Subfigure 5a}{subfigure.5.1}{}}
 \newlabel{sub@fig:layers}{{(a)}{a}{Subfigure 5a\relax }{subfigure.5.1}{}}
 \newlabel{fig:networks}{{5b}{6}{Subfigure 5b}{subfigure.5.2}{}}
 \newlabel{sub@fig:networks}{{(b)}{b}{Subfigure 5b\relax }{subfigure.5.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Our web-based user interface includes a slice overview with the relevant area highlighted in yellow. The interface shows (a) a split error with a suggested correction as well as (b) a merge error with correction. The user selects whether to accept a correction or to skip it.\relax }}{6}{figure.caption.9}}
-\newlabel{fig:cylinderresults}{{5}{6}{Our web-based user interface includes a slice overview with the relevant area highlighted in yellow. The interface shows (a) a split error with a suggested correction as well as (b) a merge error with correction. The user selects whether to accept a correction or to skip it.\relax }{figure.caption.9}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Our web-based user interface includes a slice overview with the relevant area highlighted in yellow. The interface shows (a) a split error with a suggested correction as well as (b) a merge error with correction. The user selects whether to accept a correction or to skip it.\relax }}{6}{figure.caption.8}}
+\newlabel{fig:cylinderresults}{{5}{6}{Our web-based user interface includes a slice overview with the relevant area highlighted in yellow. The interface shows (a) a split error with a suggested correction as well as (b) a merge error with correction. The user selects whether to accept a correction or to skip it.\relax }{figure.caption.8}{}}
 \@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {Split error}}}{6}{subfigure.5.1}}
 \@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {Merge error}}}{6}{subfigure.5.2}}
+\@writefile{brf}{\backcite{haehn_dojo_2014}{{6}{4.1}{section*.10}}}
+\@writefile{toc}{\contentsline {paragraph}{Random recommendations.}{6}{section*.11}}
 \citation{kasthuri2015saturated}
+\@writefile{toc}{\contentsline {paragraph}{Automatic correction.}{7}{section*.12}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.2}\hskip -1em.\nobreakspace  {}Simulated Experiment}{7}{subsection.4.2}}
 \@writefile{brf}{\backcite{kasthuri2015saturated}{{7}{4.2}{subsection.4.2}}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}\hskip -1em.\nobreakspace  {}Application - Proof reading}{7}{section.5}}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Our web-based user interface includes a slice overview with the relevant area highlighted in yellow. The interface shows (a) a split error with a suggested correction as well as (b) a merge error with correction. The user selects whether to accept a correction or to discard it.\relax }}{7}{figure.caption.12}}
-\newlabel{fig:prototype}{{6}{7}{Our web-based user interface includes a slice overview with the relevant area highlighted in yellow. The interface shows (a) a split error with a suggested correction as well as (b) a merge error with correction. The user selects whether to accept a correction or to discard it.\relax }{figure.caption.12}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Our web-based user interface includes a slice overview with the relevant area highlighted in yellow. The interface shows (a) a split error with a suggested correction as well as (b) a merge error with correction. The user selects whether to accept a correction or to discard it.\relax }}{7}{figure.caption.9}}
+\newlabel{fig:prototype}{{6}{7}{Our web-based user interface includes a slice overview with the relevant area highlighted in yellow. The interface shows (a) a split error with a suggested correction as well as (b) a merge error with correction. The user selects whether to accept a correction or to discard it.\relax }{figure.caption.9}{}}
 \@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {Split error}}}{7}{subfigure.6.1}}
 \@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {Merge error}}}{7}{subfigure.6.2}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}\hskip -1em.\nobreakspace  {}Application - Proof reading}{7}{section.5}}
 \@writefile{toc}{\contentsline {section}{\numberline {6}\hskip -1em.\nobreakspace  {}Discussion and Conclusion}{7}{section.6}}
 \bibstyle{ieee}
 \bibdata{paper_references}
