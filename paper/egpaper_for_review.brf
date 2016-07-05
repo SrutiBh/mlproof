@@ -7,6 +7,7 @@
 \backcite {markus_proofreading,raveler,mojo2,haehn_dojo_2014,karimov_guided_volume_editing,uzunbas}{{1}{1}{section.1}}
 \backcite {haehn_dojo_2014}{{1}{1}{section.1}}
 \backcite {akselrod09,Saalfeld2010Asrigidaspossible}{{2}{1}{figure.caption.1}}
+\backcite {NunezIglesias2013Machine}{{2}{1}{figure.caption.1}}
 \backcite {haehn_dojo_2014}{{2}{1}{figure.caption.1}}
 \backcite {jain2010,kaynig10,Liu2014,NunezIglesias2013Machine,GALA2014,amelio_segmentation}{{2}{2}{section*.2}}
 \backcite {isbi_challenge}{{2}{2}{section*.2}}
@@ -17,7 +18,6 @@
 \backcite {lee2015recursive}{{2}{2}{section*.2}}
 \backcite {10.3389/fnana.2015.00142}{{2}{2}{section*.2}}
 \backcite {BogovicHJ13}{{2}{2}{section*.2}}
-\backcite {akselrod09,beyer13,Saalfeld2010Asrigidaspossible}{{2}{2}{section*.2}}
 \backcite {saalfeld09,anderson2011}{{2}{2}{section*.3}}
 \backcite {eyewire2012}{{2}{2}{section*.3}}
 \backcite {Giuly2013DP2}{{2}{2}{section*.3}}

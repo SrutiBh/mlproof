@@ -1262,7 +1262,7 @@ class Legacy(object):
         # plt.plot(xx, yy, label=v+' (area = %0.2f)' % roc_auc, linewidth=4)
     # plt.plot([0, 1], [0, 1], 'k--')
     plt.xlim([0.0, 0.3])
-    plt.ylim([0.7, 1.05])
+    plt.ylim([0.7, 1.0])
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
     if title:
@@ -1319,12 +1319,17 @@ class Legacy(object):
         plt.plot(recall, precision, label=v+' (area = %0.2f)' % pc_auc, linewidth=4)
     # plt.plot([1, 0], [0, 1], 'k--')
     plt.xlim([0.7, 1.0])
-    plt.ylim([0.7, 1.05])
+    plt.ylim([0.7, 1.0])
     plt.xlabel('Recall')
     plt.ylabel('Precision')
     if title:
       plt.title(title)
-    plt.legend(loc="lower right")
+    ax = plt.gca()
+    handles, labels = ax.get_legend_handles_labels()
+    # sort both labels and handles by labels
+    labels, handles = zip(*sorted(zip(labels, handles), key=lambda t: t[0]))
+    ax.legend(handles, labels, loc='lower left')      
+    # plt.legend(loc="lower right")
     font = {'family' : 'normal',
             'size'   : 26}
 

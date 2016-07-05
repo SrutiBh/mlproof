@@ -387,9 +387,9 @@ class Stats(object):
       pc_vals[cnn_name] = (p, c, pc_auc)
 
     mlp.Legacy.plot_roc(roc_vals, title='Classifier ROC Comparison')
-    mlp.Legacy.plot_roc_zoom(roc_vals, title='Classifier ROC Comparison')
+    mlp.Legacy.plot_roc_zoom(roc_vals, filename='/tmp/roc_plot.pdf')
     mlp.Legacy.plot_pc(pc_vals, title='Classifier Precision/Recall Comparison')
-    mlp.Legacy.plot_pc_zoom(pc_vals, title='Classifier Precision/Recall Comparison')
+    mlp.Legacy.plot_pc_zoom(pc_vals, filename='/tmp/pr_plot.pdf')
 
     return roc_vals
 

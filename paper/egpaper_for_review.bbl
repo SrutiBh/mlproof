@@ -52,13 +52,6 @@ F.~Bastien, P.~Lamblin, R.~Pascanu, J.~Bergstra, I.~J. Goodfellow, A.~Bergeron,
 \newblock Deep Learning and Unsupervised Feature Learning NIPS 2012 Workshop,
   2012.
 
-\bibitem{beyer13}
-J.~Beyer, M.~Hadwiger, A.~Al-Awami, W.-K. Jeong, N.~Kasthuri, J.~W. Lichtman,
-  and H.~Pfister.
-\newblock Exploring the connectome: Petascale volume visualization of
-  microscopy data streams.
-\newblock {\em IEEE Computer Graphics and Applications}, 33(4):50--61, 2013.
-
 \bibitem{BogovicHJ13}
 J.~A. Bogovic, G.~B. Huang, and V.~Jain.
 \newblock Learned versus hand-designed feature representations for 3d

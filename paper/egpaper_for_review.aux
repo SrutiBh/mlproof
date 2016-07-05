@@ -46,6 +46,7 @@
 \@writefile{brf}{\backcite{haehn_dojo_2014}{{1}{1}{section.1}}}
 \citation{akselrod09}
 \citation{Saalfeld2010Asrigidaspossible}
+\citation{NunezIglesias2013Machine}
 \citation{haehn_dojo_2014}
 \citation{jain2010}
 \citation{kaynig10}
@@ -61,9 +62,6 @@
 \citation{lee2015recursive}
 \citation{10.3389/fnana.2015.00142}
 \citation{BogovicHJ13}
-\citation{akselrod09}
-\citation{beyer13}
-\citation{Saalfeld2010Asrigidaspossible}
 \citation{saalfeld09}
 \citation{anderson2011}
 \citation{eyewire2012}
@@ -74,6 +72,7 @@
 \citation{haehn_dojo_2014}
 \citation{Neuroblocks}
 \@writefile{brf}{\backcite{akselrod09,Saalfeld2010Asrigidaspossible}{{2}{1}{figure.caption.1}}}
+\@writefile{brf}{\backcite{NunezIglesias2013Machine}{{2}{1}{figure.caption.1}}}
 \@writefile{brf}{\backcite{haehn_dojo_2014}{{2}{1}{figure.caption.1}}}
 \@writefile{toc}{\contentsline {section}{\numberline {2}\hskip -1em.\nobreakspace  {}Related Work}{2}{section.2}}
 \@writefile{toc}{\contentsline {paragraph}{Automatic Segmentation}{2}{section*.2}}
@@ -86,7 +85,6 @@
 \@writefile{brf}{\backcite{lee2015recursive}{{2}{2}{section*.2}}}
 \@writefile{brf}{\backcite{10.3389/fnana.2015.00142}{{2}{2}{section*.2}}}
 \@writefile{brf}{\backcite{BogovicHJ13}{{2}{2}{section*.2}}}
-\@writefile{brf}{\backcite{akselrod09,beyer13,Saalfeld2010Asrigidaspossible}{{2}{2}{section*.2}}}
 \@writefile{toc}{\contentsline {paragraph}{Collaborative Interactive Segmentation}{2}{section*.3}}
 \@writefile{brf}{\backcite{saalfeld09,anderson2011}{{2}{2}{section*.3}}}
 \@writefile{brf}{\backcite{eyewire2012}{{2}{2}{section*.3}}}
@@ -103,7 +101,6 @@
 \@writefile{brf}{\backcite{karimov_guided_volume_editing}{{3}{2}{section*.4}}}
 \@writefile{brf}{\backcite{uzunbas}{{3}{2}{section*.4}}}
 \@writefile{toc}{\contentsline {section}{\numberline {3}\hskip -1em.\nobreakspace  {}Method}{3}{section.3}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}\hskip -1em.\nobreakspace  {}Convolutional Neural Network Design}{3}{subsection.3.1}}
 \newlabel{fig:layers}{{2a}{3}{Subfigure 2a}{subfigure.2.1}{}}
 \newlabel{sub@fig:layers}{{(a)}{a}{Subfigure 2a\relax }{subfigure.2.1}{}}
 \newlabel{fig:networks}{{2b}{3}{Subfigure 2b}{subfigure.2.2}{}}
@@ -111,20 +108,20 @@
 \@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces (a) Our network architecture with up to four input channels, each with two convolutional and two pooling layers. MergeNet includes four separate input channels and RGBANet uses a 4-channel input. (b) We trained three different network configurations with three and four inputs: A) image, boundary map probability, and merged binary mask; B) A configuration extended with a small border mask, to focus on the specific boundary in question; C) A configuration extended with a large border mask.\relax }}{3}{figure.caption.5}}
 \@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {CNN Layers}}}{3}{subfigure.2.1}}
 \@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {Network configurations}}}{3}{subfigure.2.2}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}\hskip -1em.\nobreakspace  {}Convolutional Neural Network Design}{3}{subsection.3.1}}
 \@writefile{brf}{\backcite{BogovicHJ13}{{3}{3.1}{subsection.3.1}}}
 \citation{kasthuri2015saturated}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Network design training evaluation. Adding an extra channel containing a binary mask of just the border slightly increases performance in both network configurations. We take configuration MergeNet C to evaluate VI against human performance.\relax }}{4}{figure.caption.6}}
-\newlabel{fig:trainingperformance}{{3}{4}{Network design training evaluation. Adding an extra channel containing a binary mask of just the border slightly increases performance in both network configurations. We take configuration MergeNet C to evaluate VI against human performance.\relax }{figure.caption.6}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Network design training evaluation. Adding an extra channel containing a binary mask of just the border slightly increases performance in both network configurations. Due to slightly larger areas under the curves for both receiver operating characteristic and precision/recall, we choose configuration MergeNet C to evaluate VI against human performance.\relax }}{4}{figure.caption.6}}
+\newlabel{fig:trainingperformance}{{3}{4}{Network design training evaluation. Adding an extra channel containing a binary mask of just the border slightly increases performance in both network configurations. Due to slightly larger areas under the curves for both receiver operating characteristic and precision/recall, we choose configuration MergeNet C to evaluate VI against human performance.\relax }{figure.caption.6}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.2}\hskip -1em.\nobreakspace  {}Training}{4}{subsection.3.2}}
 \@writefile{brf}{\backcite{kasthuri2015saturated}{{4}{3.2}{subsection.3.2}}}
 \citation{Bastien-Theano-2012}
-\citation{haehn_dojo_2014}
-\newlabel{fig:layers}{{4a}{5}{Subfigure 4a}{subfigure.4.1}{}}
-\newlabel{sub@fig:layers}{{(a)}{a}{Subfigure 4a\relax }{subfigure.4.1}{}}
-\newlabel{fig:networks}{{4b}{5}{Subfigure 4b}{subfigure.4.2}{}}
-\newlabel{sub@fig:networks}{{(b)}{b}{Subfigure 4b\relax }{subfigure.4.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces (a) We compare distributions of VI measures across 10 sections for the initial automatic segmentation, a fully-automatic correction of recommended errors based on a threshold of acceptance, the best user in the Haehn et al.\nobreakspace  {}experiment with Dojo, two experts using our system and our simulated user. Lower scores are better.\relax }}{5}{figure.caption.7}}
-\newlabel{fig:results}{{4}{5}{(a) We compare distributions of VI measures across 10 sections for the initial automatic segmentation, a fully-automatic correction of recommended errors based on a threshold of acceptance, the best user in the Haehn et al.~experiment with Dojo, two experts using our system and our simulated user. Lower scores are better.\relax }{figure.caption.7}{}}
+\newlabel{fig:dojo_vi}{{4a}{5}{Subfigure 4a}{subfigure.4.1}{}}
+\newlabel{sub@fig:dojo_vi}{{(a)}{a}{Subfigure 4a\relax }{subfigure.4.1}{}}
+\newlabel{fig:dojo_error_rate}{{4b}{5}{Subfigure 4b}{subfigure.4.2}{}}
+\newlabel{sub@fig:dojo_error_rate}{{(b)}{b}{Subfigure 4b\relax }{subfigure.4.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces (a) We compare distributions of VI measures across 10 sections for the initial automatic segmentation, a fully-automatic correction of recommended errors based on a threshold of acceptance, the best user in the Haehn et al.\nobreakspace  {}experiment with Dojo, two experts using our system and our simulated user. Lower scores are better. (b) We test our simulated user with different error rates and compared against the best user as well as the average user performance in Dojo.\relax }}{5}{figure.caption.7}}
+\newlabel{fig:results}{{4}{5}{(a) We compare distributions of VI measures across 10 sections for the initial automatic segmentation, a fully-automatic correction of recommended errors based on a threshold of acceptance, the best user in the Haehn et al.~experiment with Dojo, two experts using our system and our simulated user. Lower scores are better. (b) We test our simulated user with different error rates and compared against the best user as well as the average user performance in Dojo.\relax }{figure.caption.7}{}}
 \@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {Interactive (Dojo) vs. Guided Proofreading}}}{5}{subfigure.4.1}}
 \@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {Simulated User Error Rate}}}{5}{subfigure.4.2}}
 \@writefile{brf}{\backcite{Bastien-Theano-2012}{{5}{3.2}{subsection.3.2}}}
@@ -132,27 +129,27 @@
 \newlabel{sec:evaluation}{{4}{5}{\hskip -1em.~Evaluation}{section.4}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.1}\hskip -1em.\nobreakspace  {}Comparison Study}{5}{subsection.4.1}}
 \newlabel{sec:comparisonstudy}{{4.1}{5}{\hskip -1em.~Comparison Study}{subsection.4.1}{}}
-\@writefile{toc}{\contentsline {paragraph}{Guided proofreading.}{5}{section*.10}}
-\newlabel{fig:layers}{{5a}{6}{Subfigure 5a}{subfigure.5.1}{}}
-\newlabel{sub@fig:layers}{{(a)}{a}{Subfigure 5a\relax }{subfigure.5.1}{}}
-\newlabel{fig:networks}{{5b}{6}{Subfigure 5b}{subfigure.5.2}{}}
-\newlabel{sub@fig:networks}{{(b)}{b}{Subfigure 5b\relax }{subfigure.5.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Our web-based user interface includes a slice overview with the relevant area highlighted in yellow. The interface shows (a) a split error with a suggested correction as well as (b) a merge error with correction. The user selects whether to accept a correction or to skip it.\relax }}{6}{figure.caption.8}}
-\newlabel{fig:cylinderresults}{{5}{6}{Our web-based user interface includes a slice overview with the relevant area highlighted in yellow. The interface shows (a) a split error with a suggested correction as well as (b) a merge error with correction. The user selects whether to accept a correction or to skip it.\relax }{figure.caption.8}{}}
-\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {Split error}}}{6}{subfigure.5.1}}
-\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {Merge error}}}{6}{subfigure.5.2}}
+\citation{haehn_dojo_2014}
+\newlabel{fig:cylinder_results}{{5a}{6}{Subfigure 5a}{subfigure.5.1}{}}
+\newlabel{sub@fig:cylinder_results}{{(a)}{a}{Subfigure 5a\relax }{subfigure.5.1}{}}
+\newlabel{fig:cylinder_vi}{{5b}{6}{Subfigure 5b}{subfigure.5.2}{}}
+\newlabel{sub@fig:cylinder_vi}{{(b)}{b}{Subfigure 5b\relax }{subfigure.5.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Results of our simulated experiment on a larger dataset ($2048\times 2048\times 50$ voxels). Lower VI scores are better. (a) The initial segmentation is reduced by both fully-automatic correction ($p_t=.95$) and our simulated user. (b) We compare the change in VI measure for each individual correction. The automatic correction stops once the threshold $p_t$ is reached.\relax }}{6}{figure.caption.8}}
+\newlabel{fig:cylinderresults}{{5}{6}{Results of our simulated experiment on a larger dataset ($2048\times 2048\times 50$ voxels). Lower VI scores are better. (a) The initial segmentation is reduced by both fully-automatic correction ($p_t=.95$) and our simulated user. (b) We compare the change in VI measure for each individual correction. The automatic correction stops once the threshold $p_t$ is reached.\relax }{figure.caption.8}{}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {Guided Proofreading Results}}}{6}{subfigure.5.1}}
+\@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {Variation of Information per Correction}}}{6}{subfigure.5.2}}
+\@writefile{toc}{\contentsline {paragraph}{Guided proofreading.}{6}{section*.10}}
 \@writefile{brf}{\backcite{haehn_dojo_2014}{{6}{4.1}{section*.10}}}
-\@writefile{toc}{\contentsline {paragraph}{Random recommendations.}{6}{section*.11}}
 \citation{kasthuri2015saturated}
+\@writefile{toc}{\contentsline {paragraph}{Random recommendations.}{7}{section*.11}}
 \@writefile{toc}{\contentsline {paragraph}{Automatic correction.}{7}{section*.12}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}\hskip -1em.\nobreakspace  {}Simulated Experiment}{7}{subsection.4.2}}
-\@writefile{brf}{\backcite{kasthuri2015saturated}{{7}{4.2}{subsection.4.2}}}
 \@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Our web-based user interface includes a slice overview with the relevant area highlighted in yellow. The interface shows (a) a split error with a suggested correction as well as (b) a merge error with correction. The user selects whether to accept a correction or to discard it.\relax }}{7}{figure.caption.9}}
 \newlabel{fig:prototype}{{6}{7}{Our web-based user interface includes a slice overview with the relevant area highlighted in yellow. The interface shows (a) a split error with a suggested correction as well as (b) a merge error with correction. The user selects whether to accept a correction or to discard it.\relax }{figure.caption.9}{}}
 \@writefile{lof}{\contentsline {subfigure}{\numberline{(a)}{\ignorespaces {Split error}}}{7}{subfigure.6.1}}
 \@writefile{lof}{\contentsline {subfigure}{\numberline{(b)}{\ignorespaces {Merge error}}}{7}{subfigure.6.2}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}\hskip -1em.\nobreakspace  {}Application - Proof reading}{7}{section.5}}
-\@writefile{toc}{\contentsline {section}{\numberline {6}\hskip -1em.\nobreakspace  {}Discussion and Conclusion}{7}{section.6}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}\hskip -1em.\nobreakspace  {}Simulated Experiment}{7}{subsection.4.2}}
+\@writefile{brf}{\backcite{kasthuri2015saturated}{{7}{4.2}{subsection.4.2}}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}\hskip -1em.\nobreakspace  {}Application}{7}{section.5}}
 \bibstyle{ieee}
 \bibdata{paper_references}
 \bibcite{isbi_challenge}{1}
@@ -163,27 +160,27 @@
 \bibcite{anderson2011}{6}
 \bibcite{10.3389/fnana.2015.00142}{7}
 \bibcite{Bastien-Theano-2012}{8}
-\bibcite{beyer13}{9}
-\bibcite{BogovicHJ13}{10}
-\bibcite{Ciresan:2012f}{11}
-\bibcite{Giuly2013DP2}{12}
-\bibcite{haehn_dojo_2014}{13}
-\bibcite{jain2010}{14}
-\bibcite{raveler}{15}
-\bibcite{karimov_guided_volume_editing}{16}
-\bibcite{kasthuri2015saturated}{17}
-\bibcite{kaynig10}{18}
-\bibcite{kaynig2015large}{19}
-\bibcite{mojo2}{20}
-\bibcite{lee2015recursive}{21}
-\bibcite{Liu2014}{22}
-\bibcite{Masci:2013a}{23}
-\bibcite{NunezIglesias2013Machine}{24}
-\bibcite{GALA2014}{25}
-\bibcite{proofreading_bottleneck}{26}
-\bibcite{RonnebergerFB15}{27}
-\bibcite{saalfeld09}{28}
-\bibcite{Saalfeld2010Asrigidaspossible}{29}
-\bibcite{markus_proofreading}{30}
-\bibcite{uzunbas}{31}
-\bibcite{amelio_segmentation}{32}
+\bibcite{BogovicHJ13}{9}
+\bibcite{Ciresan:2012f}{10}
+\bibcite{Giuly2013DP2}{11}
+\bibcite{haehn_dojo_2014}{12}
+\bibcite{jain2010}{13}
+\bibcite{raveler}{14}
+\bibcite{karimov_guided_volume_editing}{15}
+\bibcite{kasthuri2015saturated}{16}
+\bibcite{kaynig10}{17}
+\bibcite{kaynig2015large}{18}
+\bibcite{mojo2}{19}
+\bibcite{lee2015recursive}{20}
+\@writefile{toc}{\contentsline {section}{\numberline {6}\hskip -1em.\nobreakspace  {}Discussion and Conclusion}{8}{section.6}}
+\bibcite{Liu2014}{21}
+\bibcite{Masci:2013a}{22}
+\bibcite{NunezIglesias2013Machine}{23}
+\bibcite{GALA2014}{24}
+\bibcite{proofreading_bottleneck}{25}
+\bibcite{RonnebergerFB15}{26}
+\bibcite{saalfeld09}{27}
+\bibcite{Saalfeld2010Asrigidaspossible}{28}
+\bibcite{markus_proofreading}{29}
+\bibcite{uzunbas}{30}
+\bibcite{amelio_segmentation}{31}

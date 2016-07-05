@@ -7,45 +7,45 @@ Warning--to sort, need author or key in isbi_challenge
 Warning--to sort, need author or key in neuroproof2013
 Warning--to sort, need author or key in eyewire2012
 Warning--there's a number but no volume in mojo2
-You've used 32 entries,
+You've used 31 entries,
             2120 wiz_defined-function locations,
-            687 strings with 11182 characters,
-and the built_in function-call counts, 13277 in all, are:
-= -- 1190
-> -- 969
+            681 strings with 10939 characters,
+and the built_in function-call counts, 12807 in all, are:
+= -- 1147
+> -- 931
 < -- 3
-+ -- 388
-- -- 352
-* -- 1114
-:= -- 2271
-add.period$ -- 98
-call.type$ -- 32
-change.case$ -- 271
++ -- 373
+- -- 338
+* -- 1069
+:= -- 2188
+add.period$ -- 95
+call.type$ -- 31
+change.case$ -- 261
 chr.to.int$ -- 0
-cite$ -- 36
-duplicate$ -- 378
-empty$ -- 837
-format.name$ -- 352
-if$ -- 2647
+cite$ -- 35
+duplicate$ -- 367
+empty$ -- 812
+format.name$ -- 338
+if$ -- 2558
 int.to.chr$ -- 0
-int.to.str$ -- 32
-missing$ -- 27
-newline$ -- 165
-num.names$ -- 58
-pop$ -- 281
+int.to.str$ -- 31
+missing$ -- 26
+newline$ -- 160
+num.names$ -- 56
+pop$ -- 273
 preamble$ -- 1
-purify$ -- 239
+purify$ -- 230
 quote$ -- 0
-skip$ -- 268
+skip$ -- 261
 stack$ -- 0
-substring$ -- 594
-swap$ -- 70
+substring$ -- 570
+swap$ -- 69
 text.length$ -- 3
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 128
+type$ -- 124
 warning$ -- 4
-while$ -- 87
-width$ -- 34
-write$ -- 348
+while$ -- 83
+width$ -- 33
+write$ -- 337
 (There were 4 warnings)
