@@ -5,7 +5,7 @@
     }
 
     \subfloat[Network configurations\label{fig:networks}]{%
-      \includegraphics[width=0.9\textwidth]{gfx/network_inputs.png}
+      \includegraphics[width=0.9\textwidth]{gfx/patches.png}
     }
 	\caption{(a) Our network architecture with up to four input channels, each with two convolutional and two pooling layers. MergeNet includes four separate input channels and RGBANet uses a 4-channel input. (b) We trained three different network configurations with three and four inputs: A) image, boundary map probability, and merged binary mask; B) A configuration extended with a small border mask, to focus on the specific boundary in question; C) A configuration extended with a large border mask.}
 
@@ -22,7 +22,7 @@
 
 \begin{tabular}{l rrrr}
 \toprule
-Network & Validation loss & Test acc. ~(\%) & Prec./Recall & \hspace{0.1cm} F1 Score \\
+Network & Validation loss & Test acc. & Prec./Recall & \hspace{0.1cm} F1 Score \\
 \midrule
 A. MergeNet: Image + boundary prob. + seg. label & 0.073 & 0.906 & 0.906/0.906 & 0.907 \\
 B. MergeNet: A config. + small border overlap ($d=1$) & 0.07 & 0.911 & 0.911/0.911 & 0.912 \\
@@ -56,7 +56,7 @@ F. RGBANet: C. config. & 0.058 & 0.905 & 0.905/0.905 & 0.904\\
 	    \includegraphics[width=.45\textwidth]{gfx/dojo_errorrate.pdf}
     }
 
-\caption{(a) We compare distributions of VI measures across 10 sections for the initial automatic segmentation, a fully-automatic correction of recommended errors based on a threshold of acceptance, the best user in the Haehn et al.~experiment with Dojo, two experts using our system and our simulated user. Lower scores are better. (b) We test our simulated user with different error rates and compared against the best user as well as the average user performance in Dojo.}
+\caption{(a) We compare distributions of VI measures across 10 sections for the initial automatic segmentation, a fully-automatic correction of recommended errors based on a threshold of acceptance, the best user in the Haehn et al.~experiment with Dojo, two experts using our system and our simulated user. Lower scores are better. (b) We test our simulated user with different error rates and compare against the best user as well as the average user performance in Dojo.}
 \label{fig:results}
 
 \end{figure*}

@@ -386,10 +386,10 @@ class Stats(object):
       pc_auc = average_precision_score(y_test, test_prediction_prob[:,1], average='micro')
       pc_vals[cnn_name] = (p, c, pc_auc)
 
-    mlp.Legacy.plot_roc(roc_vals, title='Classifier ROC Comparison')
-    mlp.Legacy.plot_roc_zoom(roc_vals, filename='/tmp/roc_plot.pdf')
-    mlp.Legacy.plot_pc(pc_vals, title='Classifier Precision/Recall Comparison')
-    mlp.Legacy.plot_pc_zoom(pc_vals, filename='/tmp/pr_plot.pdf')
+    mlp.Legacy.plot_roc(roc_vals, filename='/home/d/netstats/roc_plot.pdf')
+    mlp.Legacy.plot_roc_zoom(roc_vals, filename='/home/d/netstats/roc_plot_zoom.pdf')
+    mlp.Legacy.plot_pc(pc_vals, filename='/home/d/netstats/pr_plot.pdf')
+    mlp.Legacy.plot_pc_zoom(pc_vals, filename='/home/d/netstats/pr_plot_zoom.pdf')
 
     return roc_vals
 
@@ -926,6 +926,52 @@ class Stats(object):
     print '   Median VI improvement', original_median_VI-cylinder_vi_99[1]
 
 
+    print
+    cylinder_vi_0_file = output_folder + '/cylinder_vi_0.p'
+    cylinder_vi_auto_0_fixes_file = output_folder + '/cylinder_vi_0_fixes.p'
+    cylinder_auto_vis_0_file = output_folder + '/cylinder_auto_vis_0.p'    
+    if os.path.exists(cylinder_vi_0_file):
+      print 'Loading split errors p >= .0 from file..'
+      with open(cylinder_vi_0_file, 'rb') as f:
+        cylinder_vi_0 = pickle.load(f)
+      with open(cylinder_vi_auto_0_fixes_file, 'rb') as f:
+        cylinder_auto_fixes_00 = pickle.load(f)
+      with open(cylinder_auto_vis_0_file, 'rb') as f:
+        cylinder_auto_vi_s_00 = pickle.load(f)
+
+
+    else:      
+      # #
+      # # perform merge correction with p < .01
+      # #
+      # print 'Correcting merge errors with p < .01'
+      # bigM_dojo_05, corrected_rhoana_05 = mlp.Legacy.perform_auto_merge_correction(cnn, bigM_dojo, input_image, input_prob, input_rhoana, merge_errors, .05)
+
+      # print '   Mean VI improvement', original_mean_VI-mlp.Legacy.VI(input_gold, corrected_rhoana_05)[0]
+      # print '   Median VI improvement', original_median_VI-mlp.Legacy.VI(input_gold, corrected_rhoana_05)[1]
+
+      #
+      # perform split correction with p > .99
+      #
+      print 'Correcting split errors with p >= .0'
+      bigM_cylinder_00 = bigM_cylinder
+      corrected_rhoana_00 = input_rhoana
+      bigM_cylinder_after_00, out_cylinder_volume_after_auto_00, cylinder_auto_fixes_00, cylinder_auto_vi_s_00 = mlp.Legacy.splits_global_from_M_automatic(cnn, bigM_cylinder_00, input_image, input_prob, corrected_rhoana_00, input_gold, sureness_threshold=.0)
+
+      cylinder_vi_0 = mlp.Legacy.VI(input_gold, out_cylinder_volume_after_auto_00)
+
+      with open(cylinder_vi_0_file, 'wb') as f:
+        pickle.dump(cylinder_vi_0, f)
+
+      with open(cylinder_vi_auto_0_fixes_file, 'wb') as f:
+        pickle.dump(cylinder_auto_fixes_00, f)
+
+      with open(cylinder_auto_vis_0_file, 'wb') as f:
+        pickle.dump(cylinder_auto_vi_s_00, f)      
+
+    print '   Mean VI improvement', original_mean_VI-cylinder_vi_0[0]
+    print '   Median VI improvement', original_median_VI-cylinder_vi_0[1]
+
 
 
     print
@@ -1005,13 +1051,13 @@ class Stats(object):
 
     mlp.Legacy.plot_vi_simuser(vi_s_per_correction, output_folder+'/cylinder_simuser_vi.pdf')
 
-    proofread_vis_auto = [original_VI_s] + cylinder_auto_vi_s_95
+    proofread_vis_auto = [original_VI_s] + cylinder_auto_vi_s_00
     vi_s_per_correction_auto = [np.median(proofread_vis_auto[0])]
     for m in proofread_vis_auto[1:]:
         for i in range(30*12):
             vi_s_per_correction_auto.append(np.median(m))
 
-    mlp.Legacy.plot_vi_combined(vi_s_per_correction_auto, vi_s_per_correction, output_folder+'/cylinder_combined_vi.pdf')
+    # mlp.Legacy.plot_vi_combined(vi_s_per_correction_auto, vi_s_per_correction, output_folder+'/cylinder_combined_vi.pdf')
     mlp.Legacy.plot_vi_combined_no_interpolation(vi_s_per_correction_auto, vi_s_per_correction, output_folder+'/cylinder_combined_vi_no_interpolation.pdf')
 
 

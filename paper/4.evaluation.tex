@@ -8,7 +8,7 @@
     \subfloat[Variation of Information per Correction\label{fig:cylinder_vi}]{%
       \includegraphics[width=0.49\textwidth]{gfx/cylinder_combined_vi.pdf}
     }
-	\caption{Results of our simulated experiment on a larger dataset ($2048\times2048\times50$ voxels). Lower VI scores are better. (a) The initial segmentation is reduced by both fully-automatic correction ($p_t=.95$) and our simulated user. (b) We compare the change in VI measure for each individual correction. The automatic correction stops once the threshold $p_t$ is reached.}
+	\caption{Results of our simulated experiment on a larger dataset ($2048\times2048\times50$ voxels). Lower VI scores are better. (a) The initial segmentation is reduced by both fully-automatic correction (probability threshold $p_t=0.95$) and our simulated user. (b) We compare the change in VI measure for each individual correction running automatically and user-driven. The dashed blue line indicates the moment $p_t$ is reached. Guided proofreading is able to reduce VI beyond this threshold.}
 \label{fig:cylinderresults}
 \end{figure*}
 

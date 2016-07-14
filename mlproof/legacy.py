@@ -1055,7 +1055,8 @@ class Legacy(object):
     plt.ylabel('Variation of Information', labelpad=20)
 
     plt.setp(plt.xticks()[1], rotation=45)
-
+    ax.tick_params(axis='both', which='major', pad=15)
+    plt.ylim([0.0,0.7])
     font = {'family' : 'normal',
     #         'weight' : 'bold',
             'size'   : 26}
@@ -1090,7 +1091,7 @@ class Legacy(object):
     ax.tick_params(axis='both', which='major', pad=15)
     plt.ylabel('Variation of Information', labelpad=20)
     plt.xlabel('User Error Rate', labelpad=20)
-
+    plt.ylim([0.0,0.7])
     font = {'family' : 'normal',
     #         'weight' : 'bold',
             'size'   : 26}
@@ -1157,14 +1158,14 @@ class Legacy(object):
 
 
     ax.plot(xx_simuser, simuser, 'green', linewidth=4, label='Guided (Simulated)')
-    ax.plot(xx_automatic, automatic, 'red', linewidth=4, label='Automatic Corrections (p=.95)')
-    # ax.axvline(x=403, ymin=0, ymax=.245, color='b', linestyle='dashed', linewidth=2)
-
+    ax.plot(xx_automatic, automatic, 'red', linewidth=4, label='Automatic Corrections')
+    ax.axvline(x=4429, ymin=0, ymax=.61, color='b', linestyle='dashed', linewidth=2)
+    ax.tick_params(axis='both', which='major', pad=15)
     plt.ylabel('Variation of Information', labelpad=20)
 
     plt.xlabel('Corrections', labelpad=20)
     plt.xlim([0,len(simuser)])
-    # plt.ylim([0.4,0.5])
+    plt.ylim([0.0,0.7])
 
 
     legend = ax.legend(loc='upper right')
@@ -1232,16 +1233,23 @@ class Legacy(object):
         plt.plot(fpr, tpr, label=v+' (area = %0.2f)' % roc_auc, linewidth=4)
     plt.plot([0, 1], [0, 1], 'k--')
     plt.xlim([0.0, 1.0])
-    plt.ylim([0.0, 1.05])
+    plt.ylim([0.0, 1.0])
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
     if title:
       plt.title(title)
-    plt.legend(loc="lower right")
+    ax = plt.gca()
     font = {'family' : 'normal',
             'size'   : 26}
 
     plt.rc('font', **font)
+
+    handles, labels = ax.get_legend_handles_labels()
+    ax.tick_params(axis='both', which='major', pad=15)
+    # sort both labels and handles by labels
+    labels, handles = zip(*sorted(zip(labels, handles), key=lambda t: t[0]))
+    ax.legend(handles, labels, loc='lower right')
+
 
     if filename:
       plt.savefig(filename)
@@ -1269,6 +1277,7 @@ class Legacy(object):
       plt.title(title)
     ax = plt.gca()
     handles, labels = ax.get_legend_handles_labels()
+    ax.tick_params(axis='both', which='major', pad=15)
     # sort both labels and handles by labels
     labels, handles = zip(*sorted(zip(labels, handles), key=lambda t: t[0]))
     ax.legend(handles, labels, loc='lower right')
@@ -1293,12 +1302,17 @@ class Legacy(object):
         plt.plot(recall, precision, label=v+' (area = %0.2f)' % pc_auc, linewidth=4)
     plt.plot([1, 0], [0, 1], 'k--')
     plt.xlim([0.0, 1.0])
-    plt.ylim([0.0, 1.05])
+    plt.ylim([0.0, 1.0])
     plt.xlabel('Recall')
     plt.ylabel('Precision')
     if title:
       plt.title(title)
-    plt.legend(loc="lower right")
+    ax = plt.gca()
+    handles, labels = ax.get_legend_handles_labels()
+    # sort both labels and handles by labels
+    labels, handles = zip(*sorted(zip(labels, handles), key=lambda t: t[0]))
+    ax.legend(handles, labels, loc='lower left')      
+    ax.tick_params(axis='both', which='major', pad=15)
     font = {'family' : 'normal',
             'size'   : 26}
 
@@ -1322,6 +1336,7 @@ class Legacy(object):
     plt.ylim([0.7, 1.0])
     plt.xlabel('Recall')
     plt.ylabel('Precision')
+
     if title:
       plt.title(title)
     ax = plt.gca()
@@ -1329,6 +1344,7 @@ class Legacy(object):
     # sort both labels and handles by labels
     labels, handles = zip(*sorted(zip(labels, handles), key=lambda t: t[0]))
     ax.legend(handles, labels, loc='lower left')      
+    ax.tick_params(axis='both', which='major', pad=15)
     # plt.legend(loc="lower right")
     font = {'family' : 'normal',
             'size'   : 26}
