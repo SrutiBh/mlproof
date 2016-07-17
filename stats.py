@@ -756,12 +756,13 @@ class Stats(object):
     data['Initial\nSegmentation'] = dojo_input_vi
     data['Automatic\nCorrections'] = dojo_vi_95[2]
     data['Dojo       '] = dojo_best_user
+    data['Guided    \n(Novice)    '] = dojo_novice
     expert_sum = []
     for i,d in enumerate(dojo_expert1):
       expert_sum.append((dojo_expert1[i]+dojo_expert2[i])/2.)
     data['Guided    \n(Expert)   '] = expert_sum
     data['Guided\n(Simulated)'] = dojo_vi_simuser[2]
-    mlp.Legacy.plot_vis(data, output_folder+'/dojo_vi_simple.pdf')
+    mlp.Legacy.plot_vis(data, output_folder+'/dojo_vi_simple3.pdf')
 
     #
     # simple VI plot
@@ -777,6 +778,8 @@ class Stats(object):
     data['Guided     '] = expert_sum
     # data['Guided\n(Simulated)'] = dojo_vi_simuser[2]
     mlp.Legacy.plot_vis(data, output_folder+'/dojo_vi_simple2.pdf')
+
+
 
 
     mlp.Legacy.plot_vis_error_rate(dojo_vi_simuser_er, np.median(dojo_avg_user), np.median(dojo_best_user), output_folder+'/dojo_errorrate.pdf')
