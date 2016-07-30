@@ -3,9 +3,9 @@ from lasagne import nonlinearities
 
 from cnn import CNN
 
-class MergeNet(CNN):
+class MergeNetThreeLeg(CNN):
     '''
-    Our CNN with different "legs" for image, prob, merged_array, border_overlap.
+    Our CNN with different "legs" for image, prob, merged_array.
     '''
 
     def __init__(self):
@@ -29,13 +29,7 @@ class MergeNet(CNN):
                 ('binary_conv1', layers.Conv2DLayer),
                 ('binary_pool1', layers.MaxPool2DLayer),
                 ('binary_conv2', layers.Conv2DLayer),
-                ('binary_pool2', layers.MaxPool2DLayer),
-
-                ('border_input', layers.InputLayer),
-                ('border_conv1', layers.Conv2DLayer),
-                ('border_pool1', layers.MaxPool2DLayer),
-                ('border_conv2', layers.Conv2DLayer),
-                ('border_pool2', layers.MaxPool2DLayer),                                
+                ('binary_pool2', layers.MaxPool2DLayer),                         
 
                 ('merge', layers.ConcatLayer),
                 ('hidden3', layers.DenseLayer),
@@ -73,18 +67,8 @@ class MergeNet(CNN):
             binary_conv2_nonlinearity=nonlinearities.rectify,
             binary_pool2_pool_size=(2,2),
 
-            border_input_shape=(None, 1, 75, 75),
-            # conv2d + pool + dropout
-            border_conv1_filter_size=(13,13), border_conv1_num_filters=16,
-            border_conv1_nonlinearity=nonlinearities.rectify,
-            border_pool1_pool_size=(2,2),
-            # conv2d + pool + dropout
-            border_conv2_filter_size=(13,13), border_conv2_num_filters=16,
-            border_conv2_nonlinearity=nonlinearities.rectify,
-            border_pool2_pool_size=(2,2),
-
             # concat
-            merge_incomings=['image_pool2','prob_pool2','binary_pool2','border_pool2'],
+            merge_incomings=['image_pool2','prob_pool2','binary_pool2'],
 
             # dense layer 1
             hidden3_num_units=256,

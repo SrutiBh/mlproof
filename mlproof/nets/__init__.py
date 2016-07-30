@@ -5,4 +5,5 @@ from rgbanet import RGBANet
 from rgbanet_dropout import RGBANetDropout
 from mergenet import MergeNet
 from mergenet_dropout import MergeNetDropout
+from mergenet_threeleg import MergeNetThreeLeg
 from mergenet_threeleg_dropout import MergeNetThreeLegDropout
