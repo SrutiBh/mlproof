@@ -11,8 +11,8 @@
 #SBATCH -t 10-12:00
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=haehn@seas.harvard.edu
-#SBATCH -o /n/home05/haehn/nets/out-rgbnet_cox.txt
-#SBATCH -e /n/home05/haehn/nets/err-rgbnet_cox.txt
+#SBATCH -o /n/home05/haehn/nets/out-rgbanet_border_cox.txt
+#SBATCH -e /n/home05/haehn/nets/err-rgbanet_border_cox.txt
 
 # add additional commands needed for Lmod and module loads here
 source new-modules.sh
@@ -27,7 +27,7 @@ source /n/home05/haehn/nolearncox/bin/activate
 
 # add commands for analyses here
 cd /n/home05/haehn/Projects/mlproof/
-python run_cnn.py -n RGBNet -p cylinder1_rgba -b larger_border_overlap -d rectify
+python run_cnn.py -n RGBANet -p cylinder1_rgba -b border_overlap -d rectify
 
 # end of program
 exit 0;
