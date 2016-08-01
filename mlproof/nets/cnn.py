@@ -22,8 +22,8 @@ class CNN(object):
         # kwargs['update_learning_rate'] = 0.0001
         # kwargs['update_momentum'] = 0.9
         kwargs['regression'] = False
-        kwargs['batch_iterator_train'] = MyBatchIterator(batch_size=50)
-        kwargs['batch_iterator_test'] = MyTestBatchIterator(batch_size=50)
+        kwargs['batch_iterator_train'] = MyBatchIterator(batch_size=10)
+        kwargs['batch_iterator_test'] = MyTestBatchIterator(batch_size=10)
         kwargs['max_epochs'] = 2000
         kwargs['train_split'] = TrainSplit(eval_size=0.25)
         kwargs['on_epoch_finished'] = [
