@@ -63,7 +63,7 @@ class Legacy(object):
     return (255-grad)
 
   @staticmethod
-  def gradient(array, sigma=2.5):
+  def gradient(array, sigma=5.5):
     '''
     '''
 
@@ -154,13 +154,15 @@ class Legacy(object):
     else:
       speed_image = Legacy.gradient(cropped_image)
 
+    Util.view(speed_image, large=False, color=False)
+
 
     dilated_binary = np.array(cropped_binary, dtype=np.bool)
     if dilate:
       for i in range(20):
           dilated_binary = mh.dilate(dilated_binary)      
 
-    # Util.view(dilated_binary, large=True)
+    Util.view(dilated_binary, large=False, color=False)
 
     borders = np.zeros(cropped_binary.shape)
 
@@ -443,6 +445,8 @@ class Legacy(object):
     binary[border==1] = 2
 
     binary_relabeled = Util.relabel(binary)
+
+    Util.view(binary_relabeled, color=True, large=True)
 
     binary_no_border = np.array(binary_relabeled, dtype=np.uint64)
     binary_no_border[border==1] = 0

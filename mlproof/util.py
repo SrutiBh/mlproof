@@ -104,7 +104,7 @@ class Util(object):
     return segmentation
 
   @staticmethod
-  def view(array,color=True,large=False,crop=False, text=None):
+  def view(array,color=True,large=False,crop=False, text=None, no_axis=True, file=''):
     
     if large:
       figsize = (10,10)
@@ -120,11 +120,16 @@ class Util(object):
       text = '\n\n\n'+str(text)
       fig.text(0,1,text)      
 
+    if no_axis:
+      plt.axis('off')
 
     if color:
       plt.imshow(Util.colorize(array), picker=True)
     else:
       plt.imshow(array, cmap='gray', picker=True)
+
+    if file!='':
+      plt.savefig(file)
 
   @staticmethod
   def view_labels(array, labels, crop=True, large=True, return_it=False):
@@ -235,9 +240,9 @@ class Util(object):
     return data[tuple(ind)]
     
   @staticmethod
-  def crop_by_bbox(array, bbox):
+  def crop_by_bbox(array, bbox, offset=0):
 
-    return array[bbox[0]:bbox[1], bbox[2]:bbox[3]]
+    return array[bbox[0]-offset:bbox[1]+offset, bbox[2]-offset:bbox[3]+offset]
 
   @staticmethod
   def vi(array1, array2):
