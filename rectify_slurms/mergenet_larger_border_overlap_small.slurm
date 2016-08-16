@@ -11,8 +11,8 @@
 #SBATCH -t 10-12:00
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=haehn@seas.harvard.edu
-#SBATCH -o /n/home05/haehn/nets/out-mergenet_larger_border_new.txt
-#SBATCH -e /n/home05/haehn/nets/err-mergenet_larger_border_new.txt
+#SBATCH -o /n/home05/haehn/nets/out-mergenet_larger_border_small.txt
+#SBATCH -e /n/home05/haehn/nets/err-mergenet_larger_border_small.txt
 
 # add additional commands needed for Lmod and module loads here
 source new-modules.sh
@@ -38,7 +38,7 @@ source /n/home05/haehn/nolearn/bin/activate
 
 # add commands for analyses here
 cd /n/home05/haehn/Projects/mlproof/
-python run_cnn.py -n MergeNetDropout -p cylinder2 -b larger_border_overlap -d NEWDATA
+python run_cnn.py -n MergeNetDropoutSmall -p cylinder2 -b larger_border_overlap -d NEWDATASMALL
 
 # end of program
 exit 0;
