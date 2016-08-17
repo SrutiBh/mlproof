@@ -56,41 +56,41 @@ class MergeNetDropoutSmall(CNN):
             # input
             image_input_shape=(None, 1, 75, 75),
             # conv2d + pool + dropout
-            image_conv1_filter_size=(3,3), image_conv1_num_filters=40,
+            image_conv1_filter_size=(3,3), image_conv1_num_filters=64,
             image_pool1_pool_size=(2,2),
             image_dropout1_p=0.2,
             # conv2d + pool + dropout
-            image_conv2_filter_size=(3,3), image_conv2_num_filters=32,
+            image_conv2_filter_size=(3,3), image_conv2_num_filters=64,
             image_pool2_pool_size=(2,2),
             image_dropout2_p=0.2,
 
             prob_input_shape=(None, 1, 75, 75),
             # conv2d + pool + dropout
-            prob_conv1_filter_size=(3,3), prob_conv1_num_filters=40,
+            prob_conv1_filter_size=(3,3), prob_conv1_num_filters=64,
             prob_pool1_pool_size=(2,2),
             prob_dropout1_p=0.2,
             # conv2d + pool + dropout
-            prob_conv2_filter_size=(3,3), prob_conv2_num_filters=32,
+            prob_conv2_filter_size=(3,3), prob_conv2_num_filters=64,
             prob_pool2_pool_size=(2,2),
             prob_dropout2_p=0.2,
 
             binary_input_shape=(None, 1, 75, 75),
             # conv2d + pool + dropout
-            binary_conv1_filter_size=(3,3), binary_conv1_num_filters=40,
+            binary_conv1_filter_size=(3,3), binary_conv1_num_filters=64,
             binary_pool1_pool_size=(2,2),
             binary_dropout1_p=0.2,
             # conv2d + pool + dropout
-            binary_conv2_filter_size=(3,3), binary_conv2_num_filters=32,
+            binary_conv2_filter_size=(3,3), binary_conv2_num_filters=64,
             binary_pool2_pool_size=(2,2),
             binary_dropout2_p=0.2,
 
             border_input_shape=(None, 1, 75, 75),
             # conv2d + pool + dropout
-            border_conv1_filter_size=(3,3), border_conv1_num_filters=40,
+            border_conv1_filter_size=(3,3), border_conv1_num_filters=64,
             border_pool1_pool_size=(2,2),
             border_dropout1_p=0.2,
             # conv2d + pool + dropout
-            border_conv2_filter_size=(3,3), border_conv2_num_filters=32,
+            border_conv2_filter_size=(3,3), border_conv2_num_filters=64,
             border_pool2_pool_size=(2,2),
             border_dropout2_p=0.2,
 
