@@ -627,6 +627,31 @@ class Patch(object):
 
     return training['rgba'], training_targets['rgba'].astype(np.uint8), test['rgba'], test_targets['rgba'].astype(np.uint8)
 
+  @staticmethod
+  def load_rgb(PATCH_PATH, patch_size=(75,75), verbose=True):
+
+    PATCH_PATH_ = '/tmp/' + os.sep + PATCH_PATH + os.sep
+    if not os.path.exists(PATCH_PATH):
+      PATCH_PATH_ = '/n/regal/pfister_lab/haehn' + os.sep + PATCH_PATH + os.sep    
+    if not os.path.exists(PATCH_PATH):
+      PATCH_PATH_ = os.path.expanduser('~/patches/') + os.sep + PATCH_PATH + os.sep
+
+    PATCH_PATH = PATCH_PATH_
+
+    t0 = time.time()
+
+    training = np.load(PATCH_PATH+'train.npz', mmap_mode='r')
+    training_targets = np.load(PATCH_PATH+'train_targets.npz')
+
+    test = np.load(PATCH_PATH+'test.npz', mmap_mode='r')
+    test_targets = np.load(PATCH_PATH+'test_targets.npz')
+
+    if verbose:
+      print 'Loaded', PATCH_PATH, 'in', time.time()-t0, 'seconds.'
+
+    return training['rgb'], training_targets['targets'].astype(np.uint8), test['rgb'], test_targets['targets'].astype(np.uint8)
+
+
 
   @staticmethod
   def load_rgba_test_only(PATCH_PATH, border_prefix='border', patch_size=(75,75), verbose=True):

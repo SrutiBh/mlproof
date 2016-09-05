@@ -20,7 +20,7 @@ class Util(object):
     mask = sorted(glob.glob(os.path.join(path, 'mask', '*'+str(z)+'.png')))   
     gold = sorted(glob.glob(os.path.join(path, 'gold', '*'+str(z)+'.png')))
     rhoana = sorted(glob.glob(os.path.join(path, 'rhoana', '*'+str(z)+'.png')))
-    prob = sorted(glob.glob(os.path.join(path, 'prob', '*'+str(z)+'_syn.tif')))
+    prob = sorted(glob.glob(os.path.join(path, 'prob', '*'+str(z)+'.tif')))
 
     if verbose:
       print 'Loading', os.path.basename(image[0])
