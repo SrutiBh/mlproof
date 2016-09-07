@@ -27,7 +27,7 @@ export LD_LIBRARY_PATH=/n/home05/haehn/nolearncox/src/hdf5-1.8.17/hdf5/lib:$LD_L
 export CPATH=/n/home05/haehn/nolearncox/src/hdf5-1.8.17/hdf5/include:$CPATH
 export FPATH=/n/home05/haehn/nolearncox/src/hdf5-1.8.17/hdf5/include:$FPATH
 
-source nolearncox/bin/activate
+source /n/home05/haehn/nolearncox/bin/activate
 
 
 # add commands for analyses here
