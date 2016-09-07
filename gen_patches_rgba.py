@@ -6,7 +6,7 @@ import time
 
 import mlproof as mlp
 
-PATCH_PATH = os.path.expanduser('~/patches/cylinder1_rgba/')
+PATCH_PATH = os.path.expanduser('~/patches/cylinder2_rgba/')
 
 
 
@@ -23,7 +23,7 @@ def generate_patches(start_slice, end_slice, filename):
 
         t0 = time.time()
         print 'working on slice', z
-        input_image, input_prob, input_mask, input_gold, input_rhoana = mlp.Util.read_section(os.path.expanduser('~/data/cylinder/'),z)
+        input_image, input_prob, input_mask, input_gold, input_rhoana = mlp.Util.read_section(os.path.expanduser('~/data/cylinderNEW/'),z)
 
         error_patches, patches = mlp.Patch.patchify_maxoverlap(input_image, input_prob, input_mask, input_rhoana, input_gold, sample_rate=1)
 
@@ -45,13 +45,13 @@ def generate_patches(start_slice, end_slice, filename):
     print 'Errors:',len(all_error_patches)
     print 'Correct:',len(all_correct_patches)    
     
-    with open(PATCH_PATH+'/'+filename+'_error_patches.p', 'wb') as f:
-        pickle.dump(all_error_patches, f)
+    # with open(PATCH_PATH+'/'+filename+'_error_patches.p', 'wb') as f:
+    #     pickle.dump(all_error_patches, f)
 
-    with open(PATCH_PATH+'/'+filename+'_correct_patches.p', 'wb') as f:
-        pickle.dump(all_correct_patches, f)
+    # with open(PATCH_PATH+'/'+filename+'_correct_patches.p', 'wb') as f:
+    #     pickle.dump(all_correct_patches, f)
 
-    return None
+    # return None
 
 
     PATCH_BYTES = 75*75
@@ -75,7 +75,7 @@ def generate_patches(start_slice, end_slice, filename):
     for p in all_error_patches:
 
         p_rgba[i][0] = p['image']
-        p_rgba[i][1] = p['prob'] 
+        p_rgba[i][1] = 1. - p['prob'] 
         p_rgba[i][2] = p['merged_array']
         p_rgba[i][3] = p['border_overlap']
         
@@ -91,7 +91,7 @@ def generate_patches(start_slice, end_slice, filename):
     for p in all_correct_patches:
 
         p_rgba[i][0] = p['image']
-        p_rgba[i][1] = p['prob']    
+        p_rgba[i][1] = 1. - p['prob']    
         p_rgba[i][2] = p['merged_array']
         p_rgba[i][3] = p['border_overlap']
         
@@ -122,16 +122,16 @@ def run(start_slice, end_slice, filename):
     
     p = generate_patches(start_slice, end_slice, filename)
     
-    # shuffled = shuffle_in_unison_inplace(p[0],
-    #                                      p[1],
-    #                                      p[2]
-    #                                     )
+    shuffled = shuffle_in_unison_inplace(p[0],
+                                         p[1],
+                                         p[2]
+                                        )
     
-    # print 'saving..'
-    # np.savez(PATCH_PATH+filename+'.npz', rgba=shuffled[0],
-    #                                      rgba_large=shuffled[1])
-    # np.savez(PATCH_PATH+filename+'_targets.npz', targets=shuffled[2])
-    # print 'Done!'
+    print 'saving..'
+    np.savez(PATCH_PATH+filename+'.npz', rgba=shuffled[0],
+                                         rgba_large=shuffled[1])
+    np.savez(PATCH_PATH+filename+'_targets.npz', targets=shuffled[2])
+    print 'Done!'
     
 
 ###
