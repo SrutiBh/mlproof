@@ -9,8 +9,8 @@
 #SBATCH -t 2-12:00
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=haehn@seas.harvard.edu
-#SBATCH -o /n/home05/haehn/nets/out-patchgen_rgba.txt
-#SBATCH -e /n/home05/haehn/nets/err-patchgen_rgba.txt
+#SBATCH -o /n/home05/haehn/nets/out-patchgen_rgb.txt
+#SBATCH -e /n/home05/haehn/nets/err-patchgen_rgb.txt
 
 # add additional commands needed for Lmod and module loads here
 source new-modules.sh
