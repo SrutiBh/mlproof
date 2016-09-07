@@ -430,7 +430,7 @@ class Stats(object):
 
     else:
       # load patches
-      X_train, y_train, X_test, y_test = mlp.Patch.load('cylinder1')
+      X_train, y_train, X_test, y_test = mlp.Patch.load('cylinder2')
 
       test_inputs = collections.OrderedDict()
 
