@@ -6,7 +6,7 @@ import time
 
 import mlproof as mlp
 
-PATCH_PATH = os.path.expanduser('~/patches/cylinder2_rgba/')
+PATCH_PATH = os.path.expanduser('~/patches/cylinder2_rgb_small/')
 
 
 
@@ -58,7 +58,6 @@ def generate_patches(start_slice, end_slice, filename):
     P_SIZE = (NO_PATCHES, 4, 75,75) # rather than raveled right now
     
     p_rgba = np.zeros(P_SIZE, dtype=np.float32)
-    p_rgba_large = np.zeros(P_SIZE, dtype=np.float32)    
     
 #     p_image = np.zeros(P_SIZE, dtype=np.float32)
 #     p_prob = np.zeros(P_SIZE, dtype=np.float32)
@@ -77,12 +76,7 @@ def generate_patches(start_slice, end_slice, filename):
         p_rgba[i][0] = p['image']
         p_rgba[i][1] = 1. - p['prob'] 
         p_rgba[i][2] = p['merged_array']
-        p_rgba[i][3] = p['border_overlap']
-        
-        p_rgba_large[i][0] = p['image']
-        p_rgba_large[i][1] = 1. - p['prob']    
-        p_rgba_large[i][2] = p['merged_array']
-        p_rgba_large[i][3] = p['larger_border_overlap']        
+        p_rgba[i][3] = p['border_overlap']  
         
         p_target[i] = 1 # <--- important
         i += 1
@@ -95,11 +89,6 @@ def generate_patches(start_slice, end_slice, filename):
         p_rgba[i][2] = p['merged_array']
         p_rgba[i][3] = p['border_overlap']
         
-        p_rgba_large[i][0] = p['image']
-        p_rgba_large[i][1] = 1. - p['prob']       
-        p_rgba_large[i][2] = p['merged_array']
-        p_rgba_large[i][3] = p['larger_border_overlap']        
-        
         p_target[i] = 0 # <--- important
         i+=1
         
@@ -108,10 +97,10 @@ def generate_patches(start_slice, end_slice, filename):
 
 
 
-def shuffle_in_unison_inplace(a, b, c):
+def shuffle_in_unison_inplace(a, b):
     assert len(a) == len(b)
     p = np.random.permutation(len(a))
-    return a[p], b[p], c[p]
+    return a[p], b[p]
 
 
 
@@ -123,14 +112,12 @@ def run(start_slice, end_slice, filename):
     p = generate_patches(start_slice, end_slice, filename)
     
     shuffled = shuffle_in_unison_inplace(p[0],
-                                         p[1],
-                                         p[2]
+                                         p[1]
                                         )
     
     print 'saving..'
-    np.savez(PATCH_PATH+filename+'.npz', rgba=shuffled[0],
-                                         rgba_large=shuffled[1])
-    np.savez(PATCH_PATH+filename+'_targets.npz', targets=shuffled[2])
+    np.savez(PATCH_PATH+filename+'.npz', rgb=shuffled[0])
+    np.savez(PATCH_PATH+filename+'_targets.npz', targets=shuffled[1])
     print 'Done!'
     
 
@@ -138,6 +125,6 @@ def run(start_slice, end_slice, filename):
 ###
 ###
 
-run(0,250, 'train')
-run(250,300, 'test')
+run(200,250, 'train')
+run(250,260, 'test')
 

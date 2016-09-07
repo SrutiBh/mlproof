@@ -36,7 +36,7 @@ source /n/home05/haehn/nolearn/bin/activate
 
 # add commands for analyses here
 cd /n/home05/haehn/Projects/mlproof/
-python gen_patches_rgba.py
+python gen_patches_rgb.py
 
 # end of program
 exit 0;
