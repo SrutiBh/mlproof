@@ -132,6 +132,32 @@ class Util(object):
       plt.savefig(file)
 
   @staticmethod
+  def view_rgba(patch, text=''):
+    '''
+    '''
+    fig, (ax1, ax2, ax3, ax4) = plt.subplots(1, 4)
+
+    text = ''+str(text)
+    fig.text(0,0.5,text)
+
+    image = patch[0]
+    prob = patch[1]
+    binary = patch[2]
+    border = patch[3]
+
+    ax1.axis('off')
+    ax1.imshow(image, cmap='gray')
+
+    ax2.axis('off')
+    ax2.imshow(prob, cmap='gray')
+
+    ax3.axis('off')
+    ax3.imshow(binary, cmap='gray')
+
+    ax4.axis('off')
+    ax4.imshow(border, cmap='gray')    
+
+  @staticmethod
   def view_labels(array, labels, crop=True, large=True, return_it=False):
 
     if type(labels) != type(list()):

@@ -616,16 +616,16 @@ class Patch(object):
 
     t0 = time.time()
 
-    training = np.load(PATCH_PATH+'train_'+border_prefix+'.npz', mmap_mode='r')
-    training_targets = np.load(PATCH_PATH+'train_'+border_prefix+'_targets.npz')
+    training = np.load(PATCH_PATH+'train.npz', mmap_mode='r')
+    training_targets = np.load(PATCH_PATH+'train_targets.npz')
 
-    test = np.load(PATCH_PATH+'test_'+border_prefix+'.npz', mmap_mode='r')
-    test_targets = np.load(PATCH_PATH+'test_'+border_prefix+'_targets.npz')
+    test = np.load(PATCH_PATH+'test.npz', mmap_mode='r')
+    test_targets = np.load(PATCH_PATH+'test_targets.npz')
 
     if verbose:
       print 'Loaded', PATCH_PATH, 'in', time.time()-t0, 'seconds.'
 
-    return training['rgba'], training_targets['rgba'].astype(np.uint8), test['rgba'], test_targets['rgba'].astype(np.uint8)
+    return training['rgba'], training_targets['targets'].astype(np.uint8), test['rgba'], test_targets['targets'].astype(np.uint8)
 
   @staticmethod
   def load_rgb(PATCH_PATH, patch_size=(75,75), verbose=True):
