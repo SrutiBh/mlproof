@@ -6,7 +6,7 @@ import time
 
 import mlproof as mlp
 
-PATCH_PATH = os.path.expanduser('~/patches_local/cylinder2_rgba/')
+PATCH_PATH = os.path.expanduser('/tmp/cylinder2_rgba/')
 
 
 

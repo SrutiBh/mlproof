@@ -55,7 +55,7 @@ def generate_patches(start_slice, end_slice, filename):
 
 
     PATCH_BYTES = 75*75
-    P_SIZE = (NO_PATCHES, 4, 75,75) # rather than raveled right now
+    P_SIZE = (NO_PATCHES, 3, 75,75) # rather than raveled right now
     
     p_rgba = np.zeros(P_SIZE, dtype=np.float32)
     
@@ -76,7 +76,6 @@ def generate_patches(start_slice, end_slice, filename):
         p_rgba[i][0] = p['image']
         p_rgba[i][1] = 1. - p['prob'] 
         p_rgba[i][2] = p['merged_array']
-        p_rgba[i][3] = p['border_overlap']  
         
         p_target[i] = 1 # <--- important
         i += 1
@@ -87,13 +86,12 @@ def generate_patches(start_slice, end_slice, filename):
         p_rgba[i][0] = p['image']
         p_rgba[i][1] = 1. - p['prob']    
         p_rgba[i][2] = p['merged_array']
-        p_rgba[i][3] = p['border_overlap']
         
         p_target[i] = 0 # <--- important
         i+=1
         
     
-    return p_rgba, p_rgba_large, p_target
+    return p_rgba, p_target
 
 
 
