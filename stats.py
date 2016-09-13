@@ -395,16 +395,17 @@ class Stats(object):
 
 
   @staticmethod
-  def load_cnn(path):
+  def load_cnn(path, cnn_type=None):
 
     # load cnn
     with open(path, 'rb') as f:
       cnn = pickle.load(f)    
 
     # make sure we have the correct test batch iterator
-    cnn.batch_iterator_test = MyTestBatchIterator(cnn.batch_iterator_train.batch_size)
+    # cnn.batch_iterator_test = MyTestBatchIterator(cnn.batch_iterator_train.batch_size)
 
-    cnn_type = os.path.basename(os.path.dirname(path))
+    if cnn_type == None:
+      cnn_type = os.path.basename(os.path.dirname(path))
 
     input_names = []
     input_values = []
@@ -424,8 +425,9 @@ class Stats(object):
 
     elif cnn_type.startswith('RGB'):
       # this is a RGB net
-      X_test, y_test = mlp.Patch.load_rgba_test_only('cylinder1_rgba')
-      test_inputs = X_test[:,:-1,:,:]      
+      X_test, y_test = mlp.Patch.load_rgb_test_only('cylinder2_rgb')
+      # test_inputs = X_test[:,:-1,:,:]   
+      test_inputs = X_test   
       input_names.append('RGB')
 
     else:
@@ -473,7 +475,7 @@ class Stats(object):
     # attach patch selection
     cnn.input_names = input_names
     cnn.input_values = input_values
-    cnn.uuid = os.path.basename(os.path.dirname(path))
+    cnn.uuid = cnn_type#os.path.basename(os.path.dirname(path))
 
     
     # plot loss    

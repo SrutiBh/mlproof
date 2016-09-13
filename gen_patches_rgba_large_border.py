@@ -6,7 +6,7 @@ import time
 
 import mlproof as mlp
 
-PATCH_PATH = os.path.expanduser('~/patches_local/cylinder2_rgba_larger_border/')
+PATCH_PATH = '/tmp/cylinder2_rgba_larger_border/'#os.path.expanduser('~/patches_local/cylinder2_rgba_larger_border/')
 
 
 
@@ -45,11 +45,11 @@ def generate_patches(start_slice, end_slice, filename):
     print 'Errors:',len(all_error_patches)
     print 'Correct:',len(all_correct_patches)    
     
-    # with open(PATCH_PATH+'/'+filename+'_error_patches.p', 'wb') as f:
-    #     pickle.dump(all_error_patches, f)
+    with open(PATCH_PATH+'/'+'_error_patches.p', 'wb') as f:
+        pickle.dump(all_error_patches, f)
 
-    # with open(PATCH_PATH+'/'+filename+'_correct_patches.p', 'wb') as f:
-    #     pickle.dump(all_correct_patches, f)
+    with open(PATCH_PATH+'/'+'_correct_patches.p', 'wb') as f:
+        pickle.dump(all_correct_patches, f)
 
     # return None
 
