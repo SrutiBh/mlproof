@@ -1087,7 +1087,7 @@ class Stats(object):
         image, prob, mask, gold, rhoana = mlp.Util.read_section('/home/d/data/cylinderNEW/', z, verbose=False)
 
         input_image.append(image)
-        input_prob.append(1.-prob)
+        input_prob.append(255.-prob)
         input_rhoana.append(rhoana)
         input_gold.append(gold)
 
