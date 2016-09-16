@@ -1143,7 +1143,7 @@ class Legacy(object):
     plt.show()    
 
   @staticmethod
-  def plot_vi_combined_no_interpolation(automatic, simuser, filename=None):
+  def plot_vi_combined_no_interpolation(automatic, simuser, filename=None, sweetspot=4429):
 
     def green_func(x, a, b, c):
         return a*np.exp(-b*x)+c
@@ -1163,7 +1163,7 @@ class Legacy(object):
 
     ax.plot(xx_simuser, simuser, 'green', linewidth=4, label='Guided (Simulated)')
     ax.plot(xx_automatic, automatic, 'red', linewidth=4, label='Automatic Corrections')
-    ax.axvline(x=4429, ymin=0, ymax=.61, color='b', linestyle='dashed', linewidth=2)
+    ax.axvline(x=sweetspot, ymin=0, ymax=.61, color='b', linestyle='dashed', linewidth=2)
     ax.tick_params(axis='both', which='major', pad=15)
     plt.ylabel('Variation of Information', labelpad=20)
 

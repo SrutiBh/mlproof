@@ -1147,6 +1147,8 @@ class Stats(object):
         cylinder_vi_95 = pickle.load(f)
       with open(cylinder_auto_vis_95_file, 'rb') as f:
         cylinder_auto_vi_s_95 = pickle.load(f)
+      with open(cylinder_vi_auto_95_fixes_file, 'rb') as f:
+        cylinder_auto_fixes_95 = pickle.load(f)
     else:      
       # #
       # # perform merge correction with p < .05
@@ -1348,7 +1350,8 @@ class Stats(object):
             vi_s_per_correction_auto.append(np.median(m))
 
     # mlp.Legacy.plot_vi_combined(vi_s_per_correction_auto, vi_s_per_correction, output_folder+'/cylinder_combined_vi.pdf')
-    mlp.Legacy.plot_vi_combined_no_interpolation(vi_s_per_correction_auto, vi_s_per_correction, output_folder+'/cylinder_combined_vi_no_interpolation.pdf')
+
+    mlp.Legacy.plot_vi_combined_no_interpolation(vi_s_per_correction_auto, vi_s_per_correction, output_folder+'/cylinder_combined_vi_no_interpolation.pdf', sweetspot=len(cylinder_auto_fixes_95))
 
 
     data = {}
@@ -1358,3 +1361,4 @@ class Stats(object):
     roc_auc = auc(fpr, tpr)    
     data['Cylinder Fixes'] = (fpr, tpr, roc_auc)
     mlp.Legacy.plot_roc(data, output_folder+'/cylinder_roc.pdf')
+
