@@ -9,8 +9,8 @@
 #SBATCH -t 7-12:00
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=haehn@seas.harvard.edu
-#SBATCH -o /n/home05/haehn/nets/out-patchgen_rgba_border.txt
-#SBATCH -e /n/home05/haehn/nets/err-patchgen_rgba_border.txt
+#SBATCH -o /n/home05/haehn/SLURM/patchgen/out-patchgen_rgba_border.txt
+#SBATCH -e /n/home05/haehn/SLURM/patchgen/err-patchgen_rgba_border.txt
 
 source new-modules.sh
 module load Anaconda/2.5.0-fasrc01
