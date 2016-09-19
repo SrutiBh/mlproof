@@ -6,7 +6,7 @@ import time
 
 import mlproof as mlp
 
-PATCH_PATH = os.path.expanduser('~/patches_local/cylinder2_rgba_pickle/')
+PATCH_PATH = '/n/pfister_lab/haehn/patches/cylinder2_rgba/'#os.path.expanduser('~/patches_local/cylinder2_rgba_pickle/')
 
 
 
@@ -51,6 +51,8 @@ def generate_patches(start_slice, end_slice, filename):
 
     with open(PATCH_PATH+'/'+'correct_patches.p', 'wb') as f:
         pickle.dump(all_correct_patches, f)
+
+    print 'pickled'
 
     return None
 
