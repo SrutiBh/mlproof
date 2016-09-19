@@ -6,7 +6,7 @@ import time
 
 import mlproof as mlp
 
-PATCH_PATH = os.path.expanduser('~/patches_local/cylinder2_rgba_larger_border/')
+PATCH_PATH = PATCH_PATH = '/n/pfister_lab/haehn/patches/cylinder2_rgba/IPMLB/'
 
 
 
@@ -45,13 +45,13 @@ def generate_patches(start_slice, end_slice, filename):
     print 'Errors:',len(all_error_patches)
     print 'Correct:',len(all_correct_patches)    
     
-    with open(PATCH_PATH+'/'+'_error_patches.p', 'wb') as f:
-        pickle.dump(all_error_patches, f)
+    # with open(PATCH_PATH+'/'+'_error_patches.p', 'wb') as f:
+    #     pickle.dump(all_error_patches, f)
 
-    with open(PATCH_PATH+'/'+'_correct_patches.p', 'wb') as f:
-        pickle.dump(all_correct_patches, f)
+    # with open(PATCH_PATH+'/'+'_correct_patches.p', 'wb') as f:
+    #     pickle.dump(all_correct_patches, f)
 
-    return None
+    # return None
 
 
     PATCH_BYTES = 75*75
@@ -125,6 +125,6 @@ def run(start_slice, end_slice, filename):
 ###
 ###
 
-run(0,250, 'train')
+# run(0,250, 'train')
 run(250,300, 'test')
 

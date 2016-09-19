@@ -5,12 +5,12 @@
 #SBATCH -p cox
 #SBATCH -n 1 # Number of cores
 #SBATCH -N 1 # Ensure that all cores are on one machine
-#SBATCH --mem=48000
+#SBATCH --mem=60000
 #SBATCH -t 7-12:00
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=haehn@seas.harvard.edu
-#SBATCH -o /n/home05/haehn/SLURM/patchgen/out-patchgen_rgba_border.txt
-#SBATCH -e /n/home05/haehn/SLURM/patchgen/err-patchgen_rgba_border.txt
+#SBATCH -o /n/home05/haehn/SLURM/patchgen/out-patchgen_test_IPLB.txt
+#SBATCH -e /n/home05/haehn/SLURM/patchgen/err-patchgen_test_IPLB.txt
 
 source new-modules.sh
 module load Anaconda/2.5.0-fasrc01
@@ -31,7 +31,7 @@ source /n/home05/haehn/nolearncox/bin/activate
 
 # add commands for analyses here
 cd /n/home05/haehn/Projects/mlproof/
-python gen_patches_rgba_border.py
+python gen_patches_rgb_border.py
 
 # end of program
 exit 0;

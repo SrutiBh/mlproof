@@ -5,12 +5,12 @@
 #SBATCH -p cox
 #SBATCH -n 1 # Number of cores
 #SBATCH -N 1 # Ensure that all cores are on one machine
-#SBATCH --mem=120000
+#SBATCH --mem=60000
 #SBATCH -t 7-12:00
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=haehn@seas.harvard.edu
-#SBATCH -o /n/home05/haehn/nets/out-patchgen_rgba_large_border.txt
-#SBATCH -e /n/home05/haehn/nets/err-patchgen_rgba_large_border.txt
+#SBATCH -o /n/home05/haehn/SLURM/patchgen/out-patchgen_test_IPMLB.txt
+#SBATCH -e /n/home05/haehn/SLURM/patchgen/err-patchgen_test_IPMLB.txt
 
 source new-modules.sh
 module load Anaconda/2.5.0-fasrc01
